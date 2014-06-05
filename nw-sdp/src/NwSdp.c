@@ -502,6 +502,37 @@ nwSdpProcessIpv4DataIndication(NwSdpT* thiz,
   return NW_SDP_OK;
 }
 
+static NwSdpRcT
+nwChecksum(NwU8T *data, NwU16T checklen, NwU8T *chksm)
+{
+  NwU32T sum = 0;
+  NwU16T answer = 0;
+  NwU16T wordData[checklen];
+  NwU16T *startpos = wordData;
+
+  memcpy(startpos, data, checklen);
+
+  while (checklen > 1)
+  {
+     sum += *startpos++;
+      checklen -= 2;
+  }
+
+  if (checklen == 1)
+  {
+      *(NwU8T *)(&answer) = *(NwU8T *)startpos;
+      sum += answer;
+  }
+
+  sum = (sum >> 16) + (sum & 0xffff);
+  sum += (sum >> 16);
+  answer = ~sum;
+
+  memcpy(chksm, &answer,2);
+
+  return NW_SDP_OK;
+}
+
 
 NwSdpRcT
 nwSdpProcessGtpuDataIndication(NwSdpT* thiz, 
@@ -547,7 +578,13 @@ nwSdpProcessGtpuDataIndication(NwSdpT* thiz,
             memcpy(pingRspPdu + 14, pIpv4Pdu, pingRspPduLen);
             memcpy(pingRspPdu + 14 + 16, pIpv4Pdu + 12, 4);
             memcpy(pingRspPdu + 14 + 12, pIpv4Pdu + 16, 4);
-            /* TODO: Add ip-checksum */
+            /* Add ip-checksum */
+            *(pingRspPdu + 14 + 16 + 4 + 2)=0x00;
+            *(pingRspPdu + 14 + 16 + 4 + 3)=0x00;
+            nwChecksum(pingRspPdu + 14 + 16 + 4,
+                       pingRspPduLen - 20,
+                       pingRspPdu + 14 + 16 + 4 + 2);
+
             rc = nwSdpProcessIpv4DataInd(thiz, 0, pingRspPdu, pingRspPduLen + 14);
           }
           else
