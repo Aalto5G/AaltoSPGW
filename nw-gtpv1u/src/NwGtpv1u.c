@@ -174,7 +174,7 @@ nwGtpv1uCreateAndSendMsg( NwGtpv1uStackT* thiz, NwU32T peerIp, NwU16T peerPort, 
     (pMsg->npduNumFlag);
 
   *(msgHdr++)         = (pMsg->msgType);
-  *((NwU16T*) msgHdr) = htons(pMsg->msgLen);
+  *((NwU16T*) msgHdr) = htons(pMsg->msgLen - 8);
   msgHdr += 2;
 
   *((NwU32T*) msgHdr) = htonl(pMsg->teid);

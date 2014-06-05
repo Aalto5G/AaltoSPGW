@@ -336,7 +336,7 @@ nwGtpv1uTrxnCreateAndSendMsg( NW_IN  NwGtpv1uStackT* thiz,
                         (pMsg->npduNumFlag);
 
   *(msgHdr++)         = (pMsg->msgType);
-  *((NwU16T*) msgHdr) = htons(pMsg->msgLen);
+  *((NwU16T*) msgHdr) = htons(pMsg->msgLen - 8);
   msgHdr += 2;
 
   *((NwU32T*) msgHdr) = htonl(pMsg->teid);
