@@ -95,6 +95,8 @@ nwGtpv1uMsgNew( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
     pMsg->msgLen        = ((pMsg->seqNumFlag || pMsg->npduNumFlag || pMsg->extHdrFlag) ? 
         NW_GTPV1U_EPC_SPECIFIC_HEADER_SIZE : (NW_GTPV1U_EPC_SPECIFIC_HEADER_SIZE - 4));
 
+    pMsg->teid = teid;
+
     *phMsg = (NwGtpv1uMsgHandleT) pMsg;
     return NW_GTPV1U_OK;
   }
