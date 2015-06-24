@@ -401,6 +401,14 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
 
       NW_LOG(thiz, NW_LOG_LEVEL_ERRO,"Sending ARP reponse!");
     }
+    else
+	{
+	  NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"Tunnel Endpoint not found for %d.%d.%d.%d, ignoring ARP request", 
+	         (pHdr->targetIpAddr[0]),
+	         (pHdr->targetIpAddr[1]),
+	         (pHdr->targetIpAddr[2]),
+	         (pHdr->targetIpAddr[3]));
+    }
   }
   else
   {
