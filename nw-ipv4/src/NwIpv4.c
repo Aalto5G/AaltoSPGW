@@ -399,7 +399,7 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
           pHdr->senderIpAddr,
           pHdr->targetIpAddr);
 
-      NW_LOG(thiz, NW_LOG_LEVEL_ERRO,"Sending ARP reponse!");
+      NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"Sending ARP reponse!");
     }
     else
 	{
