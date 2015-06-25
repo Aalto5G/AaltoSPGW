@@ -389,7 +389,7 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
         (pHdr->targetIpAddr[2]), 
         (pHdr->targetIpAddr[3])); 
 
-    tunnelEndPointKey.ipv4Addr = (NwU32T)(pHdr->targetIpAddr);
+    memcpy(&(tunnelEndPointKey.ipv4Addr), pHdr->targetIpAddr, sizeof(NwU32T));
     pTunnelEndPoint = RB_FIND(NwIpv4TunnelEndPointIdentifierMap, &(thiz->ipv4AddrMap), &tunnelEndPointKey);
     if(pTunnelEndPoint)
     {
