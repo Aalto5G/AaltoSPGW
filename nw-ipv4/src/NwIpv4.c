@@ -396,8 +396,8 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
       rc = thiz->llp.llpArpDataReqCallback(thiz->llp.hLlp,
           ARPOP_REPLY, 
           pHdr->senderMac,
-          pHdr->targetIpAddr,
-          pHdr->senderIpAddr);
+          pHdr->senderIpAddr,
+          pHdr->targetIpAddr);
 
       NW_LOG(thiz, NW_LOG_LEVEL_ERRO,"Sending ARP reponse!");
     }
