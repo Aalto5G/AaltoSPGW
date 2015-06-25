@@ -50,7 +50,8 @@
 #include "NwIpv4.h"
 #include "NwIpv4Msg.h"
 
-#define NW_SDP_RESPOND_ICMP_PING        (1)
+/*Define this to enable local ICMP responder*/
+/*#define NW_SDP_RESPOND_ICMP_PING        (1)*/
 
 #ifdef __cplusplus
 extern "C" {
