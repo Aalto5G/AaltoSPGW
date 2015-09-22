@@ -1089,6 +1089,9 @@ nwGtpv2cInitialize( NW_INOUT NwGtpv2cStackHandleT* hGtpcStackHandle)
     NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_DELETE_SESSION_RSP);
     NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_MODIFY_BEARER_REQ);
     NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_MODIFY_BEARER_RSP);
+    NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_RELEASE_ACCESS_BEARERS_REQ);
+    NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_RELEASE_ACCESS_BEARERS_RSP);
+
 
     nwGtpv2cDisplayBanner(thiz);
   }
@@ -1283,6 +1286,7 @@ nwGtpv2cProcessUdpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
     case NW_GTP_CREATE_BEARER_REQ:
     case NW_GTP_UPDATE_BEARER_REQ:
     case NW_GTP_DELETE_BEARER_REQ:
+    case NW_GTP_RELEASE_ACCESS_BEARERS_REQ:
       {
         rc = nwGtpv2cHandleInitialReq(thiz, msgType, udpData, udpDataLen, peerPort, peerIp);
       }
