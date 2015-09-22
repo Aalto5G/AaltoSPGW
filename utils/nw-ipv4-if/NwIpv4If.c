@@ -184,17 +184,12 @@ NwRcT nwIpv4IfInitialize(NwIpv4IfT* thiz, NwU8T* device, NwSdpHandleT hSdp, NwU8
   /*
    * Create socket sending data to L2
    */
-  if((send_sd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW))== -1)
+  if((send_sd = socket(AF_PACKET, SOCK_RAW, IPPROTO_RAW))== -1)
   {
     printf("Error creating raw socket: send fd");
     exit(1);
   }
 
-  int yes = 1;
-  if(setsockopt(send_sd, IPPROTO_IP, IP_HDRINCL, &yes, sizeof(yes)) < 0 ) {
-    perror("Error in Setting socket option:");
-    exit(1);
-  }
 
   thiz->hSendSocket     = send_sd;
 
@@ -263,17 +258,27 @@ NwRcT nwIpv4IfIpv4DataReq(NwSdpHandleT hThiz,
     NwU8T* dataBuf,
     NwU32T dataSize)
 {
-  struct sockaddr_in peerAddr;
+  struct sockaddr_ll peerAddrEth;
   NwS32T bytesSent;
   NwIpv4IfT* thiz = (NwIpv4IfT*) hThiz;
 
-  peerAddr.sin_family       = AF_INET;
-  memset(peerAddr.sin_zero, '\0', sizeof (peerAddr.sin_zero));
-  peerAddr.sin_addr.s_addr = *((NwU32T*)(dataBuf + 16));
+  NwU8T dstMacAddr[6] = {0x00, 0x00, 0x06, 0x01, 0x02, 0x03};
+  NwU8T bufToSend[2000];
+  struct ethhdr *eh = (struct ethhdr*) bufToSend;
 
-  nwLogHexDump((NwU8T*)dataBuf, dataSize);
-
-  bytesSent = sendto (thiz->hSendSocket, dataBuf, dataSize, 0, (struct sockaddr *) &peerAddr, sizeof(struct sockaddr));
+  /* Configure socket address */
+  peerAddrEth.sll_ifindex = thiz->ifindex;
+  peerAddrEth.sll_halen = 6;
+  memcpy(peerAddrEth.sll_addr, dstMacAddr, 6);
+  /* Set ethernet header */
+  memcpy(eh->h_dest, dstMacAddr , ETH_ALEN);
+  memcpy(eh->h_source, thiz->hwAddr, ETH_ALEN);
+  eh->h_proto = htons(ETH_P_IP);
+  /* Add IPue after Ethernet header */
+  memcpy(bufToSend+ETH_HLEN, dataBuf, dataSize);
+  dataSize += ETH_HLEN;
+  nwLogHexDump((NwU8T*)bufToSend, dataSize);
+  bytesSent = sendto (thiz->hSendSocket, bufToSend, dataSize, 0, (struct sockaddr *) &peerAddrEth, sizeof(struct sockaddr_ll));
 
   if(bytesSent < 0)
   {
