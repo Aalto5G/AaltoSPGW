@@ -1700,15 +1700,17 @@ nwSaeGwUlpRemoveDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
     if(pUe->epsBearer[ebi].hSgwDownlink)
     {
       NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,"Destroying SGW Downlink Bearer for ebi id 0x%x", ebi);
-      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe, 
+      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
           pUe->epsBearer[ebi].hSgwDownlink);
+      pUe->epsBearer[ebi].hSgwDownlink = NULL;
     }
 
     if(pUe->epsBearer[ebi].hPgwDownlink)
     {
       NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,"Destroying PGW Downlink Bearer for ebi id 0x%x", ebi);
-      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe, 
+      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
           pUe->epsBearer[ebi].hPgwDownlink);
+      pUe->epsBearer[ebi].hPgwDownlink = NULL;
     }
   }
 
