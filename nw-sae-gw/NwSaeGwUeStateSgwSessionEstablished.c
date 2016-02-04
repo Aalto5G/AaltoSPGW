@@ -70,6 +70,13 @@ typedef struct
 
 } NwSaeGwUeSgwDeleteSessionRequestT;
 
+typedef struct
+{
+  NwU16T                        indication;
+  NwSaeGwEpsBearerT             epsBearerTobeCreated;
+  NwSaeGwEpsBearerT             epsBearerTobeRemoved;
+} NwSaeGwUeSgwReleaseAccessBearersT;
+
 static NwRcT
 nwSaeGwDecodeFteid(NwU8T* ieValue, void* arg)
 {
@@ -282,6 +289,17 @@ nwSaeGwUeSgwParseDeleteSessionRequest(NwSaeGwUeT* thiz,
 }
 
 static NwRcT
+nwSaeGwUeSgwParseReleaseAccessBearersRequest(NwSaeGwUeT* thiz,
+    NwGtpv2cMsgHandleT                  hReqMsg,
+    NwGtpv2cErrorT                      *pError,
+    NwSaeGwUeSgwReleaseAccessBearersT*  pReleaseAccessBearersReq)
+{
+  pError->offendingIe.type    = 0;
+  pError->offendingIe.instance= 0;
+  return NW_OK;
+}
+
+static NwRcT
 nwSaeGwUeSgwSendModifyBearerResponseToMme(NwSaeGwUeT* thiz,
     NwGtpv2cTrxnHandleT hTrxn,
     NwGtpv2cErrorT      *pError,
@@ -475,7 +493,41 @@ nwSaeGwUeHandleSgwS11ModifyBearerRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
 }
 
 static NwRcT
-nwSaeGwUeHandleSgwS11DeleteSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv) 
+nwSaeGwUeSgwSendReleaseAccessBearersResponseToMme(NwSaeGwUeT* thiz,
+    NwGtpv2cTrxnHandleT hTrxn,
+    NwGtpv2cErrorT      *pError,
+    NwSaeGwUeSgwReleaseAccessBearersT *pReleaseAccessBearersReq)
+{
+  NwRcT rc;
+  NwGtpv2cUlpApiT       ulpReq;
+
+  rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackSgwS11,
+      NW_TRUE,                                                          /* TIED present*/
+      NW_GTP_RELEASE_ACCESS_BEARERS_RSP,                                /* Msg Type    */
+      thiz->s11cTunnel.fteidMme.teidOrGreKey,                           /* TEID        */
+      0,                                                                /* Seq Number  */
+      &(ulpReq.hMsg));
+  NW_ASSERT( NW_OK == rc );
+
+  rc = nwGtpv2cMsgAddIeCause((ulpReq.hMsg), 0, pError->cause, NW_GTPV2C_CAUSE_BIT_NONE, pError->offendingIe.type, pError->offendingIe.instance);
+  NW_ASSERT( NW_OK == rc );
+
+  /*
+   * Send Message Request to Gtpv2c Stack Instance
+   */
+
+  ulpReq.apiType                                = NW_GTPV2C_ULP_API_TRIGGERED_RSP;
+  ulpReq.apiInfo.triggeredRspInfo.hTrxn         = hTrxn;
+
+  rc = nwGtpv2cProcessUlpReq(thiz->hGtpv2cStackSgwS11, &ulpReq);
+  NW_ASSERT( NW_OK == rc );
+
+  NW_UE_LOG(NW_LOG_LEVEL_INFO, "Release Access Bearers Response sent to peer!");
+  return NW_OK;
+}
+
+static NwRcT
+nwSaeGwUeHandleSgwS11DeleteSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT                 rc;
   NwGtpv2cUlpApiT       ulpReq;
@@ -592,20 +644,104 @@ nwSaeGwUeHandleSgwS11DeleteSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
   return rc;
 }
 
+  static NwRcT
+nwSaeGwUeHandleSgwS11ReleaseAccessBearersRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
+{
+  NwRcT                 rc;
+  NwGtpv2cErrorT        error;
+  NwSaeGwUeSgwDeleteSessionRequestT releaseBearersReq;
+  NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
+
+  NW_UE_LOG(NW_LOG_LEVEL_INFO, "Release Access Bearers Request received from peer!");
+
+  /* Check if error has been detected already. */
+  if(pUlpApi->apiInfo.initialReqIndInfo.error.cause != NW_GTPV2C_CAUSE_REQUEST_ACCEPTED)
+  {
+    /* Try to get the IMSI */
+    rc = nwGtpv2cMsgGetIeTlv(pUlpApi->hMsg, NW_GTPV2C_IE_IMSI, NW_GTPV2C_IE_INSTANCE_ZERO, 8, thiz->imsi, NULL);
+
+    NW_UE_LOG(NW_LOG_LEVEL_ERRO, "Release Access Bearers Request received with error cause %u for IE %u of instance %u!", (NwU32T)(pUlpApi->apiInfo.initialReqIndInfo.error.cause), pUlpApi->apiInfo.initialReqIndInfo.error.offendingIe.type, pUlpApi->apiInfo.initialReqIndInfo.error.offendingIe.instance);
+
+    /* Send an error response message. */
+    rc = nwSaeGwUeSgwSendReleaseAccessBearersResponseToMme(thiz,
+        pUlpApi->apiInfo.initialReqIndInfo.hTrxn,
+        &(pUlpApi->apiInfo.initialReqIndInfo.error),
+        &releaseBearersReq);
+    thiz->state = NW_SAE_GW_UE_STATE_END;
+    return NW_OK;
+  }
+
+  /* Check if all conditional IEs have been received properly. */
+  rc = nwSaeGwUeSgwParseReleaseAccessBearersRequest(thiz,
+      pUlpApi->hMsg,
+      &error,
+      &releaseBearersReq);
+  if( rc != NW_OK )
+  {
+    switch(rc)
+    {
+      case NW_GTPV2C_IE_MISSING:
+        {
+          NW_UE_LOG(NW_LOG_LEVEL_ERRO, "Conditional IE type '%u' instance '%u' missing!", error.offendingIe.type, error.offendingIe.instance);
+          error.cause = NW_GTPV2C_CAUSE_CONDITIONAL_IE_MISSING;
+        }
+        break;
+      case NW_GTPV2C_IE_INCORRECT:
+        {
+          NW_UE_LOG(NW_LOG_LEVEL_ERRO, "Conditional IE type '%u' instance '%u' incorrect!", error.offendingIe.type, error.offendingIe.instance);
+          error.cause = NW_GTPV2C_CAUSE_MANDATORY_IE_INCORRECT;
+        }
+        break;
+      default:
+        NW_UE_LOG(NW_LOG_LEVEL_ERRO, "Unknown message parse error!");
+        error.cause = 0;
+        break;
+    }
+
+    /* Send an error response message. */
+    rc = nwSaeGwUeSgwSendReleaseAccessBearersResponseToMme(thiz,
+        pUlpApi->apiInfo.initialReqIndInfo.hTrxn,
+        &(error),
+        &releaseBearersReq);
+    thiz->state = NW_SAE_GW_UE_STATE_END;
+    return NW_OK;
+  }
+
+  /* Remove downlink data flows on Data Plane*/
+  rc = nwSaeGwUlpRemoveDownlinkEpsBearer(thiz->hSgw, thiz, 5);
+  NW_ASSERT( NW_OK == rc );
+
+  error.cause = NW_GTPV2C_CAUSE_REQUEST_ACCEPTED;
+
+  /* Send an delete response message. */
+  rc = nwSaeGwUeSgwSendReleaseAccessBearersResponseToMme(thiz,
+      pUlpApi->apiInfo.initialReqIndInfo.hTrxn,
+      &(error),
+      &releaseBearersReq);
+  thiz->state = NW_SAE_GW_UE_STATE_SAE_SESSION_CREATED;
+
+  return rc;
+}
+
 NwSaeUeStateT*
 nwSaeGwStateSgwSessionEstablishedNew()
 {
   NwRcT rc;
   NwSaeUeStateT* thiz = nwSaeGwStateNew();
 
-  rc = nwSaeGwStateSetEventHandler(thiz, 
-      NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_MODIFY_BEARER_REQ, 
-      nwSaeGwUeHandleSgwS11ModifyBearerRequest); 
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_MODIFY_BEARER_REQ,
+      nwSaeGwUeHandleSgwS11ModifyBearerRequest);
   NW_ASSERT(NW_OK == rc);
 
-  rc = nwSaeGwStateSetEventHandler(thiz, 
-      NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_DELETE_SESSION_REQ, 
-      nwSaeGwUeHandleSgwS11DeleteSessionRequest); 
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_DELETE_SESSION_REQ,
+      nwSaeGwUeHandleSgwS11DeleteSessionRequest);
+  NW_ASSERT(NW_OK == rc);
+
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_RELEASE_ACCESS_BEARERS_REQ,
+      nwSaeGwUeHandleSgwS11ReleaseAccessBearersRequest);
   NW_ASSERT(NW_OK == rc);
 
   return thiz;
