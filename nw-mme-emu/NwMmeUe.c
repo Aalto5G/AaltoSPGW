@@ -708,7 +708,7 @@ nwMmeUeStSessionCreatedHandleSessionTimeout(NwMmeUeT* thiz, NwMmeUeEventInfoT* p
   rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_EBI, 0, 5);
   NW_ASSERT( NW_OK == rc );
 
-  rc = nwGtpv2cMsgAddIeTV2((ulpReq.hMsg), NW_GTPV2C_IE_INDICATION, 0, (0x0000 | NW_GTPV2C_INDICATION_FLAG_OI));
+  rc = nwGtpv2cMsgAddIeTV2((ulpReq.hMsg), NW_GTPV2C_IE_INDICATION, 0, (0x0000 | 0x0800));
   NW_ASSERT( NW_OK == rc );
 
   rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_RECOVERY, 0, 0);
