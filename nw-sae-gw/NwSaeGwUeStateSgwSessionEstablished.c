@@ -719,7 +719,7 @@ nwSaeGwUeHandleSgwS11ReleaseAccessBearersRequest(NwSaeGwUeT* thiz, NwSaeGwUeEven
       pUlpApi->apiInfo.initialReqIndInfo.hTrxn,
       &(error),
       &releaseBearersReq);
-  thiz->state = NW_SAE_GW_UE_STATE_SAE_SESSION_CREATED;
+  thiz->state = NW_SAE_GW_UE_STATE_SGW_SESSION_CREATED;
 
   return rc;
 }
