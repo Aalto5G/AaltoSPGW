@@ -56,7 +56,8 @@ typedef struct
 {
   struct {
     NwBoolT                       isPresent;
-    NwU16T                        value;
+    NwU8T                         value[8];
+    NwU16T                        length;
   } indication;
 
   NwSaeGwEpsBearerT             epsBearerTobeCreated;
@@ -67,7 +68,8 @@ typedef struct
 {
   struct {
     NwBoolT                       isPresent;
-    NwU16T                        value;
+    NwU8T                         value[8];
+    NwU16T                        length;
   } indication;
 
   NwSaeGwEpsBearerT             epsBearerTobeCreated;
@@ -677,78 +679,78 @@ nwSaeGwUePgwParseCreateSessionRequest(NwSaeGwUeT* thiz,
 
   if((rc = nwGtpv2cMsgGetIeTlv(hReqMsg, NW_GTPV2C_IE_MSISDN, NW_GTPV2C_IE_INSTANCE_ZERO, 8, thiz->msIsdn, NULL)) != NW_OK)
   {
-    pError->offendingIe.type    = NW_GTPV2C_IE_MSISDN; 
-    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO; 
+    pError->offendingIe.type    = NW_GTPV2C_IE_MSISDN;
+    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO;
     return rc;
   }
 
   if((rc = nwGtpv2cMsgGetIeTlv(hReqMsg, NW_GTPV2C_IE_MEI, NW_GTPV2C_IE_INSTANCE_ZERO, 8, thiz->mei, NULL)) != NW_OK)
   {
-    pError->offendingIe.type    = NW_GTPV2C_IE_MEI; 
-    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO; 
+    pError->offendingIe.type    = NW_GTPV2C_IE_MEI;
+    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO;
     return rc;
   }
 
   if((rc = nwGtpv2cMsgGetIeTlv(hReqMsg, NW_GTPV2C_IE_SERVING_NETWORK, NW_GTPV2C_IE_INSTANCE_ZERO, 3, (NwU8T*)&thiz->servingNetwork, NULL)) != NW_OK)
   {
-    pError->offendingIe.type    = NW_GTPV2C_IE_SERVING_NETWORK; 
-    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO; 
+    pError->offendingIe.type    = NW_GTPV2C_IE_SERVING_NETWORK;
+    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO;
     return rc;
   }
 
   if((rc = nwGtpv2cMsgGetIeTV1(hReqMsg, NW_GTPV2C_IE_RAT_TYPE, NW_GTPV2C_IE_INSTANCE_ZERO, &thiz->ratType)) != NW_OK)
   {
-    pError->offendingIe.type    = NW_GTPV2C_IE_RAT_TYPE; 
-    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO; 
+    pError->offendingIe.type    = NW_GTPV2C_IE_RAT_TYPE;
+    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO;
     return rc;
   }
 
   if((rc = nwGtpv2cMsgGetIeTV1(hReqMsg, NW_GTPV2C_IE_SELECTION_MODE, NW_GTPV2C_IE_INSTANCE_ZERO, &thiz->selMode)) != NW_OK)
   {
-    pError->offendingIe.type    = NW_GTPV2C_IE_SELECTION_MODE; 
-    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO; 
+    pError->offendingIe.type    = NW_GTPV2C_IE_SELECTION_MODE;
+    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO;
     return rc;
   }
 
   if((rc = nwGtpv2cMsgGetIeTV1(hReqMsg, NW_GTPV2C_IE_PDN_TYPE, NW_GTPV2C_IE_INSTANCE_ZERO, &thiz->pdnType)) != NW_OK)
   {
-    pError->offendingIe.type    = NW_GTPV2C_IE_PDN_TYPE; 
-    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO; 
+    pError->offendingIe.type    = NW_GTPV2C_IE_PDN_TYPE;
+    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO;
     return rc;
   }
 
   if((rc = nwSaeGwDecodePaa(thiz, hReqMsg, &thiz->paa)) != NW_OK)
   {
-    pError->offendingIe.type    = NW_GTPV2C_IE_PAA; 
-    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO; 
+    pError->offendingIe.type    = NW_GTPV2C_IE_PAA;
+    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO;
     return rc;
   }
 
   if((rc = nwGtpv2cMsgGetIeTlv(hReqMsg, NW_GTPV2C_IE_APN, NW_GTPV2C_IE_INSTANCE_ZERO, 256, thiz->apn.v, &thiz->apn.l)) != NW_OK)
   {
-    pError->offendingIe.type    = NW_GTPV2C_IE_APN; 
-    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO; 
+    pError->offendingIe.type    = NW_GTPV2C_IE_APN;
+    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO;
     return rc;
   }
 
   if((rc = nwGtpv2cMsgGetIeTV1(hReqMsg, NW_GTPV2C_IE_APN_RESTRICTION, NW_GTPV2C_IE_INSTANCE_ZERO, &thiz->apnRes)) != NW_OK)
   {
-    pError->offendingIe.type    = NW_GTPV2C_IE_APN_RESTRICTION; 
-    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO; 
+    pError->offendingIe.type    = NW_GTPV2C_IE_APN_RESTRICTION;
+    pError->offendingIe.instance= NW_GTPV2C_IE_INSTANCE_ZERO;
     return rc;
   }
 
   /* Optional TLVs */
 
-  rc = nwGtpv2cMsgGetIeTV2(hReqMsg, NW_GTPV2C_IE_INDICATION, NW_GTPV2C_IE_INSTANCE_ZERO, &pCreateSessReq->indication.value);
-  pCreateSessReq->indication.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
+    rc = nwGtpv2cMsgGetIeTlv(hReqMsg, NW_GTPV2C_IE_INDICATION, NW_GTPV2C_IE_INSTANCE_ZERO, 8, &pCreateSessReq->indication.value, &pCreateSessReq->indication.length);
+    pCreateSessReq->indication.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
 
   return NW_OK;
 }
 
 static NwRcT
-nwSaeGwUeSgwParseCreateSessionRequest(NwSaeGwUeT* thiz, 
-    NwGtpv2cMsgHandleT                  hReqMsg, 
+nwSaeGwUeSgwParseCreateSessionRequest(NwSaeGwUeT* thiz,
+    NwGtpv2cMsgHandleT                  hReqMsg,
     NwGtpv2cErrorT                      *pError,
     NwSaeGwUeSgwCreateSessionRequestT*  pCreateSessReq)
 {
@@ -1102,20 +1104,20 @@ nwSaeGwUeHandleSgwS11CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
     error.cause = NW_GTPV2C_CAUSE_REQUEST_REJECTED;
     thiz->state = NW_SAE_GW_UE_STATE_END;
     /* Send Create Session Response to MME */;
-    rc = nwSaeGwUeSgwSendCreateSessionResponseToMme(thiz, 
-        pUlpApi->apiInfo.initialReqIndInfo.hTrxn, 
+    rc = nwSaeGwUeSgwSendCreateSessionResponseToMme(thiz,
+        pUlpApi->apiInfo.initialReqIndInfo.hTrxn,
         &error,
         &createSessReq);
     return NW_OK;
   }
 
-  if((createSessReq.indication.isPresent) && 
-     (createSessReq.indication.value & NW_GTPV2C_INDICATION_FLAG_OI))
+  if((createSessReq.indication.isPresent) &&
+     (createSessReq.indication.value[0] & NW_GTPV2C_INDICATION_FLAG_B0_OI))
   {
-    /* 
+    /*
      * TODO: A case of TAU/RAU procedure with SGW relocation or
-     * Enhanced SRNS Relocation with SGW relocation or 
-     * X2-based handovers with SGW relocation. 
+     * Enhanced SRNS Relocation with SGW relocation or
+     * X2-based handovers with SGW relocation.
      */
     thiz->epsBearer[createSessReq.epsBearerTobeCreated.ebi].s5s8uTunnel.fteidPgw = createSessReq.epsBearerTobeCreated.s5s8u.fteidPgw;
 

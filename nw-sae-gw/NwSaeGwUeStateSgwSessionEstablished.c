@@ -65,7 +65,8 @@ typedef struct
 {
   struct {
     NwBoolT                       isPresent;
-    NwU16T                        value;
+    NwU8T                         value[8];
+    NwU16T                        length;
   } indication;
 
 } NwSaeGwUeSgwDeleteSessionRequestT;
@@ -281,7 +282,7 @@ nwSaeGwUeSgwParseDeleteSessionRequest(NwSaeGwUeT* thiz,
   NwRcT rc;
 
   /* Optional TLVs */
-  rc = nwGtpv2cMsgGetIeTV2(hReqMsg, NW_GTPV2C_IE_INDICATION, NW_GTPV2C_IE_INSTANCE_ZERO, &pDeleteSessionReq->indication.value);
+  rc = nwGtpv2cMsgGetIeTlv(hReqMsg, NW_GTPV2C_IE_INDICATION, NW_GTPV2C_IE_INSTANCE_ZERO, 8, &pDeleteSessionReq->indication.value, &pDeleteSessionReq->indication.length);
   pDeleteSessionReq->indication.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
 
   /* TODO: TBD */
@@ -596,7 +597,7 @@ nwSaeGwUeHandleSgwS11DeleteSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
   NW_ASSERT( NW_OK == rc );
 
   if((deleteSessReq.indication.isPresent) &&
-      (deleteSessReq.indication.value & NW_GTPV2C_INDICATION_FLAG_OI))
+      (deleteSessReq.indication.value[0] & NW_GTPV2C_INDICATION_FLAG_B0_OI))
   {
     thiz->state = NW_SAE_GW_UE_STATE_WT_PGW_DELETE_SESSION_RSP;
   }
