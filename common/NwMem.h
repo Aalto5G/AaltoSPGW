@@ -33,8 +33,8 @@
 #include "NwTypes.h"
 #include "NwError.h"
 
-/** 
- * @file NwMem.h 
+/**
+ * @file NwMem.h
  * @brief This header file contains memory related operations definitions.
  */
 
@@ -62,5 +62,3 @@ _nwMemDelete(void* hMem, NwCharT* fn, NwU32T ln);
 #endif
 
 #endif /* __NW_MEM_H__ */
-
-

@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 u    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -92,7 +92,7 @@ nwGtpv1uMsgNew( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
     if(extHdrFlag)
       pMsg->nextExtHdrType = nextExtHeader;
 
-    pMsg->msgLen        = ((pMsg->seqNumFlag || pMsg->npduNumFlag || pMsg->extHdrFlag) ? 
+    pMsg->msgLen        = ((pMsg->seqNumFlag || pMsg->npduNumFlag || pMsg->extHdrFlag) ?
         NW_GTPV1U_EPC_SPECIFIC_HEADER_SIZE : (NW_GTPV1U_EPC_SPECIFIC_HEADER_SIZE - 4));
 
     pMsg->teid = teid;
@@ -138,7 +138,7 @@ nwGtpv1uGpduMsgNew( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
     pMsg->seqNum        = seqNum;
     pMsg->npduNum       = 0x00;
     pMsg->nextExtHdrType= 0x00;
-    pMsg->msgLen        = ((pMsg->seqNumFlag || pMsg->npduNumFlag || pMsg->extHdrFlag ) ? 
+    pMsg->msgLen        = ((pMsg->seqNumFlag || pMsg->npduNumFlag || pMsg->extHdrFlag ) ?
                           NW_GTPV1U_EPC_SPECIFIC_HEADER_SIZE : (NW_GTPV1U_EPC_SPECIFIC_HEADER_SIZE - 4));
 
     memcpy(pMsg->msgBuf + pMsg->msgLen, tpdu, tpduLength);
@@ -252,7 +252,7 @@ NwGtpv1uRcT
 nwGtpv1uMsgSetTeid(NW_IN NwGtpv1uMsgHandleT hMsg, NwU32T teid)
 {
   NwGtpv1uMsgT *thiz = (NwGtpv1uMsgT*) hMsg;
-  thiz->teid = teid; 
+  thiz->teid = teid;
   return NW_GTPV1U_OK;
 }
 
@@ -267,7 +267,7 @@ NwGtpv1uRcT
 nwGtpv1uMsgSetSeqNumber(NW_IN NwGtpv1uMsgHandleT hMsg, NwU32T seqNum)
 {
   NwGtpv1uMsgT *thiz = (NwGtpv1uMsgT*) hMsg;
-  thiz->seqNum = seqNum; 
+  thiz->seqNum = seqNum;
   return NW_GTPV1U_OK;
 }
 
@@ -281,7 +281,7 @@ NwU32T
 nwGtpv1uMsgGetTeid(NW_IN NwGtpv1uMsgHandleT hMsg)
 {
   NwGtpv1uMsgT *thiz = (NwGtpv1uMsgT*) hMsg;
-  return (thiz->teid); 
+  return (thiz->teid);
 }
 
 
@@ -343,7 +343,7 @@ nwGtpv1uMsgGetTpduLength(NW_IN NwGtpv1uMsgHandleT hMsg)
 }
 
 NwGtpv1uRcT
-nwGtpv1uMsgAddIeTV1(NW_IN NwGtpv1uMsgHandleT hMsg, 
+nwGtpv1uMsgAddIeTV1(NW_IN NwGtpv1uMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       value)
 {
@@ -361,7 +361,7 @@ nwGtpv1uMsgAddIeTV1(NW_IN NwGtpv1uMsgHandleT hMsg,
 }
 
 NwGtpv1uRcT
-nwGtpv1uMsgAddIeTV2(NW_IN NwGtpv1uMsgHandleT hMsg, 
+nwGtpv1uMsgAddIeTV2(NW_IN NwGtpv1uMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU16T      value)
@@ -380,7 +380,7 @@ nwGtpv1uMsgAddIeTV2(NW_IN NwGtpv1uMsgHandleT hMsg,
 }
 
 NwGtpv1uRcT
-nwGtpv1uMsgAddIeTV4(NW_IN NwGtpv1uMsgHandleT hMsg, 
+nwGtpv1uMsgAddIeTV4(NW_IN NwGtpv1uMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU32T      value)
@@ -399,7 +399,7 @@ nwGtpv1uMsgAddIeTV4(NW_IN NwGtpv1uMsgHandleT hMsg,
 }
 
 NwGtpv1uRcT
-nwGtpv1uMsgAddIe(NW_IN NwGtpv1uMsgHandleT hMsg, 
+nwGtpv1uMsgAddIe(NW_IN NwGtpv1uMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU8T*      pVal)
@@ -483,6 +483,5 @@ nwGtpv1uMsgHexDump(NwGtpv1uMsgHandleT hMsg, FILE* fp)
 
 
 /*--------------------------------------------------------------------------*
- *                          E N D   O F   F I L E                           * 
+ *                          E N D   O F   F I L E                           *
  *--------------------------------------------------------------------------*/
-

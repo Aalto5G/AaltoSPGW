@@ -27,9 +27,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwTmrMgr.c
- * @brief 
+ * @brief
 */
 
 #include <stdio.h>
@@ -107,21 +107,21 @@ nwNwTmeMgrHandleTimerTimeout(int fd, short event, void *arg)
 }
 #endif
 
-NwRcT 
+NwRcT
 nwTmrMgrInitialize( NwTimerMgrHandleT *tmrMgrHandle)
 {
   NwRcT rc = NW_OK;
   return rc;
 }
 
-NwRcT 
+NwRcT
 nwTmrMgrFinalize( NwTimerMgrHandleT tmrMgrHandle)
 {
   NwRcT rc = NW_OK;
   return rc;
 }
 
-NwRcT 
+NwRcT
 nwTmrMgrStartTimer( NwTimerMgrHandleT tmrMgrHandle,
     NwU32T timeoutSec,
     NwU32T timeoutUsec,
@@ -169,13 +169,13 @@ nwTmrMgrStartTimer( NwTimerMgrHandleT tmrMgrHandle,
   {
     rc = NW_FAILURE;
   }
-#endif 
+#endif
 
   return NW_OK;
 }
 
 
-NwRcT 
+NwRcT
 nwTmrMgrStopTimer( NwTimerMgrHandleT tmrMgrHandle,
     NwTimerHandleT hTmr)
 {
@@ -191,4 +191,3 @@ nwTmrMgrStopTimer( NwTimerMgrHandleT tmrMgrHandle,
 #ifdef __cplusplus
 }
 #endif
-

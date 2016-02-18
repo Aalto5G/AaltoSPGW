@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -43,9 +43,9 @@
 #include "NwGreMsg.h"
 
 
-/** 
+/**
  * @file NwGrePrivate.h
- * @brief This header file contains nw-gre private definitions not to be 
+ * @brief This header file contains nw-gre private definitions not to be
  * exposed to user application.
 */
 
@@ -100,7 +100,7 @@ typedef struct NwGreStack
   RB_HEAD( NwGreOutstandingRxSeqNumTrxnMap, NwGreTrxn) outstandingRxSeqNumMap;
   RB_HEAD(NwGreTunnelEndPointTMap, NwGreTunnelEndPoint) sessionMap;
   RB_HEAD(NwGreTunnelEndPointIdentifierMap, NwGreTunnelEndPoint) teidMap;
-} NwGreStackT; 
+} NwGreStackT;
 
 /**
  * GTP Tunnel End Point class definition
@@ -118,11 +118,11 @@ typedef struct NwGreTunnelEndPoint
 
 
 /*--------------------------------------------------------------------------*
- * Timeout Info Type Definition  
+ * Timeout Info Type Definition
  *--------------------------------------------------------------------------*/
 
 /**
- * gre timeout info 
+ * gre timeout info
  */
 
 typedef struct NwGreTimeoutInfo
@@ -137,7 +137,7 @@ typedef struct NwGreTimeoutInfo
  *
  * @param[in] thiz Pointer to stack instance
  * @param[in] timeoutArg Arg to timeout function.
- * @param[out] phTmr Pointer to timer handle. 
+ * @param[out] phTmr Pointer to timer handle.
  * @return NW_OK on success.
  */
 
@@ -148,7 +148,7 @@ nwGreStartTrxnPeerRspTimer(NwGreStackT* thiz, NwGreTimeoutInfoT* timeoutInfo, Nw
  * Stop a transaction response timer
  *
  * @param[in] thiz Pointer to stack instance
- * @param[out] phTmr Pointer to timer handle. 
+ * @param[out] phTmr Pointer to timer handle.
  * @return NW_OK on success.
  */
 
@@ -173,7 +173,7 @@ typedef struct NwGreMsg
   NwU16T                        msgLen;
   NwU32T                        greKey;
   NwU16T                        seqNum;
-  NwU8T                         npduNum;    
+  NwU8T                         npduNum;
   NwU8T                         nextExtHdrType;
   NwU8T                         msgBuf[NW_GRE_MAX_MSG_LEN];
 } NwGreMsgT;
@@ -209,7 +209,7 @@ typedef struct NwGreTrxn
 
 #pragma pack(1)
 
-typedef struct NwGreMsgHeader 
+typedef struct NwGreMsgHeader
 {
   NwU8T PN:1;
   NwU8T S:1;
@@ -232,4 +232,3 @@ typedef struct NwGreMsgHeader
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

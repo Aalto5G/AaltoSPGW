@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -34,10 +34,10 @@
 /**
  * @file NwGreTrxn.h
  * @author Amit Chawre
- * @brief 
+ * @brief
  *
  * This header file contains required definitions and functions
- * prototypes used by gre transactions. 
+ * prototypes used by gre transactions.
  *
  **/
 
@@ -50,12 +50,12 @@ extern "C" {
 #endif
 
 NwRcT
-nwGreTrxnNew( NW_IN  NwGreStackT* thiz,  
+nwGreTrxnNew( NW_IN  NwGreStackT* thiz,
                  NW_OUT NwGreTrxnT **ppTrxn);
 
 
 NwRcT
-nwGreTrxnWithSeqNew( NW_IN  NwGreStackT* thiz,  
+nwGreTrxnWithSeqNew( NW_IN  NwGreStackT* thiz,
                         NW_IN  NwU32T seqNum,
                         NW_OUT NwGreTrxnT **ppTrxn);
 
@@ -72,4 +72,3 @@ nwGreTrxnDelete( NW_INOUT NwGreTrxnT **ppTrxn);
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

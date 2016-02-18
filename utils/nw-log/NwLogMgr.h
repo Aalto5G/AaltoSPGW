@@ -27,9 +27,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwLog.h
- * @brief This file defines log manager entity. 
+ * @brief This file defines log manager entity.
 */
 
 #include <stdio.h>
@@ -55,16 +55,16 @@ extern NwLogMgrT _gLogMgr;
 extern NwLogMgrT*
 nwLogMgrGetInstance();
 
-extern NwRcT 
+extern NwRcT
 nwLogMgrInit(NwLogMgrT* thiz, NwU8T* strCompName, NwU32T compInst);
 
-extern NwRcT 
+extern NwRcT
 nwLogMgrGetLogLevel(NwLogMgrT* thiz);
 
-extern NwRcT 
+extern NwRcT
 nwLogHexDump(NwU8T* data, NwU32T size);
 
-extern NwRcT 
+extern NwRcT
 nwLogMgrLog(NwLogMgrT* thiz,
                   NwCharT*   logModuleStr,
                   NwU8T      logLevel,

@@ -27,7 +27,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwUdpLog.h
  * @brief This files defines UDP entity.
 */

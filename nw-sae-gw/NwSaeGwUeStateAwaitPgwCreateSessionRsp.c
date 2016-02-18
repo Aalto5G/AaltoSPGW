@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - e p c                                 * 
+ *                                n w - e p c                                 *
  *       L T E / S A E        S E R V I N G / P D N       G A T E W A Y       *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwSaeGwUeStateAwaitPgwCreateSessionRsp.c
  */
 
@@ -75,7 +75,7 @@ nwSaeGwDecodeFteid(NwU8T* ieValue, void* arg)
 
   if(pFteid->isIpv4)
   {
-    pFteid->ipv4Addr = ntohl(*((NwU32T*)(ieValue))); 
+    pFteid->ipv4Addr = ntohl(*((NwU32T*)(ieValue)));
     ieValue += 4;
   }
   if(pFteid->isIpv6)
@@ -204,9 +204,9 @@ nwSaeGwDecodeBearerContextToBeRemoved(NwU8T ieType, NwU8T ieLength, NwU8T ieInst
 }
 
 static NwRcT
-nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz, 
-    NwGtpv2cTrxnHandleT hTrxn, 
-    NwU8T               causeValue, 
+nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz,
+    NwGtpv2cTrxnHandleT hTrxn,
+    NwU8T               causeValue,
     NwU8T               ebiCreated,
     NwU8T               ebiRemoved)
 {
@@ -243,20 +243,20 @@ nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz,
     NW_ASSERT( NW_OK == rc );
 
     /* TODO : Get value of control plane IPv4 address from SGW handle */
-    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg), 
-        0, 
-        NW_GTPV2C_IFTYPE_S11S4_SGW_GTPC, 
-        ((NwU32T)thiz), 
-        thiz->s11cTunnel.fteidSgw.ipv4Addr, 
+    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg),
+        0,
+        NW_GTPV2C_IFTYPE_S11S4_SGW_GTPC,
+        ((NwU32T)thiz),
+        thiz->s11cTunnel.fteidSgw.ipv4Addr,
         NULL);
     NW_ASSERT( NW_OK == rc );
 
     /* TODO : Get value of control plane IPv4 address from PGW handle */
-    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg), 
-        1, 
-        NW_GTPV2C_IFTYPE_S5S8_PGW_GTPC, 
-        ((NwU32T)thiz), 
-        thiz->s5s8cTunnel.fteidPgw.ipv4Addr, 
+    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg),
+        1,
+        NW_GTPV2C_IFTYPE_S5S8_PGW_GTPC,
+        ((NwU32T)thiz),
+        thiz->s5s8cTunnel.fteidPgw.ipv4Addr,
         NULL);
     NW_ASSERT( NW_OK == rc );
 
@@ -275,19 +275,19 @@ nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz,
     rc = nwGtpv2cMsgAddIeCause((ulpReq.hMsg), 0, causeValue, NW_GTPV2C_CAUSE_BIT_NONE, 0, 0);
     NW_ASSERT( NW_OK == rc );
 
-    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg), 
-        0, 
-        NW_GTPV2C_IFTYPE_S1U_SGW_GTPU, 
-        ((NwU32T)(thiz->epsBearer[ebiCreated].s1uTunnel.fteidSgw.teidOrGreKey)), 
+    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg),
+        0,
+        NW_GTPV2C_IFTYPE_S1U_SGW_GTPU,
+        ((NwU32T)(thiz->epsBearer[ebiCreated].s1uTunnel.fteidSgw.teidOrGreKey)),
         ((NwU32T)(thiz->epsBearer[ebiCreated].s1uTunnel.fteidSgw.ipv4Addr)),
         NULL);
     NW_ASSERT( NW_OK == rc );
 
-    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg), 
-        2, 
-        NW_GTPV2C_IFTYPE_S5S8_PGW_GTPU, 
-        ((NwU32T)thiz->epsBearer[ebiCreated].s5s8uTunnel.fteidPgw.teidOrGreKey), 
-        ((NwU32T)(thiz->epsBearer[ebiCreated].s5s8uTunnel.fteidPgw.ipv4Addr)), 
+    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg),
+        2,
+        NW_GTPV2C_IFTYPE_S5S8_PGW_GTPU,
+        ((NwU32T)thiz->epsBearer[ebiCreated].s5s8uTunnel.fteidPgw.teidOrGreKey),
+        ((NwU32T)(thiz->epsBearer[ebiCreated].s5s8uTunnel.fteidPgw.ipv4Addr)),
         NULL);
     NW_ASSERT( NW_OK == rc );
 
@@ -318,7 +318,7 @@ nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz,
 
 
 static NwRcT
-nwSaeGwUePgwCheckIeCreateSessionRequest(NwSaeGwUeT* thiz, NwU32T hReqMsg) 
+nwSaeGwUePgwCheckIeCreateSessionRequest(NwSaeGwUeT* thiz, NwU32T hReqMsg)
 {
   NwRcT rc;
   /* Check if all conditional IEs have been received properly. */
@@ -377,23 +377,23 @@ nwSaeGwUePgwCheckIeCreateSessionRequest(NwSaeGwUeT* thiz, NwU32T hReqMsg)
 }
 
 static NwRcT
-nwSaeGwUeSgwCheckIeCreateSessionRequest(NwSaeGwUeT* thiz, NwU32T hReqMsg) 
+nwSaeGwUeSgwCheckIeCreateSessionRequest(NwSaeGwUeT* thiz, NwU32T hReqMsg)
 {
   NwRcT rc;
 
-  rc = nwGtpv2cMsgGetIeFteid(hReqMsg, 
-      NW_GTPV2C_IE_INSTANCE_ZERO, 
-      &thiz->s11cTunnel.fteidMme.ifType, 
-      &thiz->s11cTunnel.fteidMme.teidOrGreKey, 
-      &thiz->s11cTunnel.fteidMme.ipv4Addr, 
+  rc = nwGtpv2cMsgGetIeFteid(hReqMsg,
+      NW_GTPV2C_IE_INSTANCE_ZERO,
+      &thiz->s11cTunnel.fteidMme.ifType,
+      &thiz->s11cTunnel.fteidMme.teidOrGreKey,
+      &thiz->s11cTunnel.fteidMme.ipv4Addr,
       &thiz->s11cTunnel.fteidMme.ipv6Addr[0]);
   NW_ASSERT(rc == NW_OK);
 
-  rc = nwGtpv2cMsgGetIeFteid(hReqMsg, 
-      NW_GTPV2C_IE_INSTANCE_ONE, 
-      &thiz->s5s8cTunnel.fteidPgw.ifType, 
-      &thiz->s5s8cTunnel.fteidPgw.teidOrGreKey, 
-      &thiz->s5s8cTunnel.fteidPgw.ipv4Addr, 
+  rc = nwGtpv2cMsgGetIeFteid(hReqMsg,
+      NW_GTPV2C_IE_INSTANCE_ONE,
+      &thiz->s5s8cTunnel.fteidPgw.ifType,
+      &thiz->s5s8cTunnel.fteidPgw.teidOrGreKey,
+      &thiz->s5s8cTunnel.fteidPgw.ipv4Addr,
       &thiz->s5s8cTunnel.fteidPgw.ipv6Addr[0]);
   NW_ASSERT(rc == NW_OK);
 
@@ -505,7 +505,7 @@ nwSaeGwUeSgwParseCreateSessionResponse(NwSaeGwUeT* thiz,
 }
 
 static NwRcT
-nwSaeGwUeHandlePgwCreateSessionResponse(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv) 
+nwSaeGwUeHandlePgwCreateSessionResponse(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT rc;
   NwGtpv2cErrorT        error;
@@ -558,7 +558,7 @@ nwSaeGwUeHandlePgwCreateSessionResponse(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* p
 }
 
 static NwRcT
-nwSaeGwUeHandlePgwCreateSessionResponseNack(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv) 
+nwSaeGwUeHandlePgwCreateSessionResponseNack(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT                 rc;
   NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
@@ -574,14 +574,14 @@ nwSaeGwStateAwaitPgwCreateSessionRspNew()
   NwRcT rc;
   NwSaeUeStateT* thiz = nwSaeGwStateNew();
 
-  rc = nwSaeGwStateSetEventHandler(thiz, 
-      NW_SAE_GW_UE_EVENT_SGW_GTPC_S5_CREATE_SESSION_RSP, 
-      nwSaeGwUeHandlePgwCreateSessionResponse); 
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_SGW_GTPC_S5_CREATE_SESSION_RSP,
+      nwSaeGwUeHandlePgwCreateSessionResponse);
   NW_ASSERT(NW_OK == rc);
 
-  rc = nwSaeGwStateSetEventHandler(thiz, 
-      NW_SAE_GW_UE_EVENT_NACK, 
-      nwSaeGwUeHandlePgwCreateSessionResponseNack); 
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_NACK,
+      nwSaeGwUeHandlePgwCreateSessionResponseNack);
   NW_ASSERT(NW_OK == rc);
 
   return thiz;
@@ -596,4 +596,3 @@ nwSaeGwStateAwaitPgwCreateSessionRspDelete(NwSaeUeStateT* thiz)
 #ifdef __cplusplus
 }
 #endif
-

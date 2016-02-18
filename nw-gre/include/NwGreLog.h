@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -37,8 +37,8 @@
 #include <stdio.h>
 #include <libgen.h>
 
-/** 
- * @file NwGreLog.h 
+/**
+ * @file NwGreLog.h
  * @brief This header contains logging related definitions.
 */
 
@@ -80,4 +80,3 @@ extern "C" {
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

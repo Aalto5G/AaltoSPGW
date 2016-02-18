@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                               n w - i p v 4                                * 
+ *                               n w - i p v 4                                *
  *           I n t e r n e t    P r o t o c o l    v 4    S t a c k           *
  *                                                                            *
  *           M I N I M A L I S T I C     D E M O N S T R A T I O N            *
@@ -10,7 +10,7 @@
  *----------------------------------------------------------------------------*/
 
 
-/** 
+/**
  * @file hello-world.c
  * @brief This is a test program demostrating usage of nw-Ipv4 library.
 */
@@ -26,15 +26,15 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 /*---------------------------------------------------------------------------
- *                T H E      M A I N      F U N C T I O N 
+ *                T H E      M A I N      F U N C T I O N
  *--------------------------------------------------------------------------*/
 
 int main(int argc, char* argv[])
 {
-  NwIpv4RcT rc; 
+  NwIpv4RcT rc;
   char*                         logLevelStr;
   NwU32T                        logLevel;
   NwU32T                        num_of_connections;
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
   NW_EVT_INIT();
 
   /*---------------------------------------------------------------------------
-   *  Initialize Log Manager 
+   *  Initialize Log Manager
    *--------------------------------------------------------------------------*/
 
   nwMiniLogMgrInit(&logObj, logLevel);
@@ -106,9 +106,9 @@ int main(int argc, char* argv[])
   }
 
   NW_LOG(NW_LOG_LEVEL_INFO, "Ipv4 Stack Handle '%X' Creation Successful!", hIpv4Stack);
-  
+
   /*---------------------------------------------------------------------------
-   * Set up Ulp Entity 
+   * Set up Ulp Entity
    *--------------------------------------------------------------------------*/
 
   rc = nwMiniUlpInit(&ulpObj, hIpv4Stack);
@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
 
 
   /*---------------------------------------------------------------------------
-   * Set up Udp Entity 
+   * Set up Udp Entity
    *--------------------------------------------------------------------------*/
 
   rc = nwMiniUdpInit(&llpObj, hIpv4Stack, (argv[2]));
@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
   NW_ASSERT( rc == NW_IPv4_OK );
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
 
   tmrMgr.tmrMgrHandle = 0;
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
   NW_ASSERT( rc == NW_IPv4_OK );
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
 
   logMgr.logMgrHandle   = (NwIpv4LogMgrHandleT) &logObj;
@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
   NW_ASSERT( rc == NW_IPv4_OK );
 
   /*---------------------------------------------------------------------------
-   * Set log level  
+   * Set log level
    *--------------------------------------------------------------------------*/
 
   rc = nwIpv4SetLogLevel(hIpv4Stack, logLevel);
@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
   }
 
   /*---------------------------------------------------------------------------
-   * Event loop 
+   * Event loop
    *--------------------------------------------------------------------------*/
 
   NW_EVT_LOOP();

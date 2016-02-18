@@ -27,7 +27,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwIpv4If.c
  * @brief This files defines IP interface entity.
  */
@@ -73,7 +73,7 @@ typedef struct NwArpPacket
 } NwArpPacketT;
 
 /*---------------------------------------------------------------------------
- *                          I P     E N T I T Y 
+ *                          I P     E N T I T Y
  *--------------------------------------------------------------------------*/
 
 NwRcT nwIpv4IfInitialize(NwIpv4IfT* thiz, NwU8T* device, NwSdpHandleT hSdp, NwU8T *pHwAddr)
@@ -101,14 +101,14 @@ NwRcT nwIpv4IfInitialize(NwIpv4IfT* thiz, NwU8T* device, NwSdpHandleT hSdp, NwU8
   strncpy((char *)ifr.ifr_name, (const char*)device, IFNAMSIZ);
 
   if((ioctl(sd, SIOCGIFHWADDR, &ifr)) == -1)
-  {     
+  {
     printf("Error getting Interface hw address!\n");
     exit(-1);
   }
   else
   {
 #if 0
-    printf("HW address of interface is: %02x:%02x:%02x:%02x:%02x:%02x\n", 
+    printf("HW address of interface is: %02x:%02x:%02x:%02x:%02x:%02x\n",
         (unsigned char)ifr.ifr_ifru.ifru_hwaddr.sa_data[0],
         (unsigned char)ifr.ifr_ifru.ifru_hwaddr.sa_data[1],
         (unsigned char)ifr.ifr_ifru.ifru_hwaddr.sa_data[2],
@@ -121,7 +121,7 @@ NwRcT nwIpv4IfInitialize(NwIpv4IfT* thiz, NwU8T* device, NwSdpHandleT hSdp, NwU8
   }
 
   if((ioctl(sd, SIOCGIFINDEX, &ifr)) == -1)
-  {     
+  {
     printf("Error getting Interface index !\n");
     exit(-1);
   }
@@ -162,7 +162,7 @@ NwRcT nwIpv4IfInitialize(NwIpv4IfT* thiz, NwU8T* device, NwSdpHandleT hSdp, NwU8
 
   strncpy((char *)ifr.ifr_name, (const char*)device, IFNAMSIZ);
   if((ioctl(sd, SIOCGIFINDEX, &ifr)) == -1)
-  {     
+  {
     printf("Error getting Interface index !\n");
     exit(-1);
   }
@@ -339,5 +339,3 @@ NwRcT nwIpv4IfArpDataReq(NwSdpHandleT       hThiz,
 #ifdef __cplusplus
 }
 #endif
-
-

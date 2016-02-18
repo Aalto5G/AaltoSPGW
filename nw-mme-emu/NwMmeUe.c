@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - m m e                                 * 
+ *                                n w - m m e                                 *
  *    L T E / S A E    M O B I L I T Y   M A N A G E M E N T   E N T I T Y    *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwMmeUe.c
 */
 
@@ -52,7 +52,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 typedef struct {
     NwGtpv2cMsgParserT *pCreateSessionResponseParser;
@@ -93,7 +93,7 @@ nwMmeDecodeFteid(NwU8T ieType, NwU8T ieLength, NwU8T ieInstance, NwU8T* ieValue,
 
   if(pFteid->isIpv4)
   {
-    pFteid->ipv4Addr = ntohl(*((NwU32T*)(ieValue))); 
+    pFteid->ipv4Addr = ntohl(*((NwU32T*)(ieValue)));
     ieValue += 4;
   }
   if(pFteid->isIpv6)
@@ -191,7 +191,7 @@ nwGtpv2cCreateSessionRequestIeIndication(NwU8T ieType, NwU8T ieLength, NwU8T ieI
     case NW_GTPV2C_IE_CAUSE:
       {
         NwU8T* pCauseValue = (NwU8T*) arg;
-        *pCauseValue = *ieValue; 
+        *pCauseValue = *ieValue;
       }
       break;
 
@@ -239,11 +239,11 @@ nwMmeUeSendModifyRequestToPeer(NwMmeUeT* thiz, NwU8T ebi)
   rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_EBI, 0, 5);
   NW_ASSERT( NW_OK == rc );
 
-  rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg), 
-      NW_GTPV2C_IE_INSTANCE_ZERO, 
-      NW_GTPV2C_IFTYPE_S1U_ENODEB_GTPU, 
-      thiz->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey, 
-      thiz->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr, 
+  rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg),
+      NW_GTPV2C_IE_INSTANCE_ZERO,
+      NW_GTPV2C_IFTYPE_S1U_ENODEB_GTPU,
+      thiz->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
+      thiz->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
       NULL);
 
   NW_ASSERT( NW_OK == rc );
@@ -378,7 +378,7 @@ nwMmeUeSendCreateSessionRequestToPeer(NwMmeUeT* thiz)
   rc = nwGtpv2cProcessUlpReq(thiz->hGtpcStack, &ulpReq);
   NW_ASSERT( NW_OK == rc );
 
-  thiz->hGtpv2cTunnel = ulpReq.apiInfo.initialReqInfo.hTunnel; 
+  thiz->hGtpv2cTunnel = ulpReq.apiInfo.initialReqInfo.hTunnel;
 
   NW_UE_LOG(NW_LOG_LEVEL_INFO, "Create Session Request sent to peer.");
   thiz->state = NW_MME_UE_STATE_CREATE_SESSION_REQUEST_SENT;
@@ -456,7 +456,7 @@ nwMmeUeSetImsi(NwMmeUeT* thiz, NwU8T* imsi)
 }
 
 static NwRcT
-nwMmeUeHandleCreateSessionResponse(NwMmeUeT* thiz, NwGtpv2cUlpApiT *pUlpApi) 
+nwMmeUeHandleCreateSessionResponse(NwMmeUeT* thiz, NwGtpv2cUlpApiT *pUlpApi)
 {
   NwRcT                 rc;
   NwGtpv2cUlpApiT       ulpReq;
@@ -509,17 +509,17 @@ nwMmeUeHandleCreateSessionResponse(NwMmeUeT* thiz, NwGtpv2cUlpApiT *pUlpApi)
       thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.fteidSgw      = epsBearerTobeCreated.s1u.fteidSgw;
       thiz->epsBearer[epsBearerTobeCreated.ebi].s5s8Tunnel.fteidPgw     = epsBearerTobeCreated.s5s8u.fteidPgw;
 
-      rc = nwMmeDpeCreateGtpuIpv4Flow(thiz->pDpe, 
-          (NwU32T)thiz, 
-          (NwU32T)thiz, 
-          &(thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.fteidEnodeB.teidOrGreKey), 
+      rc = nwMmeDpeCreateGtpuIpv4Flow(thiz->pDpe,
+          (NwU32T)thiz,
+          (NwU32T)thiz,
+          &(thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.fteidEnodeB.teidOrGreKey),
           &(thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.fteidEnodeB.ipv4Addr),
           &(thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.hDownlink));
 
 
       rc = nwMmeDpeCreateIpv4GtpuFlow(thiz->pDpe,
           (NwU32T)thiz,
-          (thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.fteidSgw.teidOrGreKey), 
+          (thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.fteidSgw.teidOrGreKey),
           (thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.fteidSgw.ipv4Addr),
           thiz->pdnIpv4Addr,
           &(thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.hUplink));
@@ -538,7 +538,7 @@ nwMmeUeHandleCreateSessionResponse(NwMmeUeT* thiz, NwGtpv2cUlpApiT *pUlpApi)
 }
 
 NwRcT
-nwMmeUeBuildSgwCreateSessionResponseParser(NwMmeUeT* thiz, NwGtpv2cMsgParserT** ppMsgParser) 
+nwMmeUeBuildSgwCreateSessionResponseParser(NwMmeUeT* thiz, NwGtpv2cMsgParserT** ppMsgParser)
 {
   NwRcT                 rc;
   NwGtpv2cMsgParserT    *pMsgParser;
@@ -742,7 +742,7 @@ nwMmeUeFsmRun(NwMmeUeT* thiz, NwMmeUeEventInfoT* pEv)
       {
         switch(pEv->event)
         {
-          case NW_MME_UE_EVENT_NETWORK_ENTRY_START: 
+          case NW_MME_UE_EVENT_NETWORK_ENTRY_START:
             {
               /*
                * Send Create Session Request to SGW
@@ -867,4 +867,3 @@ nwMmeUeFsmRun(NwMmeUeT* thiz, NwMmeUeEventInfoT* pEv)
 #ifdef __cplusplus
 }
 #endif
-

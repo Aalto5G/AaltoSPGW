@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - e v e n t                               * 
+ *                              n w - e v e n t                               *
  *                                                                            *
  *     A s y n c h r o n o u s    E v e n t    N o t i f i c a t i o n        *
  *                               L i b r a r y                                *
@@ -87,20 +87,20 @@ NwEventCharT* gLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI",
 
 #else
 
-#define NW_EMER(...)                    
-#define NW_ALER(...)                    
-#define NW_CRIT(...)                   
-#define NW_ERRO(...)                  
-#define NW_WARN(...)                   
-#define NW_INF0(...)                  
-#define NW_DEBG(...)                 
+#define NW_EMER(...)
+#define NW_ALER(...)
+#define NW_CRIT(...)
+#define NW_ERRO(...)
+#define NW_WARN(...)
+#define NW_INF0(...)
+#define NW_DEBG(...)
 
-#define NW_ENTER()                      
-#define NW_LEAVE()                      
+#define NW_ENTER()
+#define NW_LEAVE()
 
 #endif  /* __WITH_LOGS__ */
 
-#define NW_EVENT_ACTIVE                                                 (0x0080) 
+#define NW_EVENT_ACTIVE                                                 (0x0080)
 
 /*--------------------------------------------------------------------------*
  * Timer Related Macros                                                     *
@@ -123,8 +123,8 @@ NwEventCharT* gLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI",
 
 #define	NW_EVENT_TIMER_SUB(tvp, uvp, vvp)				\
   do {									\
-    (vvp)->tv_sec = (tvp)->tv_sec - (uvp)->tv_sec;      		\
-    (vvp)->tv_usec = (tvp)->tv_usec - (uvp)->tv_usec;	                \
+    (vvp)->tv_sec = (tvp)->tv_sec - (uvp)->tv_sec;              \
+    (vvp)->tv_usec = (tvp)->tv_usec - (uvp)->tv_usec;                   \
     if ((vvp)->tv_usec < 0) {						\
       (vvp)->tv_sec--;							\
       (vvp)->tv_usec += 1000000;					\
@@ -140,9 +140,9 @@ NwEventCharT* gLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI",
 #endif
 
 #define	NW_EVENT_TIMER_CMP(tvp, uvp, cmp)				\
-	(((tvp).tv_sec == (uvp).tv_sec) ?				\
-	 ((tvp).tv_usec cmp (uvp).tv_usec) :				\
-	 ((tvp).tv_sec cmp (uvp).tv_sec))
+    (((tvp).tv_sec == (uvp).tv_sec) ?				\
+     ((tvp).tv_usec cmp (uvp).tv_usec) :				\
+     ((tvp).tv_sec cmp (uvp).tv_sec))
 
 
 
@@ -160,11 +160,11 @@ typedef struct
  *--------------------------------------------------------------------------*/
 
 #define NW_EVENT_MAX_FILE_DESCRIPTORS                           (1024)
-typedef struct 
+typedef struct
 {
   NwEventU8T                    isInitialized;
   NwEventU32T                   fdCount;
-  NwEventU32T                   highestFd; 
+  NwEventU32T                   highestFd;
   NwEventU32T                   tmrCount;
   NwEventU32T                   tmrCountMax;
   NwEventU32T                   numActiveQueues;
@@ -214,7 +214,7 @@ nwEventTimerMinHeapInsert(NwTimerMinHeapT* thiz, NwTimerEventT *pTimerEvent)
 {
   int holeIndex = thiz->currSize++;
 
-  while((holeIndex > 0) && 
+  while((holeIndex > 0) &&
       NW_EVENT_TIMER_CMP((thiz->pHeap[NW_HEAP_PARENT_INDEX(holeIndex)])->eventTimeout, pTimerEvent->eventTimeout, >))
   {
     thiz->pHeap[holeIndex] = thiz->pHeap[NW_HEAP_PARENT_INDEX(holeIndex)];
@@ -249,7 +249,7 @@ nwEventTimerMinHeapRemove(NwTimerMinHeapT* thiz, int minHeapIndex)
     while( (maxChild) <= thiz->currSize )
     {
       if(NW_EVENT_TIMER_CMP(thiz->pHeap[minChild]->eventTimeout, thiz->pHeap[maxChild]->eventTimeout, >))
-        minChild = maxChild; 
+        minChild = maxChild;
 
       if(NW_EVENT_TIMER_CMP(pTimerEvent->eventTimeout, thiz->pHeap[minChild]->eventTimeout, <))
       {
@@ -283,7 +283,7 @@ nwEventTimerMinHeapRemove(NwTimerMinHeapT* thiz, int minHeapIndex)
   return NW_EVENT_FAILURE;
 }
 
-static inline NwTimerEventT* 
+static inline NwTimerEventT*
 nwEventTimerMinHeapPeek(NwTimerMinHeapT* thiz)
 {
   if(thiz->currSize)
@@ -315,12 +315,12 @@ nwEventGetNextTimeout(struct timeval **tv_p)
   }
 
   if (NW_EVENT_TIMER_CMP((ev->eventTimeout), now, <=)) {
-    (tv)->tv_sec = (tv)->tv_usec = 0; 
+    (tv)->tv_sec = (tv)->tv_usec = 0;
     NW_LEAVE();
     return (0);
   }
 
-  if(((ev->eventTimeout.tv_usec - now.tv_usec) / 1000000) >= 1) 
+  if(((ev->eventTimeout.tv_usec - now.tv_usec) / 1000000) >= 1)
   {
     (tv)->tv_sec  = (ev->eventTimeout.tv_sec - now.tv_sec) + ((ev->eventTimeout.tv_usec - now.tv_usec) / 1000000);
     (tv)->tv_usec = (ev->eventTimeout.tv_usec - now.tv_usec) %  1000000 ;
@@ -389,8 +389,8 @@ nwEventInsertIntoActiveQueues(NwEventT *pEvent)
   }
 
   NW_LEAVE();
-  return rc; 
-} 
+  return rc;
+}
 
 static NwEventRcT
 nwEventRemoveFromActiveQueue(NwEventT *pEvent)
@@ -400,8 +400,8 @@ nwEventRemoveFromActiveQueue(NwEventT *pEvent)
   struct NwEventList    *activeq_head = gInstance.ppActiveQueues[pEvent->eventPriority];
   NW_WARN("Removing event %p from ActivQ %u (%p) ", pEvent, pEvent->eventPriority, activeq_head);
   p_iterator = TAILQ_FIRST(activeq_head);
-  for ((p_iterator) = TAILQ_FIRST((activeq_head));                       
-      (p_iterator);                                                      
+  for ((p_iterator) = TAILQ_FIRST((activeq_head));
+      (p_iterator);
       (p_iterator) = TAILQ_NEXT((p_iterator), eventActiveqEntry))
   {
     NW_DEBG("Iterator %p pevent %p", p_iterator, pEvent);
@@ -427,7 +427,7 @@ nwEventDispatch()
   NwEventT              *pEvent = NULL;
   struct NwEventList    *activeq= NULL;
   NwEventU32T           i       = 0;
-  NwEventCallbackT      eventCallback;       
+  NwEventCallbackT      eventCallback;
   void*                 eventCallbackArg;
 
   NW_ENTER();
@@ -435,7 +435,7 @@ nwEventDispatch()
   for (i = 0; i < gInstance.numActiveQueues; i++)
   {
     activeq = gInstance.ppActiveQueues[i];
-    if (TAILQ_FIRST(gInstance.ppActiveQueues[i]) != NULL) 
+    if (TAILQ_FIRST(gInstance.ppActiveQueues[i]) != NULL)
     {
       if(activeq != NULL)
       {
@@ -471,17 +471,17 @@ nwEventDispatch()
       else
       {
         NW_DEBG("No active events in %d active queue", i);
-      } 
+      }
     }
     else
     {
       NW_DEBG("No events in %d active queue", i);
-    } 
+    }
   }
 
   NW_LEAVE();
   return rc;
-} 
+}
 
 static NwEventRcT
 nwEvProcessTimeout()
@@ -492,7 +492,7 @@ nwEvProcessTimeout()
 
   NW_ENTER();
 
-  while ((pTimerEvent = nwEventTimerMinHeapPeek(gInstance.timerMinHeap))) 
+  while ((pTimerEvent = nwEventTimerMinHeapPeek(gInstance.timerMinHeap)))
   {
     if (gettimeofday(&now, NULL) == -1)
     {
@@ -503,7 +503,7 @@ nwEvProcessTimeout()
     if (NW_EVENT_TIMER_CMP(pTimerEvent->eventTimeout, now, >))
       break;
 
-    rc = nwEventInsertIntoActiveQueues(pTimerEvent); 
+    rc = nwEventInsertIntoActiveQueues(pTimerEvent);
 
     rc = nwEventTimerMinHeapRemove(gInstance.timerMinHeap, pTimerEvent->timerMinHeapIndex);
   }
@@ -515,20 +515,20 @@ nwEvProcessTimeout()
 /*--------------------------------------------------------------------------*
  *                     P U B L I C   F U N C T I O N S                      *
  *--------------------------------------------------------------------------*/
-    
+
 /*---------------------------------------------------------------------------
  *  Constructor
  *--------------------------------------------------------------------------*/
 
-/** 
+/**
  Initialize the library.
 
  @param[in,out] phWmxAsncpHandle : Pointer to stack handle
  */
 
-NwEventRcT 
+NwEventRcT
 nwEventInitialize()
-{  
+{
   NwEventRcT rc = NW_EVENT_OK;
   NW_ENTER();
 
@@ -558,13 +558,13 @@ nwEventInitialize()
  *  Constructor
  *--------------------------------------------------------------------------*/
 
-/** 
+/**
  Finalize the library.
 
  @param[in,out] phWmxAsncpHandle : Pointer to stack handle
  */
 
-NwEventRcT 
+NwEventRcT
 nwEventFinalize()
 {
   NwEventRcT rc = NW_EVENT_OK;
@@ -575,22 +575,22 @@ nwEventFinalize()
 }
 
 /*---------------------------------------------------------------------------
- * Initialize event Priority Levels 
+ * Initialize event Priority Levels
  *--------------------------------------------------------------------------*/
 
-/** 
+/**
  Initialize the Event Priority Queues.
 
  @param[in,out] phWmxAsncpHandle : Pointer to stack handle
  */
 
-NwEventRcT 
+NwEventRcT
 nwEventPriorityInit(NwEventU32T noOfPriorities)
 {
   NwEventRcT rc = NW_EVENT_OK;
   NwEventU32T i;
   NW_ENTER();
-  
+
   for (i = 0; i < gInstance.numActiveQueues; ++i)
         free(gInstance.ppActiveQueues[i]);
   free(gInstance.ppActiveQueues);
@@ -603,7 +603,7 @@ nwEventPriorityInit(NwEventU32T noOfPriorities)
 }
 
 /*---------------------------------------------------------------------------
- * Add a file descriptor evetn to watch 
+ * Add a file descriptor evetn to watch
  *--------------------------------------------------------------------------*/
 
 NwEventRcT
@@ -639,11 +639,11 @@ nwEventAdd(NwEventT *pEvent, NwEventU32T fd, NwEventCallbackT cb, void *cbArg, N
   gInstance.fdCount++;
 
   NW_LEAVE();
-  return rc; 
+  return rc;
 }
- 
+
 /*---------------------------------------------------------------------------
- * Remove a file descriptor event 
+ * Remove a file descriptor event
  *--------------------------------------------------------------------------*/
 
 NwEventRcT
@@ -682,10 +682,10 @@ nwEventRemove( NwEventT  *pEvent )
 }
 
 /*---------------------------------------------------------------------------
- * Create a timer 
+ * Create a timer
  *--------------------------------------------------------------------------*/
 
-NwEventRcT 
+NwEventRcT
 nwEventTimerCreate(NwEventT **ppTimerEvent, NwEventCallbackT cb, void *cbArg, NwEventU32T timeoutSec, NwEventU32T timeoutUsec, NwEventU32T eventFlags)
 {
   NwEventRcT rc = NW_EVENT_OK;
@@ -723,11 +723,11 @@ nwEventTimerCreate(NwEventT **ppTimerEvent, NwEventCallbackT cb, void *cbArg, Nw
 
   NW_LEAVE();
   return rc;
-} 
+}
 
 
 /*---------------------------------------------------------------------------
- * Start a timer 
+ * Start a timer
  *--------------------------------------------------------------------------*/
 
 NwEventRcT
@@ -744,7 +744,7 @@ nwEventTimerStart(NwEventT *pTimerEvent)
     NW_LEAVE();
     NW_ERRO("Could not get current time");
     return (-1);
-  }          
+  }
 
   NW_EVENT_TIMER_ADD(&now, &pTimerEvent->eventDuration, &pTimerEvent->eventTimeout);
 
@@ -755,7 +755,7 @@ nwEventTimerStart(NwEventT *pTimerEvent)
 }
 
 /*---------------------------------------------------------------------------
- * Create and Start a timer 
+ * Create and Start a timer
  *--------------------------------------------------------------------------*/
 
 NwEventRcT
@@ -774,7 +774,7 @@ nwEventTimerCreateAndStart(NwEventT** ppTimerEvent, NwEventCallbackT cb, void *c
 }
 
 /*---------------------------------------------------------------------------
- * Stop a timer 
+ * Stop a timer
  *--------------------------------------------------------------------------*/
 
 NwEventRcT
@@ -793,11 +793,11 @@ nwEventTimerStop (NwEventT* pTimerEvent)
 }
 
 /*---------------------------------------------------------------------------
- * Restart a timer 
+ * Restart a timer
  *--------------------------------------------------------------------------*/
 
  NwEventRcT
-nwEventTimerRestart ( NwEventT         *pTimerEvent ) 
+nwEventTimerRestart ( NwEventT         *pTimerEvent )
 {
   NwEventRcT rc = NW_EVENT_OK;
   struct timeval now;
@@ -811,7 +811,7 @@ nwEventTimerRestart ( NwEventT         *pTimerEvent )
     NW_LEAVE();
     NW_ERRO("Could not get current time");
     return (-1);
-  }          
+  }
 
   NW_EVENT_TIMER_ADD(&now, &pTimerEvent->eventDuration, &pTimerEvent->eventTimeout);
 
@@ -822,7 +822,7 @@ nwEventTimerRestart ( NwEventT         *pTimerEvent )
 }
 
 /*---------------------------------------------------------------------------
- * Destroy a timer 
+ * Destroy a timer
  *--------------------------------------------------------------------------*/
 
 NwEventRcT
@@ -852,7 +852,7 @@ nwEventTimerDestroy (NwEventT*  pTimerEvent )
 }
 
 /*---------------------------------------------------------------------------
- * Update a timer 
+ * Update a timer
  *--------------------------------------------------------------------------*/
 
 NwEventRcT
@@ -880,7 +880,7 @@ nwEventTimerUpdate(NwEventT *pTimerEvent, struct timeval tv)
  * Main Event Loop
  *--------------------------------------------------------------------------*/
 
-NwEventRcT 
+NwEventRcT
 nwEventLoop()
 {
   NwEventRcT          rc      = NW_EVENT_OK;
@@ -888,7 +888,7 @@ nwEventLoop()
   register NwEventU32T     i       = 0;
   fd_set                rfds;
   fd_set                wfds;
-  struct timeval        tv = {0, 0}, 
+  struct timeval        tv = {0, 0},
                         *pTimeval = NULL;
 
   NW_ENTER();
@@ -902,7 +902,7 @@ nwEventLoop()
     memcpy(&rfds, &gInstance.eventReadSet, sizeof(fd_set));
     memcpy(&wfds, &gInstance.eventWriteSet, sizeof(fd_set));
 
-    nwEventGetNextTimeout(&pTimeval); 
+    nwEventGetNextTimeout(&pTimeval);
 
     if(pTimeval == NULL)
     {
@@ -915,11 +915,11 @@ nwEventLoop()
 
     rc = select(gInstance.highestFd + 1, &rfds, &wfds, NULL, pTimeval);
 
-    nwEvProcessTimeout(); 
+    nwEvProcessTimeout();
 
 /*---------------------------------------------------------------------------
  * A value of 0 indicates that the call timed out and no file
- * descriptors have been selected. 
+ * descriptors have been selected.
  *--------------------------------------------------------------------------*/
 
 
@@ -959,13 +959,13 @@ nwEventLoop()
  * Single Event Loop
  *--------------------------------------------------------------------------*/
 
-NwEventRcT 
+NwEventRcT
 nwEventLoopOnce( NwEventU32T flags )
 {
   NwEventRcT            rc      = NW_EVENT_OK;
   NwEventT              *pEvent = NULL;
   register NwEventU32T  i    = 0;
-  struct timeval        tv = {0, 0}, 
+  struct timeval        tv = {0, 0},
                         *pTimeval = NULL;
   fd_set                rfds;
   fd_set                wfds;
@@ -981,7 +981,7 @@ nwEventLoopOnce( NwEventU32T flags )
     if(flags & NW_EVENT_LOOP_NONBLOCK)
       NW_EVENT_TIMER_CLEAR(pTimeval);
     else
-      nwEventGetNextTimeout(&pTimeval); 
+      nwEventGetNextTimeout(&pTimeval);
 
 
     if(pTimeval == NULL)
@@ -1011,7 +1011,7 @@ nwEventLoopOnce( NwEventU32T flags )
           nwEventInsertIntoActiveQueues(pEvent);
       }
     }
-    else 
+    else
     {
       if (rc == EBADF)
         NW_CRIT("Select error : EBADF");
@@ -1023,7 +1023,7 @@ nwEventLoopOnce( NwEventU32T flags )
         NW_CRIT("Select error : ENOMEM");
     }
 
-    nwEvProcessTimeout(); 
+    nwEvProcessTimeout();
 
     nwEventDispatch();
 
@@ -1041,4 +1041,3 @@ nwEventLoopOnce( NwEventU32T flags )
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

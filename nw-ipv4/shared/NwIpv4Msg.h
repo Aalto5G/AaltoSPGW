@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                               n w - i p v 4                                * 
+ *                               n w - i p v 4                                *
  *           I n t e r n e t    P r o t o c o l    v 4    S t a c k           *
  *                                                                            *
  *                                                                            *
@@ -37,7 +37,7 @@
 #include "NwTypes.h"
 #include "NwIpv4.h"
 
-/** 
+/**
  * @file NwIpv4Msg.h
  * @brief This file defines APIs for to build new outgoing ipv4 messages and to parse incoming messages.
 */
@@ -92,4 +92,3 @@ nwIpv4MsgHexDump(NwIpv4MsgHandleT hMsg, FILE* fp);
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

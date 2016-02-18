@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -51,7 +51,7 @@ extern "C" {
  *                    P R I V A T E    F U N C T I O N S                    *
  *--------------------------------------------------------------------------*/
 
-static void 
+static void
 nwGreDisplayBanner( NwGreStackT* thiz)
 {
   printf(" *----------------------------------------------------------------------------*\n");
@@ -89,7 +89,7 @@ nwGreDisplayBanner( NwGreStackT* thiz)
 
 }
 /*---------------------------------------------------------------------------
- * RBTree Search Functions 
+ * RBTree Search Functions
  *--------------------------------------------------------------------------*/
 
 static inline NwS32T
@@ -108,7 +108,7 @@ RB_GENERATE(NwGreTunnelEndPointIdentifierMap, NwGreTunnelEndPoint, sessionMapRbt
 
   @param[in] a: Pointer to session a.
   @param[in] b: Pointer to session b.
-  @return  An integer greater than, equal to or less than zero according to whether the 
+  @return  An integer greater than, equal to or less than zero according to whether the
   object pointed to by a is greater than, equal to or less than the object pointed to by b.
  */
 
@@ -127,7 +127,7 @@ nwGreCompareGreKey(struct NwGreTunnelEndPoint* a, struct NwGreTunnelEndPoint* b)
 
   @param[in] a: Pointer to session a.
   @param[in] b: Pointer to session b.
-  @return  An integer greater than, equal to or less than zero according to whether the 
+  @return  An integer greater than, equal to or less than zero according to whether the
   object pointed to by a is greater than, equal to or less than the object pointed to by b.
  */
 
@@ -138,9 +138,9 @@ nwGreCompareSeqNum(struct NwGreTrxn* a, struct NwGreTrxn* b)
     return 1;
   if(a->seqNum < b->seqNum)
     return -1;
-  if(a->peerIp > b->peerIp) 
+  if(a->peerIp > b->peerIp)
     return 1;
-  if(a->peerIp < b->peerIp) 
+  if(a->peerIp < b->peerIp)
     return -1;
   return 0;
 }
@@ -217,7 +217,7 @@ nwGrePeerRspTimeout(void* arg)
 }
 
 /*---------------------------------------------------------------------------
- * ULP API Processing Functions 
+ * ULP API Processing Functions
  *--------------------------------------------------------------------------*/
 
 /**
@@ -229,9 +229,9 @@ nwGrePeerRspTimeout(void* arg)
  */
 
 static NwRcT
-NwGreCreateTunnelEndPoint( NW_IN  NwGreStackT* thiz,  
-                    NW_IN  NwU32T greKey, 
-                    NW_IN  NwGreUlpSessionHandleT hUlpSession, 
+NwGreCreateTunnelEndPoint( NW_IN  NwGreStackT* thiz,
+                    NW_IN  NwU32T greKey,
+                    NW_IN  NwGreUlpSessionHandleT hUlpSession,
                     NW_OUT NwGreStackSessionHandleT *phStackSession )
 {
   NwRcT rc = NW_OK;
@@ -262,7 +262,7 @@ NwGreCreateTunnelEndPoint( NW_IN  NwGreStackT* thiz,
     }
     else
     {
-      *phStackSession = (NwGreStackSessionHandleT) pTunnelEndPoint; 
+      *phStackSession = (NwGreStackSessionHandleT) pTunnelEndPoint;
     }
 
   }
@@ -368,8 +368,8 @@ nwGreSendto( NwGreStackT* thiz,  NW_IN NwGreUlpApiT *pUlpReq)
   greHdr = pMsg->msgBuf;
   NW_ASSERT(greHdr != NULL);
 
-  *(greHdr++)         = (pMsg->csumPresent << 7)         | 
-                        (pMsg->keyPresent << 5)          | 
+  *(greHdr++)         = (pMsg->csumPresent << 7)         |
+                        (pMsg->keyPresent << 5)          |
                         (pMsg->seqNumPresent << 4);
 
   *(greHdr++)         = (pMsg->version & 0x07);
@@ -416,7 +416,7 @@ nwGreSendto( NwGreStackT* thiz,  NW_IN NwGreUlpApiT *pUlpReq)
  */
 
 static NwRcT
-nwGreProcessGpdu( NwGreStackT* thiz, 
+nwGreProcessGpdu( NwGreStackT* thiz,
                      NW_IN NwCharT* gpdu,
                      NW_IN NwU32T gdpuLen,
                      NW_IN NwU32T peerIp)
@@ -600,7 +600,7 @@ nwGreSetLogMgrEntity( NW_IN NwGreStackHandleT hGreStackHandle,
 {
   NwRcT rc;
   NwGreStackT* thiz = (NwGreStackT*) hGreStackHandle;
- 
+
   if(pLogMgrEntity)
   {
     thiz->logMgr = *(pLogMgrEntity);
@@ -625,8 +625,8 @@ nwGreSetLogLevel( NW_IN NwGreStackHandleT hGreStackHandle,
  * Process Request from Udp Layer
  *--------------------------------------------------------------------------*/
 
-NwRcT 
-nwGreProcessUdpReq( NW_IN NwGreStackHandleT hGreStackHandle, 
+NwRcT
+nwGreProcessUdpReq( NW_IN NwGreStackHandleT hGreStackHandle,
                     NW_IN NwCharT* udpData,
                     NW_IN NwU32T udpDataLen,
                     NW_IN NwU16T peerPort,
@@ -668,7 +668,7 @@ nwGreProcessUlpReq( NW_IN NwGreStackHandleT hGreStackHandle,
     case NW_GRE_ULP_API_CREATE_TUNNEL_ENDPOINT:
       {
         NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received create session req from ulp");
-        rc = NwGreCreateTunnelEndPoint(thiz, 
+        rc = NwGreCreateTunnelEndPoint(thiz,
             pUlpReq->apiInfo.createTunnelEndPointInfo.greKey,
             pUlpReq->apiInfo.createTunnelEndPointInfo.hUlpSession,
             &(pUlpReq->apiInfo.createTunnelEndPointInfo.hStackSession));
@@ -740,4 +740,3 @@ nwGreProcessTimeout(void* timeoutInfo)
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

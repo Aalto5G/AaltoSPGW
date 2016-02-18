@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 u    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -34,10 +34,10 @@
 /**
  * @file NwGtpv1uTrxn.h
  * @author Amit Chawre
- * @brief 
+ * @brief
  *
  * This header file contains required definitions and functions
- * prototypes used by gtpv1u transactions. 
+ * prototypes used by gtpv1u transactions.
  *
  **/
 
@@ -50,12 +50,12 @@ extern "C" {
 #endif
 
 NwGtpv1uRcT
-nwGtpv1uTrxnNew( NW_IN  NwGtpv1uStackT* thiz,  
+nwGtpv1uTrxnNew( NW_IN  NwGtpv1uStackT* thiz,
                  NW_OUT NwGtpv1uTrxnT **ppTrxn);
 
 
 NwGtpv1uRcT
-nwGtpv1uTrxnWithSeqNew( NW_IN  NwGtpv1uStackT* thiz,  
+nwGtpv1uTrxnWithSeqNew( NW_IN  NwGtpv1uStackT* thiz,
                         NW_IN  NwU32T seqNum,
                         NW_OUT NwGtpv1uTrxnT **ppTrxn);
 
@@ -72,4 +72,3 @@ nwGtpv1uTrxnDelete( NW_INOUT NwGtpv1uTrxnT **ppTrxn);
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

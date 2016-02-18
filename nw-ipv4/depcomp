@@ -1,7 +1,7 @@
 #! /bin/sh
 # depcomp - compile a program generating dependencies as side-effects
 
-scriptversion=2007-03-29.01
+scriptversion=2016-02-18.16
 
 # Copyright (C) 1999, 2000, 2003, 2004, 2005, 2006, 2007 Free Software
 # Foundation, Inc.
@@ -247,7 +247,7 @@ aix)
     # `$object: dependent.h' and one to simply `dependent.h:'.
     sed -e "s,^.*\.[a-z]*:,$object:," < "$tmpdepfile" > "$depfile"
     # That's a tab and a space in the [].
-    sed -e 's,^.*\.[a-z]*:[	 ]*,,' -e 's,$,:,' < "$tmpdepfile" >> "$depfile"
+    sed -e 's,^.*\.[a-z]*:[  ]*,,' -e 's,$,:,' < "$tmpdepfile" >> "$depfile"
   else
     # The sourcefile does not contain any dependencies, so just
     # store a dummy comment line, to avoid errors with the Makefile
@@ -386,7 +386,7 @@ tru64)
    if test -f "$tmpdepfile"; then
       sed -e "s,^.*\.[a-z]*:,$object:," < "$tmpdepfile" > "$depfile"
       # That's a tab and a space in the [].
-      sed -e 's,^.*\.[a-z]*:[	 ]*,,' -e 's,$,:,' < "$tmpdepfile" >> "$depfile"
+      sed -e 's,^.*\.[a-z]*:[    ]*,,' -e 's,$,:,' < "$tmpdepfile" >> "$depfile"
    else
       echo "#dummy" > "$depfile"
    fi
@@ -546,15 +546,15 @@ msvisualcpp)
   do
     case "$arg" in
     "-Gm"|"/Gm"|"-Gi"|"/Gi"|"-ZI"|"/ZI")
-	set fnord "$@"
-	shift
-	shift
-	;;
+    set fnord "$@"
+    shift
+    shift
+    ;;
     *)
-	set fnord "$@" "$arg"
-	shift
-	shift
-	;;
+    set fnord "$@" "$arg"
+    shift
+    shift
+    ;;
     esac
   done
   "$@" -E |

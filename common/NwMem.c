@@ -28,8 +28,8 @@
  *----------------------------------------------------------------------------*/
 
 
-/** 
- * @file NwMem.h 
+/**
+ * @file NwMem.h
  * @brief This header file contains memory related operations definitions.
  */
 
@@ -150,5 +150,3 @@ _nwMemDelete(void* hMem, NwCharT* fn, NwU32T ln)
 #ifdef __cplusplus
 }
 #endif
-
-

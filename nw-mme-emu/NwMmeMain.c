@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - m m e                                 * 
+ *                                n w - m m e                                 *
  *    L T E / S A E    M O B I L I T Y   M A N A G E M E N T   E N T I T Y    *
  *                                                                            *
  *                                                                            *
@@ -31,9 +31,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwMmeMain.c
- * @brief This main file demostrates usage of nw-gtpv2c library for a LTE/SAE MME. 
+ * @brief This main file demostrates usage of nw-gtpv2c library for a LTE/SAE MME.
  */
 
 #include <stdio.h>
@@ -60,7 +60,7 @@
 #include "NwUdp.h"
 
 /*---------------------------------------------------------------------------
- *                            M M E    C L A S S 
+ *                            M M E    C L A S S
  *--------------------------------------------------------------------------*/
 
 typedef struct
@@ -116,7 +116,7 @@ NwRcT nwGtpv2TimerStopIndication( NwGtpv2cTimerMgrHandleT tmrMgrHandle,
 }
 
 /*---------------------------------------------------------------------------
- *             L O G M G R       E N T I T Y      C A L L B A C K 
+ *             L O G M G R       E N T I T Y      C A L L B A C K
  *--------------------------------------------------------------------------*/
 
 static
@@ -224,7 +224,7 @@ nwMmeParseCmdLineOpts(NwMmeT*  thiz, int argc, char* argv[])
       NW_MME_LOG(NW_LOG_LEVEL_DEBG, "TUN network inteface name %s", argv[i]);
       strcpy((char*)thiz->dataPlane.tunNwIfName, (argv[i]));
     }
- 
+
     else if((strcmp("--session-timeout", argv[i]) == 0)
         || (strcmp(argv[i], "-st") == 0))
     {
@@ -280,12 +280,12 @@ nwMmeParseCmdLineOpts(NwMmeT*  thiz, int argc, char* argv[])
 
 
 /*---------------------------------------------------------------------------
- *                T H E      M A I N      F U N C T I O N 
+ *                T H E      M A I N      F U N C T I O N
  *--------------------------------------------------------------------------*/
 
 int main(int argc, char* argv[])
 {
-  NwRcT rc; 
+  NwRcT rc;
 
   NwMmeT                    mme;
   NwGtpv2cUlpEntityT        ulp;
@@ -302,7 +302,7 @@ int main(int argc, char* argv[])
   NW_ASSERT(NW_OK == rc);
 
   /*---------------------------------------------------------------------------
-   *  Parse Commandline Arguments 
+   *  Parse Commandline Arguments
    *--------------------------------------------------------------------------*/
 
   rc = nwMmeParseCmdLineOpts(&mme, argc, argv);
@@ -349,7 +349,7 @@ int main(int argc, char* argv[])
 
   NW_MME_LOG(NW_LOG_LEVEL_INFO, "GTP-Cv2 Stack Handle '%X' Creation Successful!", mme.hGtpcStack);
 
-  /* Set up Log Entity */ 
+  /* Set up Log Entity */
 
   logMgr.logMgrHandle   = (NwGtpv2cLogMgrHandleT) nwLogMgrGetInstance();
   logMgr.logReqCallback  = nwLog;
@@ -393,7 +393,7 @@ int main(int argc, char* argv[])
 
 
   /*---------------------------------------------------------------------------
-   * Start Network Entry Procedure from ULP 
+   * Start Network Entry Procedure from ULP
    *--------------------------------------------------------------------------*/
 
   rc = nwMmeUlpStartNetworkEntry(&mme.ulp);
@@ -401,7 +401,7 @@ int main(int argc, char* argv[])
 
 
   /*---------------------------------------------------------------------------
-   * Event Loop 
+   * Event Loop
    *--------------------------------------------------------------------------*/
 
   NW_EVT_LOOP();
@@ -409,7 +409,7 @@ int main(int argc, char* argv[])
   NW_MME_LOG(NW_LOG_LEVEL_ERRO, "Exit from eventloop, no events to process!");
 
   /*---------------------------------------------------------------------------
-   *  Destroy ULP instance 
+   *  Destroy ULP instance
    *--------------------------------------------------------------------------*/
 
   rc = nwMmeUlpDestroy(&mme.ulp);

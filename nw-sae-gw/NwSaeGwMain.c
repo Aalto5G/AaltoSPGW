@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - e p c                                 * 
+ *                                n w - e p c                                 *
  *       L T E / S A E        S E R V I N G / P D N       G A T E W A Y       *
  *                                                                            *
  *                                                                            *
@@ -31,9 +31,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwSaeGwMain.c
- * @brief This main file demostrates usage of nw-gtpv2c library for a SAE gateway(SGW/PGW) 
+ * @brief This main file demostrates usage of nw-gtpv2c library for a SAE gateway(SGW/PGW)
  * application.
  */
 
@@ -128,7 +128,7 @@ nwSaeGwParseCmdLineOpts(NwSaeGwT*  thiz, int argc, char* argv[])
 
   if(argc < 2)
     return NW_FAILURE;
-  
+
   /* Set default values */
   thiz->isCombinedGw    = NW_FALSE;
   thiz->numOfUe         = 1000;
@@ -147,7 +147,7 @@ nwSaeGwParseCmdLineOpts(NwSaeGwT*  thiz, int argc, char* argv[])
       if(i >= argc)
         return NW_FAILURE;
 
-      thiz->sgwUlp.s11cIpv4Addr = ntohl(inet_addr(argv[i])); 
+      thiz->sgwUlp.s11cIpv4Addr = ntohl(inet_addr(argv[i]));
     }
     else if((strcmp("--sgw-s5-ip", argv[i]) == 0)
         || (strcmp(argv[i], "-ss5") == 0))
@@ -156,7 +156,7 @@ nwSaeGwParseCmdLineOpts(NwSaeGwT*  thiz, int argc, char* argv[])
       if(i >= argc)
         return NW_FAILURE;
 
-      thiz->sgwUlp.s5cIpv4Addr  = ntohl(inet_addr(argv[i])); 
+      thiz->sgwUlp.s5cIpv4Addr  = ntohl(inet_addr(argv[i]));
     }
     else if((strcmp("--sgw-s4-ip", argv[i]) == 0)
         || (strcmp(argv[i], "-ss4") == 0))
@@ -165,7 +165,7 @@ nwSaeGwParseCmdLineOpts(NwSaeGwT*  thiz, int argc, char* argv[])
       if(i >= argc)
         return NW_FAILURE;
 
-      thiz->sgwUlp.s4cIpv4Addr  = ntohl(inet_addr(argv[i])); 
+      thiz->sgwUlp.s4cIpv4Addr  = ntohl(inet_addr(argv[i]));
     }
     else if((strcmp("--pgw-s5-ip", argv[i]) == 0)
         || (strcmp(argv[i], "-ps5") == 0))
@@ -174,7 +174,7 @@ nwSaeGwParseCmdLineOpts(NwSaeGwT*  thiz, int argc, char* argv[])
       if(i >= argc)
         return NW_FAILURE;
 
-      thiz->pgwUlp.s5cIpv4Addr  = ntohl(inet_addr(argv[i])); 
+      thiz->pgwUlp.s5cIpv4Addr  = ntohl(inet_addr(argv[i]));
     }
     else if((strcmp("--apn", argv[i]) == 0)
         || (strcmp(argv[i], "-ap") == 0))
@@ -279,7 +279,7 @@ nwSaeGwInitialize(NwSaeGwT* thiz)
 
     strncpy((char*)cfg.apn, (const char*)thiz->apn, 1023);
 
-    pGw = nwSaeGwUlpNew(); 
+    pGw = nwSaeGwUlpNew();
     rc = nwSaeGwUlpInitialize(pGw, NW_SAE_GW_TYPE_SGW, &cfg);
     NW_ASSERT( NW_OK == rc );
     thiz->sgwUlp.pGw = pGw;
@@ -298,14 +298,14 @@ nwSaeGwInitialize(NwSaeGwT* thiz)
 
     strncpy((char*)cfg.apn, (const char*)thiz->apn, 1023);
 
-    pGw = nwSaeGwUlpNew(); 
+    pGw = nwSaeGwUlpNew();
     rc = nwSaeGwUlpInitialize(pGw, NW_SAE_GW_TYPE_PGW, &cfg);
     NW_ASSERT( NW_OK == rc );
     thiz->pgwUlp.pGw = pGw;
   }
 
   /* Register collocated PGW, if any */
-  if(thiz->isCombinedGw && 
+  if(thiz->isCombinedGw &&
       (thiz->sgwUlp.pGw && thiz->pgwUlp.pGw))
   {
     rc = nwSaeGwUlpRegisterCollocatedPgw(thiz->sgwUlp.pGw, thiz->pgwUlp.pGw);
@@ -321,7 +321,7 @@ nwSaeGwInitialize(NwSaeGwT* thiz)
   {
     rc = nwSaeGwDpeCreateIpv4Service(thiz->dataPlane.pDpe, thiz->dataPlane.sgiNwIfName);
   }
- 
+
   return rc;
 }
 
@@ -332,18 +332,18 @@ nwSaeGwFinalize(NwSaeGwT*  thiz)
 }
 
 /*---------------------------------------------------------------------------
- *                T H E      M A I N      F U N C T I O N 
+ *                T H E      M A I N      F U N C T I O N
  *--------------------------------------------------------------------------*/
 
 int main(int argc, char* argv[])
 {
-  NwRcT rc; 
+  NwRcT rc;
 
   NwSaeGwT                  saeGw;
   memset(&saeGw, 0, sizeof(NwSaeGwT));
 
   /*---------------------------------------------------------------------------
-   *  Parse Commandline Arguments 
+   *  Parse Commandline Arguments
    *--------------------------------------------------------------------------*/
 
   rc = nwSaeGwParseCmdLineOpts(&saeGw, argc, argv);
@@ -394,7 +394,7 @@ int main(int argc, char* argv[])
   NW_EVT_INIT();
 
   /*---------------------------------------------------------------------------
-   *  Initialize Memory Manager 
+   *  Initialize Memory Manager
    *--------------------------------------------------------------------------*/
 
   rc = nwMemInitialize();
@@ -408,14 +408,14 @@ int main(int argc, char* argv[])
   NW_ASSERT(NW_OK == rc);
 
   /*---------------------------------------------------------------------------
-   * Initialize SAE GW 
+   * Initialize SAE GW
    *--------------------------------------------------------------------------*/
 
   rc =  nwSaeGwInitialize(&saeGw);
   NW_ASSERT(NW_OK == rc);
 
   /*---------------------------------------------------------------------------
-   * Event Loop 
+   * Event Loop
    *--------------------------------------------------------------------------*/
 
   NW_EVT_LOOP();
@@ -423,7 +423,7 @@ int main(int argc, char* argv[])
   NW_SAE_GW_LOG(NW_LOG_LEVEL_ERRO, "Exit from eventloop, no events to process!");
 
   /*---------------------------------------------------------------------------
-   * Finalize SAE GW 
+   * Finalize SAE GW
    *--------------------------------------------------------------------------*/
 
   rc =  nwSaeGwFinalize(&saeGw);

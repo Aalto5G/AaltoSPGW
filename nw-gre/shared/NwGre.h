@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -45,45 +45,45 @@
   @section intro Introduction
 
   nw-gre library is a free and open source implementation of GPRS Tunneling
-  protocol v2 user plane also known as eGTP-U based on 3GPP TS 29.281 V9.3.0. 
+  protocol v2 user plane also known as eGTP-U based on 3GPP TS 29.281 V9.3.0.
   The library is published under BSD three clause license.
 
   @section scope Scope
 
-  The stack library also does basic tasks like packet/header validation, 
+  The stack library also does basic tasks like packet/header validation,
   retransmission, duplicate detection and message parsing.
 
-  @section design Design Philosophy 
+  @section design Design Philosophy
 
   The stack is fully-asynchronous in design for compatibility with event loop
-  mechanisms such as select, poll, etc. and can also be used for multi-threaded 
-  applications. It should compile on Linux, *BSD, Mac OS X, Solaris and Windows 
+  mechanisms such as select, poll, etc. and can also be used for multi-threaded
+  applications. It should compile on Linux, *BSD, Mac OS X, Solaris and Windows
   (cygwin).
 
-  The stack is designed for high portability not only for the hardware and OS it will 
+  The stack is designed for high portability not only for the hardware and OS it will
   run on but also for the application software that uses it. The stack doesn't mandate
-  conditions on the user application architecture or design. The stack relies on 
-  the user application for infrastructure utilities such as I/O, timers, 
+  conditions on the user application architecture or design. The stack relies on
+  the user application for infrastructure utilities such as I/O, timers,
   logs and multithreading. This realized by using callback mechanisms and enables the
-  stack library to seamlessly integrate without or very little changes to the existing 
-  application framework. 
+  stack library to seamlessly integrate without or very little changes to the existing
+  application framework.
 
   The stack architecture builds upon following mentioned entities that are external to it.
 
   User Layer Protocol (ULP) Entity:
   This layer implements the intelligent logic for the application and sits on top of the
-  stack. 
+  stack.
 
   UDP Entity:
   This is the layer below the stack and is responsible for UDP I/O with the stack and network.
-  It may or may not be housed in ULP. 
+  It may or may not be housed in ULP.
 
-  Timer Manager Entity: 
-  Timer Manager Entity provides the stack with infrastructure for timer CRUD operations. 
+  Timer Manager Entity:
+  Timer Manager Entity provides the stack with infrastructure for timer CRUD operations.
 
   Log Manager Entity:
-  Log Manager Entity provides the stack with callbacks for logging operations. It may 
-  or may not be housed in ULP. 
+  Log Manager Entity provides the stack with callbacks for logging operations. It may
+  or may not be housed in ULP.
 
   The application may implement all above entities as a single or multiple object.
 
@@ -96,16 +96,16 @@
 /**
  * @file NwGre.h
  * @author Amit Chawre
- * @brief 
+ * @brief
  *
  * This header file contains all required definitions and functions
- * prototypes for using nw-gre library. 
+ * prototypes for using nw-gre library.
  *
  **/
 
 #define NW_GRE_VERSION                                          (0x00)
 #define NW_PROTOCOL_TYPE_IPv4                                   (0x800)
-  
+
 /*--------------------------------------------------------------------------*
  *                   S H A R E D     A P I    M A C R O S                   *
  *--------------------------------------------------------------------------*/
@@ -122,11 +122,11 @@
  *--------------------------------------------------------------------------*/
 
 typedef NwPtrT  NwGreStackHandleT;                     /**< Gre Stack Handle                    */
-typedef NwPtrT  NwGreUlpHandleT;                       /**< Gre Stack Ulp Entity Handle         */ 
-typedef NwPtrT  NwGreUdpHandleT;                       /**< Gre Stack Udp Entity Handle         */ 
-typedef NwPtrT  NwGreMemMgrHandleT;                    /**< Gre Stack Memory Manager Handle     */ 
-typedef NwPtrT  NwGreTimerMgrHandleT;                  /**< Gre Stack Timer Manager Handle      */ 
-typedef NwPtrT  NwGreLogMgrHandleT;                    /**< Gre Stack Log Mnagaer Handle        */ 
+typedef NwPtrT  NwGreUlpHandleT;                       /**< Gre Stack Ulp Entity Handle         */
+typedef NwPtrT  NwGreUdpHandleT;                       /**< Gre Stack Udp Entity Handle         */
+typedef NwPtrT  NwGreMemMgrHandleT;                    /**< Gre Stack Memory Manager Handle     */
+typedef NwPtrT  NwGreTimerMgrHandleT;                  /**< Gre Stack Timer Manager Handle      */
+typedef NwPtrT  NwGreLogMgrHandleT;                    /**< Gre Stack Log Mnagaer Handle        */
 typedef NwPtrT  NwGreTimerHandleT;                     /**< Gre Stack Timer Handle              */
 typedef NwPtrT  NwGreMsgHandleT;                       /**< Gre Msg Handle                      */
 
@@ -143,11 +143,11 @@ typedef struct NwGreStackConfig
  * Gre Stack ULP API type definitions
  *--------------------------------------------------------------------------*/
 
-/** 
- * APIs types between ULP and Stack 
+/**
+ * APIs types between ULP and Stack
  */
 
-typedef enum 
+typedef enum
 {
   /* APIs from ULP to stack */
 
@@ -179,34 +179,34 @@ typedef NwPtrT  NwGreUlpTrxnHandleT;     /**< Gre Ulp Transaction Handle */
 typedef NwPtrT  NwGreUlpSessionHandleT;  /**< Gre Ulp session Handle */
 
 typedef NwU8T   NwGreMsgTypeT;           /**< Gre Msg Type     */
-/** 
- * API information elements between ULP and Stack for 
- * creating a session. 
+/**
+ * API information elements between ULP and Stack for
+ * creating a session.
  */
 
-typedef struct 
+typedef struct
 {
-  NW_IN    NwU32T                    greKey; 
-  NW_IN    NwGreUlpSessionHandleT    hUlpSession; 
-  NW_OUT   NwGreStackSessionHandleT  hStackSession; 
+  NW_IN    NwU32T                    greKey;
+  NW_IN    NwGreUlpSessionHandleT    hUlpSession;
+  NW_OUT   NwGreStackSessionHandleT  hStackSession;
 } NwGreCreateTunnelEndPointT;
 
-/** 
- * API information elements between ULP and Stack for 
- * destroying a session. 
+/**
+ * API information elements between ULP and Stack for
+ * destroying a session.
  */
 
-typedef struct 
+typedef struct
 {
-  NW_IN   NwGreStackSessionHandleT   hStackSessionHandle; 
+  NW_IN   NwGreStackSessionHandleT   hStackSessionHandle;
 } NwGreDestroyTunnelEndPointT;
 
-/** 
- * API information elements between ULP and Stack for 
- * sending a Gre initial message. 
+/**
+ * API information elements between ULP and Stack for
+ * sending a Gre initial message.
  */
 
-typedef struct 
+typedef struct
 {
   NW_IN    NwGreUlpTrxnHandleT       hUlpTrxn;
   NW_IN    NwU32T                    peerIp;
@@ -216,12 +216,12 @@ typedef struct
   NW_IN    NwGreMsgHandleT           hMsg;
 } NwGreInitialReqInfoT;
 
-/** 
- * API information elements between ULP and Stack for 
- * sending a Gre triggered response message. 
+/**
+ * API information elements between ULP and Stack for
+ * sending a Gre triggered response message.
  */
 
-typedef struct 
+typedef struct
 {
   NW_IN    NwGreUlpTrxnHandleT        hUlpTrxn;
   NW_IN    NwU32T                        peerIp;
@@ -232,12 +232,12 @@ typedef struct
   NW_IN    NwGreMsgHandleT            hMsg;
 } NwGreTriggeredRspInfoT;
 
-/** 
- * API information elements between ULP and Stack for 
- * sending a Gre triggered request message. 
+/**
+ * API information elements between ULP and Stack for
+ * sending a Gre triggered request message.
  */
 
-typedef struct 
+typedef struct
 {
   NW_IN    NwGreUlpTrxnHandleT        hUlpTrxn;
   NW_IN    NwU32T                        peerIp;
@@ -249,12 +249,12 @@ typedef struct
 } NwGreTriggeredReqInfoT;
 
 
-/** 
- * API information elements between ULP and Stack for 
- * sending a Gre message over a session. 
+/**
+ * API information elements between ULP and Stack for
+ * sending a Gre message over a session.
  */
 
-typedef struct 
+typedef struct
 {
   NW_IN    NwU32T                       greKey;
   NW_IN    NwU32T                       ipAddr;
@@ -263,14 +263,14 @@ typedef struct
 } NwGreSendtoInfoT;
 
 
-/** 
- * API information elements between ULP and Stack for 
- * sending a Gre message over a session. 
+/**
+ * API information elements between ULP and Stack for
+ * sending a Gre message over a session.
  */
 
-typedef struct 
+typedef struct
 {
-  NW_OUT   NwGreStackSessionHandleT  hStackSessionHandle; 
+  NW_OUT   NwGreStackSessionHandleT  hStackSessionHandle;
   NW_INOUT NwGreTrxnHandleT          hTrxn;
   NW_IN    NwGreUlpTrxnHandleT       hUlpTrxn;
   NW_IN    NwGreMsgTypeT            msgType;
@@ -278,14 +278,14 @@ typedef struct
   NW_IN    NwGreMsgHandleT           hMsg;
 } NwGreSendMsgInfoT;
 
-/** 
- * API information elements between ULP and Stack for 
- * receiving a Gre message over a session from stack. 
+/**
+ * API information elements between ULP and Stack for
+ * receiving a Gre message over a session from stack.
  */
 
 typedef struct
 {
-  NW_IN    NwGreUlpSessionHandleT    hUlpSession; 
+  NW_IN    NwGreUlpSessionHandleT    hUlpSession;
   NW_IN    NwGreUlpTrxnHandleT       hUlpTrxn;
   NW_IN    NwU32T                    greKey;
   NW_IN    NwU32T                    peerIp;
@@ -294,14 +294,14 @@ typedef struct
   NW_IN    NwGreMsgHandleT           hMsg;         /**< GRE Message handle                 */
 } NwGreRecvMsgInfoT;
 
-/** 
- * API information elements between ULP and Stack for 
- * receiving a Gre message over a session from stack. 
+/**
+ * API information elements between ULP and Stack for
+ * receiving a Gre message over a session from stack.
  */
 
 typedef struct
 {
-  NW_IN    NwGreUlpSessionHandleT    hUlpSession; 
+  NW_IN    NwGreUlpSessionHandleT    hUlpSession;
   NW_IN    NwGreTrxnHandleT          hTrxn;
 } NwGreNackInfoT;
 
@@ -309,15 +309,15 @@ typedef struct
  * Gre Stack API structure definition
  *--------------------------------------------------------------------------*/
 
-/** 
- * API structure between ULP and Stack 
+/**
+ * API structure between ULP and Stack
  */
 
-typedef struct 
+typedef struct
 {
   NwGreUlpApiTypeT               apiType;
   NwRcT rc;
-  union 
+  union
   {
     NwGreCreateTunnelEndPointT       createTunnelEndPointInfo;
     NwGreDestroyTunnelEndPointT      destroyTunnelEndPointInfo;
@@ -344,10 +344,10 @@ typedef struct
  * Gre ULP entity definition
  */
 
-typedef struct 
+typedef struct
 {
   NwGreUlpHandleT        hUlp;
-  NwRcT (*ulpReqCallback) ( NW_IN        NwGreUlpHandleT hUlp, 
+  NwRcT (*ulpReqCallback) ( NW_IN        NwGreUlpHandleT hUlp,
                             NW_IN        NwGreUlpApiT *pUlpApi);
 } NwGreUlpEntityT;
 
@@ -363,8 +363,8 @@ typedef struct
 typedef struct
 {
   NwGreUdpHandleT        hUdp;
-  NwRcT (*udpDataReqCallback) ( NW_IN     NwGreUdpHandleT udpHandle, 
-                                NW_IN     NwU8T* dataBuf, 
+  NwRcT (*udpDataReqCallback) ( NW_IN     NwGreUdpHandleT udpHandle,
+                                NW_IN     NwU8T* dataBuf,
                                 NW_IN     NwU32T dataSize,
                                 NW_IN     NwU32T peerIP,
                                 NW_IN     NwU32T peerPort);
@@ -373,11 +373,11 @@ typedef struct
 /**
  * Memory Manager entity definition
  */
-  
+
 typedef struct
-{ 
+{
   NwGreMemMgrHandleT         hMemMgr;
-  void* (*memAlloc)( NW_IN      NwGreMemMgrHandleT hMemMgr, 
+  void* (*memAlloc)( NW_IN      NwGreMemMgrHandleT hMemMgr,
       NW_IN      NwU32T memSize,
       NW_IN      NwCharT* fileName,
       NW_IN      NwU32T lineNumber);
@@ -400,17 +400,17 @@ typedef struct
  * Gre Timer Manager entity definition
  */
 
-typedef struct 
+typedef struct
 {
   NwGreTimerMgrHandleT        tmrMgrHandle;
-  NwRcT (*tmrStartCallback)( NW_IN       NwGreTimerMgrHandleT tmrMgrHandle, 
+  NwRcT (*tmrStartCallback)( NW_IN       NwGreTimerMgrHandleT tmrMgrHandle,
                              NW_IN       NwU32T timeoutSecs,
                              NW_IN       NwU32T timeoutUsec,
-                             NW_IN       NwU32T tmrType, 
-                             NW_IN       void* tmrArg, 
+                             NW_IN       NwU32T tmrType,
+                             NW_IN       void* tmrArg,
                              NW_OUT      NwGreTimerHandleT* tmrHandle);
 
-  NwRcT (*tmrStopCallback) ( NW_IN       NwGreTimerMgrHandleT tmrMgrHandle, 
+  NwRcT (*tmrStopCallback) ( NW_IN       NwGreTimerMgrHandleT tmrMgrHandle,
                              NW_IN       NwGreTimerHandleT tmrHandle);
 } NwGreTimerMgrEntityT;
 
@@ -427,7 +427,7 @@ typedef struct
 #define NW_LOG_LEVEL_ALER                       (1) /**< action must be taken immediately*/
 #define NW_LOG_LEVEL_CRIT                       (2) /**< critical conditions             */
 #define NW_LOG_LEVEL_ERRO                       (3) /**< error conditions                */
-#define NW_LOG_LEVEL_WARN                       (4) /**< warning conditions              */ 
+#define NW_LOG_LEVEL_WARN                       (4) /**< warning conditions              */
 #define NW_LOG_LEVEL_NOTI                       (5) /**< normal but signification condition */
 #define NW_LOG_LEVEL_INFO                       (6) /**< informational                   */
 #define NW_LOG_LEVEL_DEBG                       (7) /**< debug-level messages            */
@@ -437,7 +437,7 @@ typedef struct
  */
 
 extern
-NwCharT* greLogLevelStr[];  
+NwCharT* greLogLevelStr[];
 
 /**
  * Gre Log manager entity definition
@@ -446,7 +446,7 @@ NwCharT* greLogLevelStr[];
 typedef struct
 {
   NwGreLogMgrHandleT          logMgrHandle;
-  NwRcT (*logReqCallback) (NW_IN      NwGreLogMgrHandleT logMgrHandle, 
+  NwRcT (*logReqCallback) (NW_IN      NwGreLogMgrHandleT logMgrHandle,
                            NW_IN      NwU32T logLevel,
                            NW_IN      NwCharT* file,
                            NW_IN      NwU32T line,
@@ -461,12 +461,12 @@ typedef struct
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
 /*---------------------------------------------------------------------------
  *  Constructor
  *--------------------------------------------------------------------------*/
 
-/** 
+/**
  Initialize the nw-gre stack.
 
  @param[in,out] phGreStackHandle : Pointer to stack handle
@@ -479,7 +479,7 @@ nwGreInitialize( NW_INOUT NwGreStackHandleT* phGreStackHandle);
  * Destructor
  *--------------------------------------------------------------------------*/
 
-/** 
+/**
  Destroy the nw-gre stack.
 
  @param[in] hGreStackHandle : Stack handle
@@ -492,7 +492,7 @@ nwGreFinalize( NW_IN  NwGreStackHandleT hGreStackHandle);
  * Configuration Get/Set Operations
  *--------------------------------------------------------------------------*/
 
-/** 
+/**
  Set Configuration for the nw-gre stack.
 
  @param[in,out] phGreStackHandle : Pointer to stack handle
@@ -501,7 +501,7 @@ nwGreFinalize( NW_IN  NwGreStackHandleT hGreStackHandle);
 NwRcT
 NwGreConfigSet( NW_IN NwGreStackHandleT* phGreStackHandle, NW_IN NwGreStackConfigT* pConfig);
 
-/** 
+/**
  Get Configuration for the nw-gre stack.
 
  @param[in,out] phGreStackHandle : Pointer to stack handle
@@ -510,7 +510,7 @@ NwGreConfigSet( NW_IN NwGreStackHandleT* phGreStackHandle, NW_IN NwGreStackConfi
 NwRcT
 NwGreConfigGet( NW_IN NwGreStackHandleT* phGreStackHandle, NW_OUT NwGreStackConfigT* pConfig);
 
-/** 
+/**
  Set ULP entity for the stack.
 
  @param[in] hGreStackHandle : Stack handle
@@ -522,7 +522,7 @@ NwRcT
 nwGreSetUlpEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                    NW_IN NwGreUlpEntityT* pUlpEntity);
 
-/** 
+/**
  Set UDP entity for the stack.
 
  @param[in] hGreStackHandle : Stack handle
@@ -534,7 +534,7 @@ NwRcT
 nwGreSetUdpEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                    NW_IN NwGreLlpEntityT* pUdpEntity);
 
-/** 
+/**
  Set TmrMgr entity for the stack.
 
  @param[in] hGreStackHandle : Stack handle
@@ -546,7 +546,7 @@ NwRcT
 nwGreSetTimerMgrEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                         NW_IN NwGreTimerMgrEntityT* pTmrMgr);
 
-/** 
+/**
  Set LogMgr entity for the stack.
 
  @param[in] hGreStackHandle : Stack handle
@@ -558,7 +558,7 @@ NwRcT
 nwGreSetLogMgrEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                       NW_IN NwGreLogMgrEntityT* pLogMgr);
 
-/** 
+/**
  Set log level for the stack.
 
  @param[in] hGreStackHandle : Stack handle
@@ -584,7 +584,7 @@ nwGreSetLogLevel( NW_IN NwGreStackHandleT hGreStackHandle,
  @return NW_OK on success.
  */
 
-NwRcT 
+NwRcT
 nwGreProcessUdpReq( NW_IN NwGreStackHandleT hGreStackHandle,
                     NW_IN NwCharT* udpData,
                     NW_IN NwU32T udpDataLen,
@@ -631,4 +631,3 @@ nwGreProcessTimeout( NW_IN void* timeoutArg);
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

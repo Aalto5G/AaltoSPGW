@@ -12,6 +12,6 @@ egtping_SOURCES =    \
 			NwMiniTmrMgrEntity.c\
 			NwMiniUlpEntity.c\
 			NwMiniUdpEntity.c\
-                        NwEgtPingMain.c
+						NwEgtPingMain.c
 
 egtping_LDADD =  ../../src/libNwGtpv2c.a -levent $(AM_LDFLAGS)

@@ -6,7 +6,7 @@
  *                                                                            *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwMiniUlpEntity.c
  * @brief This file contains example of a minimalistic ULP entity.
 */
@@ -23,7 +23,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -93,7 +93,7 @@ void NW_EVT_CALLBACK(nwMiniUlpDataIndicationCallbackData)
   else
   {
     NW_LOG(NW_LOG_LEVEL_ERRO, "%s", strerror(errno));
-  } 
+  }
 }
 
 /*---------------------------------------------------------------------------
@@ -131,7 +131,7 @@ nwMiniUlpCreateConn(NwMiniUlpEntityT* thiz, char* localIpStr, NwU16T localport, 
    * Create local tunnel endpoint
    */
 
-  NW_LOG(NW_LOG_LEVEL_NOTI, "Creating tunnel endpoint with ipv4Addr %d", localport); 
+  NW_LOG(NW_LOG_LEVEL_NOTI, "Creating tunnel endpoint with ipv4Addr %d", localport);
   ulpReq.apiType                                        = NW_IPv4_ULP_API_CREATE_TUNNEL_ENDPOINT;
   ulpReq.apiInfo.createTunnelEndPointInfo.ipv4Addr          = localport;
   ulpReq.apiInfo.createTunnelEndPointInfo.hUlpSession   = (NwIpv4UlpSessionHandleT)thiz;
@@ -244,8 +244,8 @@ nwMiniUlpTpduSend(NwMiniUlpEntityT* thiz, NwU8T* tpduBuf, NwU32T tpduLen , NwU16
   return NW_IPv4_OK;
 }
 
-NwIpv4RcT 
-nwMiniUlpProcessStackReqCallback (NwIpv4UlpHandleT hUlp, 
+NwIpv4RcT
+nwMiniUlpProcessStackReqCallback (NwIpv4UlpHandleT hUlp,
                        NwIpv4UlpApiT *pUlpApi)
 {
   NwMiniUlpEntityT* thiz;
@@ -303,4 +303,3 @@ nwMiniUlpProcessStackReqCallback (NwIpv4UlpHandleT hUlp,
 #ifdef __cplusplus
 }
 #endif
-

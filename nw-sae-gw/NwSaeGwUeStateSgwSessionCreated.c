@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - e p c                                 * 
+ *                                n w - e p c                                 *
  *       L T E / S A E        S E R V I N G / P D N       G A T E W A Y       *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwSaeGwUeStateSaeSessionCreated.c
  */
 
@@ -106,7 +106,7 @@ nwSaeGwUeSgwSendDeleteSessionResponseToMme(NwSaeGwUeT* thiz,
 }
 
 static NwRcT
-nwSaeGwUeHandleSgwS11DeleteSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv) 
+nwSaeGwUeHandleSgwS11DeleteSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT                 rc;
   NwGtpv2cUlpApiT       ulpReq;
@@ -211,9 +211,9 @@ nwSaeGwStateSgwSessionCreatedNew()
   NwRcT rc;
   NwSaeUeStateT* thiz = nwSaeGwStateNew();
 
-  rc = nwSaeGwStateSetEventHandler(thiz, 
-      NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_DELETE_SESSION_REQ, 
-      nwSaeGwUeHandleSgwS11DeleteSessionRequest); 
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_DELETE_SESSION_REQ,
+      nwSaeGwUeHandleSgwS11DeleteSessionRequest);
   NW_ASSERT(NW_OK == rc);
 
   return thiz;
@@ -229,4 +229,3 @@ nwSaeGwStateSgwSessionCreatedDelete(NwSaeUeStateT* thiz)
 #ifdef __cplusplus
 }
 #endif
-

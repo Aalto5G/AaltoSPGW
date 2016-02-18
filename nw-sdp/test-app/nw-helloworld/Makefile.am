@@ -12,7 +12,7 @@ helloworld_SOURCES =    \
 			NwMiniTmrMgrEntity.c\
 			NwMiniUlpEntity.c\
 			NwMiniUdpEntity.c\
-                        helloworld.c
+						helloworld.c
 
 #helloworld_LDADD =  $(top_builddir)/src/libNwSdp.a -levent $(AM_LDFLAGS)
 helloworld_LDADD =  ../../src/libNwSdp.a ../../../nw-gtpv1u/src/libNwGtpv1u.a ../../../nw-gre/src/libNwGre.a  ../../../nw-ipv4/src/libNwIpv4.a -levent $(AM_LDFLAGS)

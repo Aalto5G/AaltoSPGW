@@ -125,7 +125,7 @@ am_aux_dir=`cd $ac_aux_dir && pwd`
 AC_DEFUN([AM_CONDITIONAL],
 [AC_PREREQ(2.52)dnl
  ifelse([$1], [TRUE],  [AC_FATAL([$0: invalid condition: $1])],
-	[$1], [FALSE], [AC_FATAL([$0: invalid condition: $1])])dnl
+    [$1], [FALSE], [AC_FATAL([$0: invalid condition: $1])])dnl
 AC_SUBST([$1_TRUE])dnl
 AC_SUBST([$1_FALSE])dnl
 _AM_SUBST_NOTMAKE([$1_TRUE])dnl
@@ -229,9 +229,9 @@ AC_CACHE_CHECK([dependency style of $depcc],
       # after this tag, mechanisms are not by side-effect, so they'll
       # only be used when explicitly requested
       if test "x$enable_dependency_tracking" = xyes; then
-	continue
+    continue
       else
-	break
+    break
       fi
       ;;
     none) break ;;
@@ -457,7 +457,7 @@ AC_REQUIRE([AC_PROG_MAKE_SET])dnl
 AC_REQUIRE([AM_SET_LEADING_DOT])dnl
 _AM_IF_OPTION([tar-ustar], [_AM_PROG_TAR([ustar])],
               [_AM_IF_OPTION([tar-pax], [_AM_PROG_TAR([pax])],
-	      		     [_AM_PROG_TAR([v7])])])
+                     [_AM_PROG_TAR([v7])])])
 _AM_IF_OPTION([no-dependencies],,
 [AC_PROVIDE_IFELSE([AC_PROG_CC],
                   [_AM_DEPENDENCIES(CC)],
@@ -531,7 +531,7 @@ fi
 rmdir .tst 2>/dev/null
 AC_SUBST([am__leading_dot])])
 
-# Check to see how 'make' treats includes.	            -*- Autoconf -*-
+# Check to see how 'make' treats includes.              -*- Autoconf -*-
 
 # Copyright (C) 2001, 2002, 2003, 2005  Free Software Foundation, Inc.
 #
@@ -548,7 +548,7 @@ AC_DEFUN([AM_MAKE_INCLUDE],
 [am_make=${MAKE-make}
 cat > confinc << 'END'
 am__doit:
-	@echo done
+    @echo done
 .PHONY: am__doit
 END
 # If we don't find an include directive, just comment out the code.
@@ -865,4 +865,3 @@ AC_MSG_RESULT([$am_cv_prog_tar_$1])])
 AC_SUBST([am__tar])
 AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
-

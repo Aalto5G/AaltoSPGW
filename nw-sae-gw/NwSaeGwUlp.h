@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - e p c                                 * 
+ *                                n w - e p c                                 *
  *       L T E / S A E        S E R V I N G / P D N       G A T E W A Y       *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwSaeGwUlp.h
 */
 
@@ -69,7 +69,7 @@ extern "C" {
 #define NW_SAE_GW_TYPE_SGW                      (1)
 #define NW_SAE_GW_TYPE_PGW                      (2)
 
-typedef struct 
+typedef struct
 {
   NwU32T                        maxUeSessions;
   NwU32T                        s11cIpv4Addr;
@@ -82,13 +82,13 @@ typedef struct
   NwSaeGwDpeT                   *pDpe;
 } NwSaeGwUlpConfigT;
 
-typedef struct 
+typedef struct
 {
   NwGtpv2cStackHandleT          hGtpv2cStack;
   NwGtpv2cIfT                   udpIf;
   NwEventT                      ev;
   NwU32T                        ipv4Addr;
-} NwSaeGwGtpv2cSapT; 
+} NwSaeGwGtpv2cSapT;
 
 typedef struct NwSaeGwUlp
 {
@@ -128,7 +128,7 @@ NwRcT
 nwSaeGwUlpDelete(NwSaeGwUlpT*  thiz);
 
 NwRcT
-nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz, 
+nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
                NwU32T           type,
                NwSaeGwUlpConfigT *cfg);
 

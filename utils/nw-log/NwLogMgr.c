@@ -27,9 +27,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwLog.h
- * @brief This file defines log manager entity. 
+ * @brief This file defines log manager entity.
 */
 
 #include <stdio.h>
@@ -57,11 +57,11 @@ NwCharT* gLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI", "INF
 static
 NwU32T logCount = 1;
 /*---------------------------------------------------------------------------
- *                       L O G M G R     E N T I T Y 
+ *                       L O G M G R     E N T I T Y
  *--------------------------------------------------------------------------*/
 
 #ifdef NW_LOG_TO_FILE
-static 
+static
 NwRcT nwLogMgrFileOpen(NwLogMgrT* thiz)
 {
   NwU8T fileStr[128];
@@ -128,7 +128,7 @@ NwRcT nwLogMgrInit(NwLogMgrT* thiz, NwU8T* strCompName, NwU32T compInst)
   strcat(thiz->logDir, (char*)strCompName);
 
   strcpy(createLogDirCmd, "mkdir -p ");
-  strcat(createLogDirCmd, thiz->logDir); 
+  strcat(createLogDirCmd, thiz->logDir);
 
   system(createLogDirCmd);
   return nwLogMgrFileOpen(thiz);

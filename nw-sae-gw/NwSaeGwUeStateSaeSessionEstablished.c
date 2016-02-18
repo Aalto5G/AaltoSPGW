@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - e p c                                 * 
+ *                                n w - e p c                                 *
  *       L T E / S A E        S E R V I N G / P D N       G A T E W A Y       *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwSaeGwUeStateSaeSessionEstablished.c
  */
 
@@ -91,7 +91,7 @@ nwSaeGwDecodeFteid(NwU8T* ieValue, void* arg)
 
   if(pFteid->isIpv4)
   {
-    pFteid->ipv4Addr = ntohl(*((NwU32T*)(ieValue))); 
+    pFteid->ipv4Addr = ntohl(*((NwU32T*)(ieValue)));
     ieValue += 4;
   }
   if(pFteid->isIpv6)
@@ -118,9 +118,9 @@ nwSaeGwDecodeBearerContextToBeCreated(NwSaeGwUeT* thiz, NwGtpv2cMsgHandleT hReqM
       NW_GTPV2C_IE_INSTANCE_ZERO,
       &pBufEpsBearerContext,
       &epsBearerContextLength);
-  if( NW_OK != rc ) 
-  { 
-    return rc; 
+  if( NW_OK != rc )
+  {
+    return rc;
   }
 
   pBufEpsBearerContextEnd = pBufEpsBearerContext + epsBearerContextLength;
@@ -194,8 +194,8 @@ nwSaeGwDecodeBearerContextToBeRemoved(NwSaeGwUeT *thiz, NwGtpv2cMsgHandleT hReqM
       NW_GTPV2C_IE_INSTANCE_ZERO,
       &pBufEpsBearerContext,
       &epsBearerContextLength);
-  if( NW_OK == rc ) 
-  { 
+  if( NW_OK == rc )
+  {
     pBufEpsBearerContextEnd = pBufEpsBearerContext + epsBearerContextLength;
 
     while( pBufEpsBearerContext < pBufEpsBearerContextEnd)
@@ -322,9 +322,9 @@ nwSaeGwUeSgwSendModifyBearerResponseToMme(NwSaeGwUeT* thiz,
     rc = nwGtpv2cMsgAddIeCause((ulpReq.hMsg), 0, pError->cause, NW_GTPV2C_CAUSE_BIT_NONE, 0, 0);
     NW_ASSERT( NW_OK == rc );
 
-    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg), 
-        0, 
-        NW_GTPV2C_IFTYPE_S1U_SGW_GTPU, 
+    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg),
+        0,
+        NW_GTPV2C_IFTYPE_S1U_SGW_GTPU,
         ((NwU32T)(thiz->epsBearer[pModifyBearerReq->epsBearerTobeCreated.ebi].s1uTunnel.fteidSgw.teidOrGreKey)),
         ((NwU32T)(thiz->epsBearer[pModifyBearerReq->epsBearerTobeCreated.ebi].s1uTunnel.fteidSgw.ipv4Addr)),
         NULL);
@@ -501,8 +501,8 @@ nwSaeGwUeHandleSgwS11ModifyBearerRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
     rc = nwSaeGwUlpModifyDownlinkEpsBearer(thiz->hSgw, thiz, modifyBearerReq.epsBearerTobeCreated.ebi);
     NW_ASSERT( NW_OK == rc );
 
-    thiz->epsBearer[modifyBearerReq.epsBearerTobeCreated.ebi].s1uTunnel.fteidEnodeB = 
-      modifyBearerReq.epsBearerTobeCreated.s1u.fteidEnodeB; 
+    thiz->epsBearer[modifyBearerReq.epsBearerTobeCreated.ebi].s1uTunnel.fteidEnodeB =
+      modifyBearerReq.epsBearerTobeCreated.s1u.fteidEnodeB;
 
     error.cause = NW_GTPV2C_CAUSE_REQUEST_ACCEPTED;
 
@@ -519,7 +519,7 @@ nwSaeGwUeHandleSgwS11ModifyBearerRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
 }
 
   static NwRcT
-nwSaeGwUeHandleSgwS11DeleteSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv) 
+nwSaeGwUeHandleSgwS11DeleteSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT                 rc;
   NwGtpv2cErrorT        error;
@@ -723,4 +723,3 @@ nwSaeGwStateSaeSessionEstablishedDelete(NwSaeUeStateT* thiz)
 #ifdef __cplusplus
 }
 #endif
-

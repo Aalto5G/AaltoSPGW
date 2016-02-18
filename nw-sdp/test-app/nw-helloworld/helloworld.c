@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - s d p                                   * 
+ *                              n w - s d p                                   *
  *                    S o f t     D a t a     P l a n e                       *
  *                                                                            *
  *           M I N I M A L I S T I C     D E M O N S T R A T I O N            *
@@ -10,7 +10,7 @@
  *----------------------------------------------------------------------------*/
 
 
-/** 
+/**
  * @file hello-world.c
  * @brief This is a test program demostrating usage of nw-gtpv2 library.
 */
@@ -27,15 +27,15 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 /*---------------------------------------------------------------------------
- *                T H E      M A I N      F U N C T I O N 
+ *                T H E      M A I N      F U N C T I O N
  *--------------------------------------------------------------------------*/
 
 int main(int argc, char* argv[])
 {
-  NwSdpRcT rc; 
+  NwSdpRcT rc;
   char*                         logLevelStr;
   NwU32T                        logLevel;
   NwU32T                        num_of_connections;
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
   NW_EVT_INIT();
 
   /*---------------------------------------------------------------------------
-   *  Initialize Log Manager 
+   *  Initialize Log Manager
    *--------------------------------------------------------------------------*/
 
   nwMiniLogMgrInit(&logObj, logLevel);
@@ -109,9 +109,9 @@ int main(int argc, char* argv[])
   }
 
   NW_LOG(NW_LOG_LEVEL_INFO, "SDP Handle '%X' Creation Successful!", hSdp);
- 
+
   /*---------------------------------------------------------------------------
-   * Set up Timer Manager Entity 
+   * Set up Timer Manager Entity
    *--------------------------------------------------------------------------*/
 
   tmrMgr.tmrMgrHandle = 0;
@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
   NW_ASSERT( rc == NW_SDP_OK );
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
 
   logMgr.logMgrHandle   = (NwSdpLogMgrHandleT) &logObj;
@@ -130,9 +130,9 @@ int main(int argc, char* argv[])
 
   rc = nwSdpSetLogMgrEntity(hSdp, &logMgr);
   NW_ASSERT( rc == NW_SDP_OK );
-  
+
   /*---------------------------------------------------------------------------
-   * Set up Ulp Entity 
+   * Set up Ulp Entity
    *--------------------------------------------------------------------------*/
 
   rc = nwMiniUlpInit(&ulpObj, hSdp);
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
 
 
   /*---------------------------------------------------------------------------
-   * Set up Udp Entity 
+   * Set up Udp Entity
    *--------------------------------------------------------------------------*/
 
   rc = nwMiniUdpInit(&udpObj, hSdp, (argv[2]));
@@ -157,9 +157,9 @@ int main(int argc, char* argv[])
 
   rc = nwSdpSetUdpEntity(hSdp, &udp);
   NW_ASSERT( rc == NW_SDP_OK );
- 
+
   /*---------------------------------------------------------------------------
-   * Create a GRE interface at Transport Layer Entity 
+   * Create a GRE interface at Transport Layer Entity
    *--------------------------------------------------------------------------*/
 
   rc = nwMiniUdpCreateGreInterface(&udpObj, argv[2], &hGreInterface);
@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
   NW_ASSERT( rc == NW_SDP_OK );
 
   /*---------------------------------------------------------------------------
-   * Set GTPv1u log level  
+   * Set GTPv1u log level
    *--------------------------------------------------------------------------*/
 
   rc = nwSdpSetLogLevel(hSdp, logLevel);
@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
   }
 
   /*---------------------------------------------------------------------------
-   * Event loop 
+   * Event loop
    *--------------------------------------------------------------------------*/
 
   NW_EVT_LOOP();

@@ -6,7 +6,7 @@
  *                                                                            *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file hello-world.c
  * @brief This file contains example of a minimalistic log manager entity.
 */
@@ -21,7 +21,7 @@
 
 #include "NwMiniLogMgrEntity.h"
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -63,7 +63,6 @@ NwRcT nwMiniLogMgrLogRequest (NwGtpv2cLogMgrHandleT hLogMgr,
   return NW_OK;
 }
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif
-

@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - g t p v 2 c                             * 
+ *                              n w - g t p v 2 c                             *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 c    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -49,7 +49,7 @@ extern "C" {
 #endif
 
 
-typedef struct NwGtpv2cMsgIeInfo 
+typedef struct NwGtpv2cMsgIeInfo
 {
   NwU8T ieType;
   NwU8T ieMinLength;
@@ -84,7 +84,7 @@ NwGtpv2cMsgIeInfoT echoRspIeInfoTbl[] =
   /* Do not add below this */
   { 0, 0, 0}
 };
- 
+
 static
 NwGtpv2cMsgIeInfoT createSessionReqIeInfoTbl[] =
 {
@@ -222,17 +222,17 @@ nwGtpv2cMsgIeParseInfoUpdate(NwGtpv2cMsgIeParseInfoT* thiz, NwGtpv2cMsgIeInfoT* 
 
     if(pMsgIeInfo[i].iePresence == NW_GTPV2C_IE_PRESENCE_MANDATORY)
       thiz->mandatoryIeCount++;
-  } 
+  }
 
   return NW_OK;
 }
 
 static NwRcT
-nwGtpv2cMsgGroupedIeParse(NW_IN NwGtpv2cGroupedIeParseInfoT* thiz, 
+nwGtpv2cMsgGroupedIeParse(NW_IN NwGtpv2cGroupedIeParseInfoT* thiz,
                           NW_IN NwU8T  ieType,
                           NW_IN NwU16T ieLength,
                           NW_IN NwU8T  ieInstance,
-                          NW_IN NwU8T  *pIeValue) 
+                          NW_IN NwU8T  *pIeValue)
 {
   NW_ASSERT(thiz);
   return NW_OK;
@@ -252,7 +252,7 @@ nwGtpv2cMsgIeParseInfoNew(NwGtpv2cStackHandleT hStack, NwU8T msgType)
 {
   NwRcT rc;
   NwGtpv2cMsgIeParseInfoT *thiz;
-  
+
   NW_GTPV2C_MALLOC(hStack, sizeof(NwGtpv2cMsgIeParseInfoT), thiz, NwGtpv2cMsgIeParseInfoT*);
 
   if(thiz)
@@ -344,12 +344,12 @@ nwGtpv2cMsgIeParseInfoDelete(NwGtpv2cMsgIeParseInfoT* thiz)
 }
 
 /**
- * Parse message 
+ * Parse message
  * @return NW_OK on success.
  */
 
 NwRcT
-nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz, 
+nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
     NW_IN       NwGtpv2cMsgHandleT hMsg,
     NW_INOUT    NwGtpv2cErrorT     *pError)
 {
@@ -411,12 +411,12 @@ nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
 
       if(pMsg->isIeValid[ieType][ieInstance] == NW_TRUE)
       {
-        /* 
-         * If an information element is repeated in a GTP signalling 
-         * message in which repetition of the information element is 
-         * not specified, only the contents of the information element 
-         * appearing first shall be handled and all subsequent repetitions 
-         * of the information element shall be ignored. 
+        /*
+         * If an information element is repeated in a GTP signalling
+         * message in which repetition of the information element is
+         * not specified, only the contents of the information element
+         * appearing first shall be handled and all subsequent repetitions
+         * of the information element shall be ignored.
          * TODO: Add handling for IEs for which repetition is allowed.
          */
         pIeBufStart += (ieLength + 4);
@@ -439,7 +439,7 @@ nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
         }
       }
 
-      if(thiz->ieParseInfo[ieType][ieInstance].iePresence == NW_GTPV2C_IE_PRESENCE_MANDATORY) 
+      if(thiz->ieParseInfo[ieType][ieInstance].iePresence == NW_GTPV2C_IE_PRESENCE_MANDATORY)
       {
         mandatoryIeCount++;
       }
@@ -488,6 +488,5 @@ nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
 #endif
 
 /*--------------------------------------------------------------------------*
- *                          E N D   O F   F I L E                           * 
+ *                          E N D   O F   F I L E                           *
  *--------------------------------------------------------------------------*/
-

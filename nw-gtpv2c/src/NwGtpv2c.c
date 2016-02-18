@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - g t p v 2 c                             * 
+ *                              n w - g t p v 2 c                             *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 c    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -200,7 +200,7 @@ nwGtpv2cTmrMinHeapRemove(NwGtpv2cTmrMinHeapT* thiz, int minHeapIndex)
   return NW_FAILURE;
 }
 
-static NwGtpv2cTimeoutInfoT* 
+static NwGtpv2cTimeoutInfoT*
 nwGtpv2cTmrMinHeapPeek(NwGtpv2cTmrMinHeapT* thiz)
 {
   if(thiz->currSize)
@@ -214,7 +214,7 @@ nwGtpv2cTmrMinHeapPeek(NwGtpv2cTmrMinHeapT* thiz)
  *                    P R I V A T E    F U N C T I O N S                    *
  *--------------------------------------------------------------------------*/
 
-static void 
+static void
 nwGtpv2cDisplayBanner( NwGtpv2cStackT* thiz)
 {
 #ifdef NW_GTPV2C_DISPLAY_LICENCE_INFO
@@ -254,7 +254,7 @@ nwGtpv2cDisplayBanner( NwGtpv2cStackT* thiz)
 }
 
 /*---------------------------------------------------------------------------
- * Tunnel RBTree Search Data Structure 
+ * Tunnel RBTree Search Data Structure
  *--------------------------------------------------------------------------*/
 
 /**
@@ -262,7 +262,7 @@ nwGtpv2cDisplayBanner( NwGtpv2cStackT* thiz)
 
   @param[in] a: Pointer to session a.
   @param[in] b: Pointer to session b.
-  @return  An integer greater than, equal to or less than zero according to whether the 
+  @return  An integer greater than, equal to or less than zero according to whether the
   object pointed to by a is greater than, equal to or less than the object pointed to by b.
  */
 
@@ -273,9 +273,9 @@ nwGtpv2cCompareTunnel(struct NwGtpv2cTunnel * a, struct NwGtpv2cTunnel* b)
     return 1;
   if(a->teid < b->teid)
     return -1;
-  if(a->ipv4AddrRemote > b->ipv4AddrRemote) 
+  if(a->ipv4AddrRemote > b->ipv4AddrRemote)
     return 1;
-  if(a->ipv4AddrRemote < b->ipv4AddrRemote) 
+  if(a->ipv4AddrRemote < b->ipv4AddrRemote)
     return -1;
   return 0;
 }
@@ -283,7 +283,7 @@ nwGtpv2cCompareTunnel(struct NwGtpv2cTunnel * a, struct NwGtpv2cTunnel* b)
 RB_GENERATE(NwGtpv2cTunnelMap, NwGtpv2cTunnel, tunnelMapRbtNode, nwGtpv2cCompareTunnel)
 
 /*---------------------------------------------------------------------------
- * Transaction RBTree Search Data Structure 
+ * Transaction RBTree Search Data Structure
  *--------------------------------------------------------------------------*/
 
 /**
@@ -291,7 +291,7 @@ RB_GENERATE(NwGtpv2cTunnelMap, NwGtpv2cTunnel, tunnelMapRbtNode, nwGtpv2cCompare
 
   @param[in] a: Pointer to session a.
   @param[in] b: Pointer to session b.
-  @return  An integer greater than, equal to or less than zero according to whether the 
+  @return  An integer greater than, equal to or less than zero according to whether the
   object pointed to by a is greater than, equal to or less than the object pointed to by b.
  */
 
@@ -302,9 +302,9 @@ nwGtpv2cCompareOutstandingTxSeqNumTrxn(struct NwGtpv2cTrxn* a, struct NwGtpv2cTr
     return 1;
   if(a->seqNum < b->seqNum)
     return -1;
-  if(a->peerIp > b->peerIp) 
+  if(a->peerIp > b->peerIp)
     return 1;
-  if(a->peerIp < b->peerIp) 
+  if(a->peerIp < b->peerIp)
     return -1;
   return 0;
 }
@@ -316,7 +316,7 @@ RB_GENERATE(NwGtpv2cOutstandingTxSeqNumTrxnMap, NwGtpv2cTrxn, outstandingTxSeqNu
 
   @param[in] a: Pointer to session a.
   @param[in] b: Pointer to session b.
-  @return  An integer greater than, equal to or less than zero according to whether the 
+  @return  An integer greater than, equal to or less than zero according to whether the
   object pointed to by a is greater than, equal to or less than the object pointed to by b.
  */
 
@@ -327,13 +327,13 @@ nwGtpv2cCompareOutstandingRxSeqNumTrxn(struct NwGtpv2cTrxn* a, struct NwGtpv2cTr
     return 1;
   if(a->seqNum < b->seqNum)
     return -1;
-  if(a->peerIp > b->peerIp) 
+  if(a->peerIp > b->peerIp)
     return 1;
-  if(a->peerIp < b->peerIp) 
+  if(a->peerIp < b->peerIp)
     return -1;
-  if(a->peerPort > b->peerPort) 
+  if(a->peerPort > b->peerPort)
     return 1;
-  if(a->peerPort < b->peerPort) 
+  if(a->peerPort < b->peerPort)
     return -1;
   return 0;
 }
@@ -341,7 +341,7 @@ nwGtpv2cCompareOutstandingRxSeqNumTrxn(struct NwGtpv2cTrxn* a, struct NwGtpv2cTr
 RB_GENERATE(NwGtpv2cOutstandingRxSeqNumTrxnMap, NwGtpv2cTrxn, outstandingRxSeqNumMapRbtNode, nwGtpv2cCompareOutstandingRxSeqNumTrxn)
 
 /*---------------------------------------------------------------------------
- * Timer RB-tree data structure. 
+ * Timer RB-tree data structure.
  *--------------------------------------------------------------------------*/
 
 /**
@@ -349,7 +349,7 @@ RB_GENERATE(NwGtpv2cOutstandingRxSeqNumTrxnMap, NwGtpv2cTrxn, outstandingRxSeqNu
 
   @param[in] a: Pointer to session a.
   @param[in] b: Pointer to session b.
-  @return  An integer greater than, equal to or less than zero according to whether the 
+  @return  An integer greater than, equal to or less than zero according to whether the
   object pointed to by a is greater than, equal to or less than the object pointed to by b.
  */
 
@@ -370,7 +370,7 @@ RB_GENERATE(NwGtpv2cActiveTimerList, NwGtpv2cTimeoutInfo, activeTimerListRbtNode
 /**
  * Send msg to peer via data request to UDP Entity
  *
- * @param[in] thiz : Pointer to stack. 
+ * @param[in] thiz : Pointer to stack.
  * @param[in] peerIp : Peer Ip address.
  * @param[in] peerPort : Peer Ip port.
  * @param[in] pMsg : Message to be sent.
@@ -426,15 +426,15 @@ nwGtpv2cCreateAndSendMsg(NW_IN  NwGtpv2cStackT* thiz,
 /**
   Send an Version Not Supported message
 
-  @param[in] thiz : Stack pointer 
+  @param[in] thiz : Stack pointer
   @return NW_OK on success.
  */
 
 static NwRcT
-nwGtpv2cSendVersionNotSupportedInd( NW_IN NwGtpv2cStackT* thiz, 
-                            NW_IN NwU32T peerIp, 
-                            NW_IN NwU32T peerPort, 
-                            NW_IN NwU32T seqNum) 
+nwGtpv2cSendVersionNotSupportedInd( NW_IN NwGtpv2cStackT* thiz,
+                            NW_IN NwU32T peerIp,
+                            NW_IN NwU32T peerPort,
+                            NW_IN NwU32T seqNum)
 {
   NwRcT rc;
   NwGtpv2cMsgHandleT    hMsg = 0;
@@ -465,15 +465,15 @@ nwGtpv2cSendVersionNotSupportedInd( NW_IN NwGtpv2cStackT* thiz,
 /**
   Create a local tunnel.
 
-  @param[in] thiz : Stack pointer 
+  @param[in] thiz : Stack pointer
   @return NW_OK on success.
  */
 
 static NwRcT
-nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz, 
-                            NW_IN NwU32T teid, 
-                            NW_IN NwU32T ipv4Remote, 
-                            NW_IN NwGtpv2cUlpTunnelHandleT hUlpTunnel, 
+nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
+                            NW_IN NwU32T teid,
+                            NW_IN NwU32T ipv4Remote,
+                            NW_IN NwGtpv2cUlpTunnelHandleT hUlpTunnel,
                             NW_OUT NwGtpv2cTunnelHandleT *phTunnel)
 {
   NwRcT rc;
@@ -515,12 +515,12 @@ nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
 /**
   Delete a local tunnel.
 
-  @param[in] thiz : Stack pointer 
+  @param[in] thiz : Stack pointer
   @return NW_OK on success.
  */
 
 static NwRcT
-nwGtpv2cDeleteLocalTunnel( NW_IN NwGtpv2cStackT* thiz, 
+nwGtpv2cDeleteLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
                             NW_OUT NwGtpv2cTunnelHandleT hTunnel)
 {
   NwRcT rc;
@@ -541,7 +541,7 @@ nwGtpv2cDeleteLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
 }
 
 /*---------------------------------------------------------------------------
- * ULP API Processing Functions 
+ * ULP API Processing Functions
  *--------------------------------------------------------------------------*/
 
 /**
@@ -567,10 +567,10 @@ nwGtpv2cHandleUlpInitialReq( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUlpApiT *
   {
     if(!pUlpReq->apiInfo.initialReqInfo.hTunnel)
     {
-      rc = nwGtpv2cCreateLocalTunnel(thiz, 
-          pUlpReq->apiInfo.initialReqInfo.teidLocal, 
-          pUlpReq->apiInfo.initialReqInfo.peerIp, 
-          pUlpReq->apiInfo.initialReqInfo.hUlpTunnel, 
+      rc = nwGtpv2cCreateLocalTunnel(thiz,
+          pUlpReq->apiInfo.initialReqInfo.teidLocal,
+          pUlpReq->apiInfo.initialReqInfo.peerIp,
+          pUlpReq->apiInfo.initialReqInfo.hUlpTunnel,
           &pUlpReq->apiInfo.initialReqInfo.hTunnel);
       NW_ASSERT(NW_OK == rc);
     }
@@ -664,10 +664,10 @@ nwGtpv2cHandleUlpTriggeredReq( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUlpApiT
 
       if(!pUlpReq->apiInfo.triggeredReqInfo.hTunnel)
       {
-        rc = nwGtpv2cCreateLocalTunnel(thiz, 
-            pUlpReq->apiInfo.triggeredReqInfo.teidLocal, 
-            pReqTrxn->peerIp, 
-            pUlpReq->apiInfo.triggeredReqInfo.hUlpTunnel, 
+        rc = nwGtpv2cCreateLocalTunnel(thiz,
+            pUlpReq->apiInfo.triggeredReqInfo.teidLocal,
+            pReqTrxn->peerIp,
+            pUlpReq->apiInfo.triggeredReqInfo.hUlpTunnel,
             &pUlpReq->apiInfo.triggeredReqInfo.hTunnel);
       }
     }
@@ -723,10 +723,10 @@ nwGtpv2cHandleUlpTriggeredRsp( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUlpApiT
 
   if((pUlpRsp->apiType & 0xFF000000) == NW_GTPV2C_ULP_API_FLAG_CREATE_LOCAL_TUNNEL)
   {
-    rc = nwGtpv2cCreateLocalTunnel(thiz, 
-        pUlpRsp->apiInfo.triggeredRspInfo.teidLocal, 
-        pReqTrxn->peerIp, 
-        pUlpRsp->apiInfo.triggeredRspInfo.hUlpTunnel, 
+    rc = nwGtpv2cCreateLocalTunnel(thiz,
+        pUlpRsp->apiInfo.triggeredRspInfo.teidLocal,
+        pReqTrxn->peerIp,
+        pUlpRsp->apiInfo.triggeredRspInfo.hUlpTunnel,
         &pUlpRsp->apiInfo.triggeredRspInfo.hTunnel);
   }
 
@@ -751,8 +751,8 @@ nwGtpv2cHandleUlpCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUl
 
   NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Creating local tunnel with teid '0x%x' and peer IP 0x%x", pUlpReq->apiInfo.createLocalTunnelInfo.teidLocal, pUlpReq->apiInfo.createLocalTunnelInfo.peerIp);
 
-  pTunnel = nwGtpv2cTunnelNew(thiz, pUlpReq->apiInfo.createLocalTunnelInfo.teidLocal, 
-                              pUlpReq->apiInfo.createLocalTunnelInfo.peerIp, 
+  pTunnel = nwGtpv2cTunnelNew(thiz, pUlpReq->apiInfo.createLocalTunnelInfo.teidLocal,
+                              pUlpReq->apiInfo.createLocalTunnelInfo.peerIp,
                               pUlpReq->apiInfo.triggeredRspInfo.hUlpTunnel);
   NW_ASSERT(pTunnel);
 
@@ -871,7 +871,7 @@ nwGtpv2cSendTriggeredRspIndToUlp( NW_IN NwGtpv2cStackT* thiz,
 /**
   Handle Echo Request from Peer Entity.
 
-  @param[in] thiz : Stack context 
+  @param[in] thiz : Stack context
   @return NW_OK on success.
  */
 
@@ -919,7 +919,7 @@ nwGtpv2cHandleEchoReq(NW_IN NwGtpv2cStackT *thiz,
 /**
   Handle Initial Request from Peer Entity.
 
-  @param[in] thiz : Stack context 
+  @param[in] thiz : Stack context
   @return NW_OK on success.
  */
 
@@ -992,7 +992,7 @@ nwGtpv2cHandleInitialReq(NW_IN NwGtpv2cStackT *thiz,
 /**
   Handle Triggered Response from Peer Entity.
 
-  @param[in] thiz : Stack context 
+  @param[in] thiz : Stack context
   @return NW_OK on success.
  */
 
@@ -1206,7 +1206,7 @@ nwGtpv2cSetLogMgrEntity( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
   return NW_OK;
 }
 
-/** 
+/**
  Set log level for the stack.
  */
 
@@ -1223,8 +1223,8 @@ nwGtpv2cSetLogLevel( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
  * Process Request from Udp Layer
  */
 
-NwRcT 
-nwGtpv2cProcessUdpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle, 
+NwRcT
+nwGtpv2cProcessUdpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                     NW_IN NwU8T* udpData,
                     NW_IN NwU32T udpDataLen,
                     NW_IN NwU16T peerPort,
@@ -1241,11 +1241,11 @@ nwGtpv2cProcessUdpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
 
   if(udpDataLen < NW_GTPV2C_MINIMUM_HEADER_SIZE)
   {
-    /* 
+    /*
      * TS 29.274 Section 7.7.3:
-     * If a GTP entity receives a message, which is too short to 
-     * contain the respective GTPv2 header, the GTP-PDU shall be 
-     * silently discarded 
+     * If a GTP entity receives a message, which is too short to
+     * contain the respective GTPv2 header, the GTP-PDU shall be
+     * silently discarded
      */
     NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Received message too small! Discarding.");
     return NW_OK;
@@ -1263,9 +1263,9 @@ nwGtpv2cProcessUdpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
     NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Received unsupported GTP version '%u' message! Discarding.", ((*((NwU8T*)(udpData)) & 0xE0) >> 5));
     /* Send Version Not Supported Message to peer */
     rc = nwGtpv2cSendVersionNotSupportedInd(
-        thiz, 
-        peerIp, 
-        peerPort, 
+        thiz,
+        peerIp,
+        peerPort,
         *((NwU32T*)(udpData + ((*((NwU8T*)(udpData)) & 0x08) ? 8 : 4))) /* Seq Num */);
 
     return NW_OK;
@@ -1306,9 +1306,9 @@ nwGtpv2cProcessUdpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
     default:
       {
         /*
-         * TS 29.274 Section 7.7.4: 
-         * If a GTP entity receives a message with an unknown Message Type 
-         * value, it shall silently discard the message. 
+         * TS 29.274 Section 7.7.4:
+         * If a GTP entity receives a message with an unknown Message Type
+         * value, it shall silently discard the message.
          */
         NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Received unknown message type %u from UDP! Ignoring.", msgType);
         rc = NW_OK;
@@ -1426,7 +1426,7 @@ nwGtpv2cProcessTimeoutOld(void* arg)
   NW_ASSERT(gettimeofday(&tv, NULL) == 0);
 
   for ((timeoutInfo) = RB_MIN(NwGtpv2cActiveTimerList, &(thiz->activeTimerList));
-      (timeoutInfo) != NULL; ) 
+      (timeoutInfo) != NULL; )
 
   {
     if(NW_GTPV2C_TIMER_CMP_P(&timeoutInfo->tvTimeout, &tv, >))
@@ -1531,7 +1531,7 @@ nwGtpv2cProcessTimeout(void* arg)
 /**
  * Start Timer with ULP Timer Manager
  */
- 
+
 
 
 
@@ -1580,7 +1580,7 @@ nwGtpv2cStartTimer(NwGtpv2cStackT* thiz,
 #if 0
     do {
       collision = RB_INSERT(NwGtpv2cActiveTimerList, &(thiz->activeTimerList), timeoutInfo);
-      if(!collision) 
+      if(!collision)
         break;
       NW_LOG(thiz, NW_LOG_LEVEL_WARN, "timer collision!");
       timeoutInfo->tvTimeout.tv_usec++; /* HACK: In case there is a collision, schedule this event 1 usec later */
@@ -1593,7 +1593,7 @@ nwGtpv2cStartTimer(NwGtpv2cStackT* thiz,
 #endif
 
     if(thiz->activeTimerInfo)
-    { 
+    {
       if(NW_GTPV2C_TIMER_CMP_P(&(thiz->activeTimerInfo->tvTimeout), &(timeoutInfo->tvTimeout), >))
       {
         NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer 0x%x for info 0x%x!", (NwU32T) thiz->activeTimerInfo->hTimer, (NwU32T) thiz->activeTimerInfo);
@@ -1666,7 +1666,7 @@ nwGtpv2cStartTimerOld(NwGtpv2cStackT* thiz,
 
     do {
       collision = RB_INSERT(NwGtpv2cActiveTimerList, &(thiz->activeTimerList), timeoutInfo);
-      if(!collision) 
+      if(!collision)
         break;
       NW_LOG(thiz, NW_LOG_LEVEL_WARN, "timer collision!");
       timeoutInfo->tvTimeout.tv_usec++; /* HACK: In case there is a collision, schedule this event 1 usec later */
@@ -1678,7 +1678,7 @@ nwGtpv2cStartTimerOld(NwGtpv2cStackT* thiz,
     } while (1);
 
     if(thiz->activeTimerInfo)
-    { 
+    {
       if(NW_GTPV2C_TIMER_CMP_P(&(thiz->activeTimerInfo->tvTimeout), &(timeoutInfo->tvTimeout), >))
       {
         NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer 0x%x for info 0x%x!", (NwU32T) thiz->activeTimerInfo->hTimer, (NwU32T) thiz->activeTimerInfo);
@@ -1823,4 +1823,3 @@ nwGtpv2cStopTimerOld(NwGtpv2cStackT* thiz,
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

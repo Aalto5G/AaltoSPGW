@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                               n w - i p v 4                                * 
+ *                               n w - i p v 4                                *
  *           I n t e r n e t    P r o t o c o l    v 4    S t a c k           *
  *                                                                            *
  *                                                                            *
@@ -31,9 +31,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwIpv4Ie.h
- * @brief This header file contains Information Element definitions for IPv4 layer. 
+ * @brief This header file contains Information Element definitions for IPv4 layer.
 */
 
 #ifndef __NW_IPv4_IE_H__
@@ -55,12 +55,11 @@
  *   G T P V 2 C      C A U S E      V A L U E     D E F I N I T I O N S    *
  *--------------------------------------------------------------------------*/
 
-#define NW_IPv4_CAUSE_REQUEST_ACCEPTED                                (16) 
-#define NW_IPv4_CAUSE_MANDATORY_IE_MISSING                            (70) 
+#define NW_IPv4_CAUSE_REQUEST_ACCEPTED                                (16)
+#define NW_IPv4_CAUSE_MANDATORY_IE_MISSING                            (70)
 
 #endif  /* __NW_IPv4_IE_H__ */
 
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

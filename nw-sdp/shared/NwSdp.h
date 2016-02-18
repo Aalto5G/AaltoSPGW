@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - s d p                                   * 
+ *                              n w - s d p                                   *
  *                    S o f t     D a t a     P l a n e                       *
  *                                                                            *
  *                                                                            *
@@ -47,7 +47,7 @@
 
   @section scope Scope
 
-  @section design Design Philosophy 
+  @section design Design Philosophy
 
   @section applications Applications and Usage
 
@@ -56,10 +56,10 @@
 /**
  * @file NwSdp.h
  * @author Amit Chawre
- * @brief 
+ * @brief
  *
  * This header file contains all required definitions and functions
- * prototypes for using nw-sdp software library. 
+ * prototypes for using nw-sdp software library.
  *
  */
 
@@ -67,18 +67,18 @@
 #define NW_SDP_IPv4_MODE_UPLINK                                         (0)/*< Required in case of uplink data emulator for ex. eNodeB emulator */
 #define NW_SDP_IPv4_MODE_DOWNLINK                                       (1)/*< Normal case. All data from PDN to UE */
 
-  
+
 /*---------------------------------------------------------------------------
  * Opaque Sdp Handles
  *--------------------------------------------------------------------------*/
 
 typedef NwPtrT  NwSdpHandleT;                           /**< Sdp Handle                 */
 typedef NwPtrT  NwSdpServiceHandleT;                    /**< Sdp Service Handle         */
-typedef NwPtrT  NwSdpUlpHandleT;                        /**< Sdp Ulp Entity Handle      */ 
-typedef NwPtrT  NwSdpUdpHandleT;                        /**< Sdp Udp Entity Handle      */ 
-typedef NwPtrT  NwSdpTimerMgrHandleT;                   /**< Sdp Timer Manager Handle   */ 
-typedef NwPtrT  NwSdpMemMgrHandleT;                     /**< Sdp Memory Manager Handle  */ 
-typedef NwPtrT  NwSdpLogMgrHandleT;                     /**< Sdp Log Manager Handle     */ 
+typedef NwPtrT  NwSdpUlpHandleT;                        /**< Sdp Ulp Entity Handle      */
+typedef NwPtrT  NwSdpUdpHandleT;                        /**< Sdp Udp Entity Handle      */
+typedef NwPtrT  NwSdpTimerMgrHandleT;                   /**< Sdp Timer Manager Handle   */
+typedef NwPtrT  NwSdpMemMgrHandleT;                     /**< Sdp Memory Manager Handle  */
+typedef NwPtrT  NwSdpLogMgrHandleT;                     /**< Sdp Log Manager Handle     */
 typedef NwPtrT  NwSdpTimerHandleT;                      /**< Sdp Timer Handle           */
 typedef NwPtrT  NwSdpMsgHandleT;                        /**< Sdp Msg Handle             */
 
@@ -96,11 +96,11 @@ typedef struct NwSdpConfig
  * Sdp ULP API type definitions
  *--------------------------------------------------------------------------*/
 
-/** 
- * APIs types between ULP and Stack 
+/**
+ * APIs types between ULP and Stack
  */
 
-typedef enum 
+typedef enum
 {
   /* APIs from ULP to SDP */
 
@@ -143,11 +143,11 @@ typedef enum
   NW_FLOW_TYPE_END
 } NwSdpFlowEndPointTypeT;
 
-/** 
+/**
  * Flow definition
  */
 
-typedef struct 
+typedef struct
 {
   NwU32T          ipv4Addr;
   NwSdpFlowEndPointTypeT  flowType;
@@ -171,48 +171,48 @@ typedef struct
 
 } NwSdpFlowEndPointT;
 
-/** 
- * API information elements between ULP and Stack for 
- * creating a flow. 
+/**
+ * API information elements between ULP and Stack for
+ * creating a flow.
  */
 
-typedef struct 
+typedef struct
 {
   NW_IN   NwSdpFlowEndPointT           ingressEndPoint;
   NW_IN   NwSdpFlowEndPointT           egressEndPoint;
-  NW_IN   NwSdpUlpSessionHandleT       hUlpSession; 
-  NW_OUT  NwSdpSessionHandleT          hSdpSession; 
+  NW_IN   NwSdpUlpSessionHandleT       hUlpSession;
+  NW_OUT  NwSdpSessionHandleT          hSdpSession;
 } NwSdpCreateFlowInfoT;
 
-/** 
- * API information elements between ULP and Stack for 
- * destroying a flow. 
+/**
+ * API information elements between ULP and Stack for
+ * destroying a flow.
  */
 
-typedef struct 
+typedef struct
 {
-  NW_IN   NwSdpSessionHandleT          hSdpSession; 
+  NW_IN   NwSdpSessionHandleT          hSdpSession;
 } NwSdpDestroyFlowInfoT;
 
-/** 
- * API information elements between ULP and Stack for 
- * updating a flow. 
+/**
+ * API information elements between ULP and Stack for
+ * updating a flow.
  */
 
-typedef struct 
+typedef struct
 {
   NW_IN   NwSdpFlowEndPointT            ingressFlow;
   NW_IN   NwSdpFlowEndPointT            egressFlow;
-  NW_IN   NwSdpUlpSessionHandleT        hUlpSession; 
-  NW_IN   NwSdpSessionHandleT           hSdpSession; 
+  NW_IN   NwSdpUlpSessionHandleT        hUlpSession;
+  NW_IN   NwSdpSessionHandleT           hSdpSession;
 } NwSdpUpdateFlowInfoT;
 
-/** 
- * API information elements between ULP and Stack for 
- * sending a Gre message over a session. 
+/**
+ * API information elements between ULP and Stack for
+ * sending a Gre message over a session.
  */
 
-typedef struct 
+typedef struct
 {
   NW_IN    NwU32T                       teid;
   NW_IN    NwU32T                       ipAddr;
@@ -220,14 +220,14 @@ typedef struct
   NW_IN    NwSdpMsgHandleT              hMsg;
 } NwSdpSendtoInfoT;
 
-/** 
- * API information elements between ULP and Stack for 
- * receiving a Gre message over a session from stack. 
+/**
+ * API information elements between ULP and Stack for
+ * receiving a Gre message over a session from stack.
  */
 
 typedef struct
 {
-  NW_IN    NwSdpUlpSessionHandleT       hUlpSession; 
+  NW_IN    NwSdpUlpSessionHandleT       hUlpSession;
   NW_IN    NwU32T                       teid;
   NW_IN    NwU32T                       peerIp;
   NW_IN    NwU32T                       peerPort;
@@ -240,15 +240,15 @@ typedef struct
  * Sdp API structure definition
  *--------------------------------------------------------------------------*/
 
-/** 
- * API structure between ULP and Stack 
+/**
+ * API structure between ULP and Stack
  */
 
-typedef struct 
+typedef struct
 {
   NwSdpUlpApiTypeT              apiType;
   NwSdpRcT rc;
-  union 
+  union
   {
     NwSdpCreateFlowInfoT        createFlowInfo;
     NwSdpDestroyFlowInfoT       destroyFlowInfo;
@@ -269,10 +269,10 @@ typedef struct
  * Gre ULP entity definition
  */
 
-typedef struct 
+typedef struct
 {
   NwSdpUlpHandleT        hUlp;
-  NwSdpRcT (*ulpReqCallback) ( NW_IN        NwSdpUlpHandleT hUlp, 
+  NwSdpRcT (*ulpReqCallback) ( NW_IN        NwSdpUlpHandleT hUlp,
                             NW_IN        NwSdpUlpApiT *pUlpApi);
 } NwSdpUlpEntityT;
 
@@ -288,8 +288,8 @@ typedef struct
 typedef struct
 {
   NwSdpUdpHandleT        hUdp;
-  NwSdpRcT (*udpDataReqCallback) ( NW_IN     NwSdpUdpHandleT udpHandle, 
-                                NW_IN     NwU8T* dataBuf, 
+  NwSdpRcT (*udpDataReqCallback) ( NW_IN     NwSdpUdpHandleT udpHandle,
+                                NW_IN     NwU8T* dataBuf,
                                 NW_IN     NwU32T dataSize,
                                 NW_IN     NwU32T peerIP,
                                 NW_IN     NwU32T peerPort);
@@ -320,17 +320,17 @@ typedef struct
  * Timer Manager entity definition
  */
 
-typedef struct 
+typedef struct
 {
   NwSdpTimerMgrHandleT        tmrMgrHandle;
-  NwSdpRcT (*tmrStartCallback)( NW_IN       NwSdpTimerMgrHandleT tmrMgrHandle, 
+  NwSdpRcT (*tmrStartCallback)( NW_IN       NwSdpTimerMgrHandleT tmrMgrHandle,
                              NW_IN       NwU32T timeoutSecs,
                              NW_IN       NwU32T timeoutUsec,
-                             NW_IN       NwU32T tmrType, 
-                             NW_IN       void* tmrArg, 
+                             NW_IN       NwU32T tmrType,
+                             NW_IN       void* tmrArg,
                              NW_OUT      NwSdpTimerHandleT* tmrHandle);
 
-  NwSdpRcT (*tmrStopCallback) ( NW_IN       NwSdpTimerMgrHandleT tmrMgrHandle, 
+  NwSdpRcT (*tmrStopCallback) ( NW_IN       NwSdpTimerMgrHandleT tmrMgrHandle,
                              NW_IN       NwSdpTimerHandleT tmrHandle);
 } NwSdpTimerMgrEntityT;
 
@@ -346,7 +346,7 @@ typedef struct
 typedef struct
 {
   NwSdpLogMgrHandleT          logMgrHandle;
-  NwSdpRcT (*logReqCallback) (NW_IN      NwSdpLogMgrHandleT logMgrHandle, 
+  NwSdpRcT (*logReqCallback) (NW_IN      NwSdpLogMgrHandleT logMgrHandle,
                            NW_IN      NwU32T logLevel,
                            NW_IN      NwCharT* file,
                            NW_IN      NwU32T line,
@@ -361,12 +361,12 @@ typedef struct
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
 /*---------------------------------------------------------------------------
  *  Constructor
  *--------------------------------------------------------------------------*/
 
-/** 
+/**
  Initialize the soft date plane.
 
  @param[in,out] phSdp : Pointer to SDP handle
@@ -379,7 +379,7 @@ nwSdpInitialize( NW_INOUT NwSdpHandleT* phSdp);
  * Destructor
  *--------------------------------------------------------------------------*/
 
-/** 
+/**
  Destroy the nw-sdp instance.
 
  @param[in] hSdp : SDP handle
@@ -389,7 +389,7 @@ NwSdpRcT
 nwSdpFinalize( NW_IN  NwSdpHandleT hSdp);
 
 
-/** 
+/**
  Create GTPU service instance
 
  @param[in] hSdp : SDP handle.
@@ -410,7 +410,7 @@ nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
                                                         NwU32T peerPort),
                        NW_IN NwSdpServiceHandleT* phSdpService);
 
-/** 
+/**
  Create Ipv4 service instance
 
  @param[in] hSdp : SDP handle.
@@ -431,14 +431,14 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
                                                         NwU8T* dataBuf,
                                                         NwU32T dataSize),
                         NW_IN NwSdpRcT          (*pIpv4TlArpDataReqCb) (
-                                                        NwU32T          udpHandle,       
+                                                        NwU32T          udpHandle,
                                                         NwU16T           opCode,
                                                         NwU8T            *pTargetMac,
                                                         NwU8T            *pTargetIpAddr,
                                                         NwU8T            *pSenderIpAddr),
                        NW_IN NwSdpServiceHandleT* phSdpService);
 
-/** 
+/**
   Destroy a new SDP service instance
 
  @param[in] hSdp : SDP handle.
@@ -456,7 +456,7 @@ nwSdpDestroyService( NW_IN NwSdpHandleT hSdp,
  * Configuration Get/Set Operations
  *--------------------------------------------------------------------------*/
 
-/** 
+/**
  Set Configuration for the nw-sdp instance.
 
  @param[in,out] phSdp : Pointer to SDP handle
@@ -465,7 +465,7 @@ nwSdpDestroyService( NW_IN NwSdpHandleT hSdp,
 NwSdpRcT
 NwSdpConfigSet( NW_IN NwSdpHandleT* phSdp, NW_IN NwSdpConfigT* pConfig);
 
-/** 
+/**
  Get Configuration for the nw-sdp instance.
 
  @param[in,out] phSdp : Pointer to SDP handle
@@ -474,7 +474,7 @@ NwSdpConfigSet( NW_IN NwSdpHandleT* phSdp, NW_IN NwSdpConfigT* pConfig);
 NwSdpRcT
 NwSdpConfigGet( NW_IN NwSdpHandleT* phSdp, NW_OUT NwSdpConfigT* pConfig);
 
-/** 
+/**
  Set ULP entity for the stack.
 
  @param[in] hSdp : SDP handle
@@ -486,7 +486,7 @@ NwSdpRcT
 nwSdpSetUlpEntity( NW_IN NwSdpHandleT hSdp,
                    NW_IN NwSdpUlpEntityT* pUlpEntity);
 
-/** 
+/**
  Set UDP entity for the stack.
 
  @param[in] hSdp : SDP handle
@@ -498,7 +498,7 @@ NwSdpRcT
 nwSdpSetUdpEntity( NW_IN NwSdpHandleT hSdp,
                    NW_IN NwSdpUdpEntityT* pUdpEntity);
 
-/** 
+/**
  Set MemMgr entity for the stack.
 
  @param[in] hSdp : SDP handle
@@ -511,7 +511,7 @@ nwSdpSetMemMgrEntity( NW_IN NwSdpHandleT hSdp,
                         NW_IN NwSdpMemMgrEntityT* pMemMgr);
 
 
-/** 
+/**
  Set TmrMgr entity for the stack.
 
  @param[in] hSdp : SDP handle
@@ -523,7 +523,7 @@ NwSdpRcT
 nwSdpSetTimerMgrEntity( NW_IN NwSdpHandleT hSdp,
                         NW_IN NwSdpTimerMgrEntityT* pTmrMgr);
 
-/** 
+/**
  Set LogMgr entity for the stack.
 
  @param[in] hSdp : SDP handle
@@ -535,7 +535,7 @@ NwSdpRcT
 nwSdpSetLogMgrEntity( NW_IN NwSdpHandleT hSdp,
                       NW_IN NwSdpLogMgrEntityT* pLogMgr);
 
-/** 
+/**
  Set log level for the stack.
 
  @param[in] hSdp : SDP handle
@@ -561,21 +561,21 @@ nwSdpSetLogLevel( NW_IN NwSdpHandleT hSdp,
  @return NW_SDP_OK on success.
  */
 
-NwSdpRcT 
+NwSdpRcT
 nwSdpProcessUdpDataInd( NW_IN NwSdpHandleT hSdp,
                     NW_IN NwU8T* udpData,
                     NW_IN NwU32T udpDataLen,
                     NW_IN NwU16T peerPort,
                     NW_IN NwU32T peerIP);
 
-NwSdpRcT 
-nwSdpProcessIpv4DataInd( NW_IN NwSdpHandleT hSdp, 
+NwSdpRcT
+nwSdpProcessIpv4DataInd( NW_IN NwSdpHandleT hSdp,
                     NW_IN NwSdpServiceHandleT hIpv4,
                     NW_IN NwU8T* ipv4Buf,
                     NW_IN NwU32T ipv4BufLen);
 
-NwSdpRcT 
-nwSdpProcessGtpuDataInd( NW_IN NwSdpHandleT hSdp, 
+NwSdpRcT
+nwSdpProcessGtpuDataInd( NW_IN NwSdpHandleT hSdp,
                     NW_IN NwU8T* udpData,
                     NW_IN NwU32T udpDataLen,
                     NW_IN NwU16T peerPort,
@@ -621,4 +621,3 @@ nwSdpProcessTimeout( NW_IN void* timeoutArg);
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

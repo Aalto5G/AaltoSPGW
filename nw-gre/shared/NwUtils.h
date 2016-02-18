@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -37,15 +37,13 @@
 #define __NW_UTILS_H__
 
 
-/** 
- * @file NwUtils.h 
+/**
+ * @file NwUtils.h
  * @brief This header file contains utility macro and function definitions.
 */
 
 #define NW_ASSERT                                       assert                  /**< Assertion */
-        
+
 #define NW_CHK_NULL_PTR(_ptr)                           NW_ASSERT(_ptr != NULL) /**< Null pointer check */
 
 #endif /* __NW_UTILS_H__ */
-
-

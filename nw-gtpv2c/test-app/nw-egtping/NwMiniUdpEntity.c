@@ -7,7 +7,7 @@
  *----------------------------------------------------------------------------*/
 
 
-/** 
+/**
  * @file NwMiniUdpEntity.c
  * @brief This file contains example of a minimalistic ULP entity.
 */
@@ -27,7 +27,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #define MAX_UDP_PAYLOAD_LEN             (4096)
 
@@ -97,7 +97,7 @@ void NW_EVT_CALLBACK(nwUdpDataIndicationCallbackData)
  * Public functions
  *--------------------------------------------------------------------------*/
 
-NwRcT nwGtpv2cUdpInit(NwGtpv2cNodeUdpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack, NwU8T* ipAddrStr) 
+NwRcT nwGtpv2cUdpInit(NwGtpv2cNodeUdpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack, NwU8T* ipAddrStr)
 {
   int sd;
   struct sockaddr_in addr;
@@ -122,7 +122,7 @@ NwRcT nwGtpv2cUdpInit(NwGtpv2cNodeUdpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack,
   }
 
   yes = 1;
-  if (setsockopt(sd, SOL_IP, IP_RECVERR, &yes, sizeof(yes))) 
+  if (setsockopt(sd, SOL_IP, IP_RECVERR, &yes, sizeof(yes)))
   {
     NW_LOG(NW_LOG_LEVEL_ERRO, "%s", strerror(errno));
     NW_ASSERT(0);
@@ -170,7 +170,7 @@ NwRcT nwGtpv2cUdpReset(NwGtpv2cNodeUdpT* thiz)
   }
 
   yes = 1;
-  if (setsockopt(sd, SOL_IP, IP_RECVERR, &yes, sizeof(yes))) 
+  if (setsockopt(sd, SOL_IP, IP_RECVERR, &yes, sizeof(yes)))
   {
     NW_LOG(NW_LOG_LEVEL_ERRO, "%s", strerror(errno));
     NW_ASSERT(0);
@@ -222,4 +222,3 @@ NwRcT nwGtpv2cUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
 #ifdef __cplusplus
 }
 #endif
-

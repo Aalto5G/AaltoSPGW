@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - e p c                                 * 
+ *                                n w - e p c                                 *
  *       L T E / S A E        S E R V I N G / P D N       G A T E W A Y       *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file nwSaeGwDpe.h
  */
 
@@ -84,7 +84,7 @@ nwSaeGwDpeCreateIpv4Service( NwSaeGwDpeT* thiz, NwU8T* nwIfName);
  */
 
 extern NwRcT
-nwSaeGwDpeCreateGtpuIpv4Flow(NwSaeGwDpeT*   thiz, 
+nwSaeGwDpeCreateGtpuIpv4Flow(NwSaeGwDpeT*   thiz,
                          NwU32T         hSession,
                          NwU32T         teidIngress,
                          NwU32T         *pTeidIngress,
@@ -96,7 +96,7 @@ nwSaeGwDpeCreateGtpuIpv4Flow(NwSaeGwDpeT*   thiz,
  */
 
 extern NwRcT
-nwSaeGwDpeCreateIpv4GtpuFlow(NwSaeGwDpeT*   thiz, 
+nwSaeGwDpeCreateIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
                          NwU32T         hSession,
                          NwU32T         teidEgress,
                          NwU32T         ipv4Egress,
@@ -108,7 +108,7 @@ nwSaeGwDpeCreateIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
  */
 
 extern NwRcT
-nwSaeGwDpeCreateGtpuGtpuFlow(NwSaeGwDpeT*   thiz, 
+nwSaeGwDpeCreateGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
                          NwU32T         hSession,
                          NwU32T         teidIngress,
                          NwU32T         teidEgress,
@@ -122,7 +122,7 @@ nwSaeGwDpeCreateGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
  */
 
 extern NwRcT
-nwSaeGwDpeDestroyFlow(NwSaeGwDpeT*   thiz, 
+nwSaeGwDpeDestroyFlow(NwSaeGwDpeT*   thiz,
                       NwU32T         hBearer);
 #ifdef __cplusplus
 }

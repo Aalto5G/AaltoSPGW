@@ -31,8 +31,8 @@
 #ifndef __NW_ERROR_H__
 #define __NW_ERROR_H__
 
-/** 
- * @file NwError.h 
+/**
+ * @file NwError.h
  * @brief This header file contains return error code type definitions.
 */
 
@@ -55,5 +55,3 @@ typedef enum {
 #endif
 
 #endif /* __NW_ERROR_CODE_H__ */
-
-

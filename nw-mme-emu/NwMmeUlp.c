@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - m m e                                 * 
+ *                                n w - m m e                                 *
  *    L T E / S A E    M O B I L I T Y   M A N A G E M E N T   E N T I T Y    *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file nwMmeUlp.c
 */
 
@@ -104,7 +104,7 @@ NW_TMR_CALLBACK(nwMmeUlpHandleRpsTimerTimeout)
 }
 
 NwRcT
-nwMmeUlpInit(NwMmeUlpT*         thiz, 
+nwMmeUlpInit(NwMmeUlpT*         thiz,
              NwU32T             maxUeSessions,
              NwU32T             sessionTimeout,
              NwU32T             mmeIpAddr,
@@ -131,7 +131,7 @@ nwMmeUlpInit(NwMmeUlpT*         thiz,
 }
 
 NwRcT
-nwMmeUlpDestroy(NwMmeUlpT*  thiz) 
+nwMmeUlpDestroy(NwMmeUlpT*  thiz)
 {
   NwRcT rc;
   memset(thiz, 0, sizeof(NwMmeUlpT));
@@ -150,11 +150,11 @@ nwMmeUlpCreateConn(NwMmeUlpT* thiz)
   {
     pMs = nwMmeUeNew(thiz->hGtpcStack);
 
-    pMs->hMmeUlp        = (NwU32T) thiz; 
-    pMs->pDpe           = thiz->pDpe; 
-    pMs->mmeIpv4Addr    = thiz->mmeIpAddr; 
-    pMs->sgwIpv4Addr    = thiz->sgwIpAddr; 
-    pMs->pgwIpv4Addr    = thiz->pgwIpAddr; 
+    pMs->hMmeUlp        = (NwU32T) thiz;
+    pMs->pDpe           = thiz->pDpe;
+    pMs->mmeIpv4Addr    = thiz->mmeIpAddr;
+    pMs->sgwIpv4Addr    = thiz->sgwIpAddr;
+    pMs->pgwIpv4Addr    = thiz->pgwIpAddr;
     pMs->sessionTimeout = thiz->sessionTimeout;
 
     if(thiz->pMsListHead == NULL)
@@ -205,7 +205,7 @@ nwMmeUlpDestroyConn(NwMmeUlpT* thiz)
 NwRcT
 nwMmeUlpGetControlPlaneIpv4Addr(NwMmeUlpT* thiz, NwU32T *pMmeControlPlaneIpv4Addr)
 {
-  if(thiz) 
+  if(thiz)
   {
     *pMmeControlPlaneIpv4Addr = thiz->mmeIpAddr;
     return NW_OK;
@@ -224,18 +224,18 @@ nwMmeUlpStartNetworkEntry(NwMmeUlpT* thiz)
   rc = nwMmeUlpCreateConn(thiz);
   NW_ASSERT( NW_OK == rc );
 
-  rc = nwTmrMgrStartTimer(0, NW_MME_ULP_RPS_TIMEOUT, 0, NW_TIMER_TYPE_REPETITIVE, nwMmeUlpHandleRpsTimerTimeout, thiz, &thiz->hStatsTimer); 
+  rc = nwTmrMgrStartTimer(0, NW_MME_ULP_RPS_TIMEOUT, 0, NW_TIMER_TYPE_REPETITIVE, nwMmeUlpHandleRpsTimerTimeout, thiz, &thiz->hStatsTimer);
   NW_ASSERT(NW_OK == rc);
 
-  rc = nwTmrMgrStartTimer(0, NW_MME_ULP_STATS_TIMEOUT, 0, NW_TIMER_TYPE_REPETITIVE, nwMmeUlpHandleStatsTimerTimeout, thiz, &thiz->hStatsTimer); 
+  rc = nwTmrMgrStartTimer(0, NW_MME_ULP_STATS_TIMEOUT, 0, NW_TIMER_TYPE_REPETITIVE, nwMmeUlpHandleStatsTimerTimeout, thiz, &thiz->hStatsTimer);
   NW_ASSERT(NW_OK == rc);
 
   return rc ;
 }
 
 
-NwRcT 
-nwMmeUlpStackReqCallback (NwGtpv2cUlpHandleT hUlp, 
+NwRcT
+nwMmeUlpStackReqCallback (NwGtpv2cUlpHandleT hUlp,
                        NwGtpv2cUlpApiT *pUlpApi)
 {
   NwRcT rc;
@@ -301,4 +301,3 @@ nwMmeUlpStackReqCallback (NwGtpv2cUlpHandleT hUlp,
 #ifdef __cplusplus
 }
 #endif
-

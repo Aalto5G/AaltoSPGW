@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - g t p v 2 c                             * 
+ *                              n w - g t p v 2 c                             *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 c    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -55,10 +55,10 @@ extern "C" {
 NwRcT
 nwGtpv2cMsgParserNew( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                       NW_IN NwU8T     msgType,
-                      NW_IN NwRcT (*ieReadCallback) (NwU8T ieType, 
-                                                       NwU8T ieLength, 
-                                                       NwU8T ieInstance,  
-                                                       NwU8T* ieValue, 
+                      NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                                                       NwU8T ieLength,
+                                                       NwU8T ieInstance,
+                                                       NwU8T* ieValue,
                                                        void* ieReadCallbackArg),
                        NW_IN void* ieReadCallbackArg,
                        NW_IN NwGtpv2cMsgParserT **pthiz)
@@ -96,10 +96,10 @@ nwGtpv2cMsgParserDelete( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
 
 NwRcT
 nwGtpv2cMsgParserUpdateIeReadCallback( NW_IN NwGtpv2cMsgParserT* thiz,
-                                       NW_IN NwRcT (*ieReadCallback) (NwU8T ieType, 
-                                                       NwU8T ieLength, 
-                                                       NwU8T ieInstance,  
-                                                       NwU8T* ieValue, 
+                                       NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                                                       NwU8T ieLength,
+                                                       NwU8T ieInstance,
+                                                       NwU8T* ieValue,
                                                        void* ieReadCallbackArg))
 {
   if(thiz)
@@ -127,10 +127,10 @@ nwGtpv2cMsgParserAddIe( NW_IN NwGtpv2cMsgParserT* thiz,
                         NW_IN NwU8T ieType,
                         NW_IN NwU8T ieInstance,
                         NW_IN NwU8T iePresence,
-                        NW_IN NwRcT (*ieReadCallback) (NwU8T ieType, 
-                                                       NwU8T ieLength, 
-                                                       NwU8T ieInstance,  
-                                                       NwU8T* ieValue, 
+                        NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                                                       NwU8T ieLength,
+                                                       NwU8T ieInstance,
+                                                       NwU8T* ieValue,
                                                        void* ieReadCallbackArg),
                         NW_IN void* ieReadCallbackArg)
 {
@@ -161,10 +161,10 @@ nwGtpv2cMsgParserUpdateIe( NW_IN NwGtpv2cMsgParserT* thiz,
                         NW_IN NwU8T ieType,
                         NW_IN NwU8T ieInstance,
                         NW_IN NwU8T iePresence,
-                        NW_IN NwRcT (*ieReadCallback) (NwU8T ieType, 
-                                                       NwU8T ieLength, 
-                                                       NwU8T ieInstance,  
-                                                       NwU8T* ieValue, 
+                        NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                                                       NwU8T ieLength,
+                                                       NwU8T ieInstance,
+                                                       NwU8T* ieValue,
                                                        void* ieReadCallbackArg),
                         NW_IN void* ieReadCallbackArg)
 {
@@ -234,7 +234,7 @@ nwGtpv2cMsgParserRun( NW_IN NwGtpv2cMsgParserT* thiz,
 
         if(NW_OK == rc)
         {
-          if(thiz->ieParseInfo[pIe->t][pIe->i].iePresence == NW_GTPV2C_IE_PRESENCE_MANDATORY) 
+          if(thiz->ieParseInfo[pIe->t][pIe->i].iePresence == NW_GTPV2C_IE_PRESENCE_MANDATORY)
             mandatoryIeCount++;
         }
         else
@@ -252,7 +252,7 @@ nwGtpv2cMsgParserRun( NW_IN NwGtpv2cMsgParserT* thiz,
 
           if(NW_OK == rc)
           {
-            if(thiz->ieParseInfo[pIe->t][pIe->i].iePresence == NW_GTPV2C_IE_PRESENCE_MANDATORY) 
+            if(thiz->ieParseInfo[pIe->t][pIe->i].iePresence == NW_GTPV2C_IE_PRESENCE_MANDATORY)
               mandatoryIeCount++;
           }
           else
@@ -310,4 +310,3 @@ nwGtpv2cMsgParserRun( NW_IN NwGtpv2cMsgParserT* thiz,
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

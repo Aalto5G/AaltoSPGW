@@ -6,7 +6,7 @@
  *                                                                            *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwMiniTmrMgrEntity.c
  * @brief This file ontains example of a minimalistic timer manager entity.
 */
@@ -20,7 +20,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -64,7 +64,7 @@ NwSdpRcT nwTimerStart( NwSdpTimerMgrHandleT tmrMgrHandle,
   struct timeval tv;
 
   NW_LOG(NW_LOG_LEVEL_INFO, "Received start timer request from stack with timer type %u, arg %x, for %u sec and %u usec", tmrType, timeoutArg, timeoutSec, timeoutUsec);
-#ifdef __WITH_LIBEVENT__ 
+#ifdef __WITH_LIBEVENT__
   pTmr = (NwMiniTmrT*) malloc(sizeof(NwMiniTmrT));
 
   /* set the timevalues*/
@@ -91,7 +91,7 @@ NwSdpRcT nwTimerStop( NwSdpTimerMgrHandleT tmrMgrHandle,
     NwSdpTimerHandleT hTmr)
 {
   NW_LOG(NW_LOG_LEVEL_INFO, "Received stop timer request from stack for timer handle %u", hTmr);
-#ifdef __WITH_LIBEVENT__ 
+#ifdef __WITH_LIBEVENT__
   evtimer_del(&(((NwMiniTmrT*)hTmr)->ev));
   free((void*)hTmr);
 #else

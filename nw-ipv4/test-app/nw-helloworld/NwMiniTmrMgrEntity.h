@@ -7,7 +7,7 @@
  *----------------------------------------------------------------------------*/
 
 
-/** 
+/**
  * @file NwMiniTmrMgrEntity.h
  * @brief This file ontains example of a minimalistic timer manager entity.
 */
@@ -18,7 +18,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #ifndef __NW_MINI_TMR_MGR_H__
 #define __NW_MINI_TMR_MGR_H__

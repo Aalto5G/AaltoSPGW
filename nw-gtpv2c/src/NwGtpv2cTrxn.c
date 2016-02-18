@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - g t p v 2 c                             * 
+ *                              n w - g t p v 2 c                             *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 c    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -69,9 +69,9 @@ nwGtpv2cTrxnSendMsgRetransmission(NwGtpv2cTrxnT* thiz)
 
   NW_ASSERT(thiz->pMsg);
 
-  rc = thiz->pStack->udp.udpDataReqCallback(thiz->pStack->udp.hUdp, 
-      thiz->pMsg->msgBuf, 
-      thiz->pMsg->msgLen, 
+  rc = thiz->pStack->udp.udpDataReqCallback(thiz->pStack->udp.hUdp,
+      thiz->pMsg->msgBuf,
+      thiz->pMsg->msgLen,
       thiz->peerIp,
       thiz->peerPort);
 
@@ -149,7 +149,7 @@ nwGtpv2cTrxnDuplicateRequestWaitTimeout(void* arg)
 
 /**
  * Start timer to wait for rsp of a req message
- * 
+ *
  * @param[in] thiz : Pointer to transaction
  * @param[in] timeoutCallbackFunc : Timeout handler callback function.
  * @return NW_OK on success.
@@ -207,12 +207,12 @@ nwGtpv2cTrxnStopPeerRspTimer(NwGtpv2cTrxnT* thiz)
 /**
  * Constructor
  *
- * @param[in] thiz : Pointer to stack  
+ * @param[in] thiz : Pointer to stack
  * @param[out] ppTrxn : Pointer to pointer to Trxn object.
  * @return NW_OK on success.
  */
 NwGtpv2cTrxnT*
-nwGtpv2cTrxnNew( NW_IN  NwGtpv2cStackT* thiz) 
+nwGtpv2cTrxnNew( NW_IN  NwGtpv2cStackT* thiz)
 {
   NwRcT rc = NW_OK;
   NwGtpv2cTrxnT *pTrxn;
@@ -254,12 +254,12 @@ nwGtpv2cTrxnNew( NW_IN  NwGtpv2cStackT* thiz)
 /**
  * Overloaded Constructor
  *
- * @param[in] thiz : Pointer to stack. 
- * @param[in] seqNum : Sequence number for this transaction. 
+ * @param[in] thiz : Pointer to stack.
+ * @param[in] seqNum : Sequence number for this transaction.
  * @return Pointer to Trxn object.
  */
 NwGtpv2cTrxnT*
-nwGtpv2cTrxnWithSeqNumNew( NW_IN  NwGtpv2cStackT* thiz,  
+nwGtpv2cTrxnWithSeqNumNew( NW_IN  NwGtpv2cStackT* thiz,
                         NW_IN  NwU32T seqNum)
 {
   NwRcT rc = NW_OK;
@@ -295,10 +295,10 @@ nwGtpv2cTrxnWithSeqNumNew( NW_IN  NwGtpv2cStackT* thiz,
 }
 
 /**
- * Another overloaded constructor. Create transaction as outstanding 
+ * Another overloaded constructor. Create transaction as outstanding
  * RX transaction for detecting duplicated requests.
  *
- * @param[in] thiz : Pointer to stack. 
+ * @param[in] thiz : Pointer to stack.
  * @param[in] teidLocal : Trxn teid.
  * @param[in] peerIp : Peer Ip address.
  * @param[in] peerPort : Peer Ip port.
@@ -345,9 +345,9 @@ nwGtpv2cTrxnOutstandingRxNew( NW_IN  NwGtpv2cStackT* thiz,
       /* Case of duplicate request message from peer. Retransmit response. */
       if(pCollision->pMsg)
       {
-        rc = pCollision->pStack->udp.udpDataReqCallback(pCollision->pStack->udp.hUdp, 
-            pCollision->pMsg->msgBuf, 
-            pCollision->pMsg->msgLen, 
+        rc = pCollision->pStack->udp.udpDataReqCallback(pCollision->pStack->udp.hUdp,
+            pCollision->pMsg->msgBuf,
+            pCollision->pMsg->msgLen,
             pCollision->peerIp,
             pCollision->peerPort);
       }
@@ -405,6 +405,5 @@ nwGtpv2cTrxnDelete( NW_INOUT NwGtpv2cTrxnT **pthiz)
 #endif
 
 /*--------------------------------------------------------------------------*
- *                          E N D   O F   F I L E                           * 
+ *                          E N D   O F   F I L E                           *
  *--------------------------------------------------------------------------*/
-

@@ -6,7 +6,7 @@
  *                                                                            *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwMiniUlpEntity.c
  * @brief This file contains example of a minimalistic ULP entity.
 */
@@ -24,7 +24,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,7 +35,7 @@ NwCharT* gLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI", "INF
 
 static NwRcT
 nwGtpv2cCreateSessionRequestIeIndication(NwU8T ieType, NwU8T ieLength, NwU8T ieInstance, NwU8T* ieValue, void* arg)
-{ 
+{
   NW_LOG(NW_LOG_LEVEL_DEBG, "Received IE Parse Indication for of type %u, length %u, instance %u!", ieType, ieLength, ieInstance);
   return NW_OK;
 }
@@ -130,8 +130,8 @@ nwGtpv2cUlpCreateSessionRequestToPeer(NwGtpv2cNodeUlpT* thiz)
   return NW_OK;
 }
 
-NwRcT 
-nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp, 
+NwRcT
+nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
                        NwGtpv2cUlpApiT *pUlpApi)
 {
   NwRcT rc;
@@ -155,7 +155,7 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
         if(pUlpApi->apiInfo.initialReqIndInfo.msgType == NW_GTP_CREATE_SESSION_REQ)
         {
 
-          struct 
+          struct
           {
             NwU8T causeValue;
             NwU8T spare:5;
@@ -184,7 +184,7 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
                 break;
             }
 
-          } 
+          }
           else
           {
             cause.causeValue = NW_GTPV2C_CAUSE_REQUEST_ACCEPTED;
@@ -211,7 +211,7 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
           rc = nwGtpv2cProcessUlpReq(thiz->hGtpv2cStack, &ulpReq);
           NW_ASSERT(NW_OK == rc);
         }
-        
+
         rc = nwGtpv2cMsgParserDelete(thiz->hGtpv2cStack, pMsgParser);
         NW_ASSERT(NW_OK == rc);
 
@@ -250,7 +250,7 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
 
             }
 
-          } 
+          }
 
           /*
            * Send Message Request to Gtpv2c Stack Instance
@@ -282,4 +282,3 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
 #ifdef __cplusplus
 }
 #endif
-

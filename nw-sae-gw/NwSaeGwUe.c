@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - e p c                                 * 
+ *                                n w - e p c                                 *
  *       L T E / S A E        S E R V I N G / P D N       G A T E W A Y       *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwSaeGwUe.c
 */
 
@@ -52,7 +52,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -106,8 +106,8 @@ gpUeEventStr[] =
 
 
 NwSaeGwUeT*
-nwSaeGwUeNew(NwGtpv2cStackHandleT hGtpv2cStackSgwS11, 
-    NwGtpv2cStackHandleT hGtpv2cStackSgwS5, 
+nwSaeGwUeNew(NwGtpv2cStackHandleT hGtpv2cStackSgwS11,
+    NwGtpv2cStackHandleT hGtpv2cStackSgwS5,
     NwGtpv2cStackHandleT hGtpv2cStackPgwS5)
 {
   NwSaeGwUeT* thiz      = (NwSaeGwUeT*) nwMemNew (sizeof(NwSaeGwUeT));

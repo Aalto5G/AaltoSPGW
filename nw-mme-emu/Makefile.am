@@ -12,42 +12,42 @@ bin_PROGRAMS = nwLteMmeEmu
 
 # list of sources for the 'NwWimaxBsEmu' binary
 nwLteMmeEmu_SOURCES =    \
-                        ../common/tree.h\
-                        ../common/queue.h\
-                        ../common/NwTypes.h\
-                        ../common/NwError.h\
-                        ../common/NwLog.h\
-                        ../common/NwUtils.h\
-                        ../common/NwMem.h\
-                        ../utils/nw-ipv4-if/NwIpv4IfLog.h\
-                        ../utils/nw-ipv4-if/NwIpv4If.h\
-                        ../utils/nw-gtpu-if/NwGtpv1uIfLog.h\
-                        ../utils/nw-gtpu-if/NwGtpv1uIf.h\
-                        ../utils/nw-tmr/NwTmrMgr.h\
-                        ../utils/nw-log/NwLogMgr.h\
-                        ../utils/nw-udp/NwUdpLog.h\
-                        ../utils/nw-udp/NwUdp.h\
-                        ../utils/nw-tmr/NwTmrMgr.c\
-                        ../utils/nw-log/NwLogMgr.c\
-                        ../utils/nw-udp/NwUdp.c\
-                        ../utils/nw-ipv4-if/NwIpv4If.c\
-                        ../utils/nw-gtpu-if/NwGtpv1uIf.c\
-                        ../nw-gtpv2c/shared/NwGtpv2c.h\
-                        ../nw-gtpv2c/shared/NwGtpv2cIe.h\
-                        ../nw-gtpv2c/shared/NwGtpv2cMsg.h\
-                        ../nw-gtpv2c/shared/NwGtpv2cMsgParser.h\
-                        ../common/NwMem.c\
-                        NwMmeLog.h\
-                        NwMmeUeLog.h\
+						../common/tree.h\
+						../common/queue.h\
+						../common/NwTypes.h\
+						../common/NwError.h\
+						../common/NwLog.h\
+						../common/NwUtils.h\
+						../common/NwMem.h\
+						../utils/nw-ipv4-if/NwIpv4IfLog.h\
+						../utils/nw-ipv4-if/NwIpv4If.h\
+						../utils/nw-gtpu-if/NwGtpv1uIfLog.h\
+						../utils/nw-gtpu-if/NwGtpv1uIf.h\
+						../utils/nw-tmr/NwTmrMgr.h\
+						../utils/nw-log/NwLogMgr.h\
+						../utils/nw-udp/NwUdpLog.h\
+						../utils/nw-udp/NwUdp.h\
+						../utils/nw-tmr/NwTmrMgr.c\
+						../utils/nw-log/NwLogMgr.c\
+						../utils/nw-udp/NwUdp.c\
+						../utils/nw-ipv4-if/NwIpv4If.c\
+						../utils/nw-gtpu-if/NwGtpv1uIf.c\
+						../nw-gtpv2c/shared/NwGtpv2c.h\
+						../nw-gtpv2c/shared/NwGtpv2cIe.h\
+						../nw-gtpv2c/shared/NwGtpv2cMsg.h\
+						../nw-gtpv2c/shared/NwGtpv2cMsgParser.h\
+						../common/NwMem.c\
+						NwMmeLog.h\
+						NwMmeUeLog.h\
 			NwMmeUlp.h\
-                        NwMmeDpe.h\
-                        NwMmeUe.h\
+						NwMmeDpe.h\
+						NwMmeUe.h\
 			NwMmeUlp.c\
 			NwMmeDpe.c\
-                        NwMmeMain.c\
-                        NwMmeUe.c
+						NwMmeMain.c\
+						NwMmeUe.c
 
-# the additional libraries needed to link nwWimaxBsEmu 
+# the additional libraries needed to link nwWimaxBsEmu
 nwLteMmeEmu_LDADD =  $(top_builddir)/nw-gtpv2c/src/libNwGtpv2c.a $(top_builddir)/nw-sdp/src/libNwSdp.a $(top_builddir)/nw-gtpv1u/src/libNwGtpv1u.a $(top_builddir)/nw-gre/src/libNwGre.a  $(top_builddir)/nw-ipv4/src/libNwIpv4.a  $(top_builddir)/nw-event/src/libNwEvent.a $(AM_LDFLAGS)
 
 ###############################################################################

@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - m m e                                 * 
+ *                                n w - m m e                                 *
  *    L T E / S A E    M O B I L I T Y   M A N A G E M E N T   E N T I T Y    *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file nwMmeDpe.h
  */
 
@@ -74,7 +74,7 @@ nwMmeDpeDestroy(NwMmeDpeT* thiz);
  */
 
 extern NwRcT
-nwMmeDpeCreateGtpuIpv4Flow(NwMmeDpeT*   thiz, 
+nwMmeDpeCreateGtpuIpv4Flow(NwMmeDpeT*   thiz,
                          NwU32T         hSession,
                          NwU32T         teidIngress,
                          NwU32T         *pTeidIngress,
@@ -86,7 +86,7 @@ nwMmeDpeCreateGtpuIpv4Flow(NwMmeDpeT*   thiz,
  */
 
 extern NwRcT
-nwMmeDpeCreateIpv4GtpuFlow(NwMmeDpeT*   thiz, 
+nwMmeDpeCreateIpv4GtpuFlow(NwMmeDpeT*   thiz,
                          NwU32T         hSession,
                          NwU32T         teidEgress,
                          NwU32T         ipv4Egress,
@@ -98,7 +98,7 @@ nwMmeDpeCreateIpv4GtpuFlow(NwMmeDpeT*   thiz,
  */
 
 extern NwRcT
-nwMmeDpeCreateGtpuGtpuFlow(NwMmeDpeT*   thiz, 
+nwMmeDpeCreateGtpuGtpuFlow(NwMmeDpeT*   thiz,
                          NwU32T         hSession,
                          NwU32T         teidEgress,
                          NwU32T         ipv4Egress,
@@ -111,7 +111,7 @@ nwMmeDpeCreateGtpuGtpuFlow(NwMmeDpeT*   thiz,
  */
 
 extern NwRcT
-nwMmeDpeDestroyFlow(NwMmeDpeT*   thiz, 
+nwMmeDpeDestroyFlow(NwMmeDpeT*   thiz,
                       NwU32T         hBearer);
 extern NwRcT
 nwMmeDpeCreateGtpuService( NwMmeDpeT* thiz, NwU32T ipv4Addr );

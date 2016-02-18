@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -66,9 +66,9 @@ nwGreTrxnSendMsgRetransmission(NwGreTrxnT* thiz)
   NW_ASSERT(thiz);
   NW_ASSERT(thiz->pMsg);
 
-  rc = thiz->pStack->udp.udpDataReqCallback(thiz->pStack->udp.hUdp, 
-      thiz->pMsg->msgBuf, 
-      thiz->pMsg->msgLen, 
+  rc = thiz->pStack->udp.udpDataReqCallback(thiz->pStack->udp.hUdp,
+      thiz->pMsg->msgBuf,
+      thiz->pMsg->msgLen,
       thiz->peerIp,
       thiz->peerPort);
 
@@ -170,12 +170,12 @@ nwGreTrxnStopPeerRspTimer(NwGreTrxnT* thiz)
 /**
  * Constructor
  *
- * @param[in] thiz : Pointer to stack  
+ * @param[in] thiz : Pointer to stack
  * @param[out] ppTrxn : Pointer to pointer to Trxn object.
  * @return NW_OK on success.
  */
 NwRcT
-nwGreTrxnNew( NW_IN  NwGreStackT* thiz,  
+nwGreTrxnNew( NW_IN  NwGreStackT* thiz,
                  NW_OUT NwGreTrxnT **ppTrxn)
 {
   NwRcT rc = NW_OK;
@@ -222,13 +222,13 @@ nwGreTrxnNew( NW_IN  NwGreStackT* thiz,
 /**
  * Overloaded Constructor
  *
- * @param[in] thiz : Pointer to stack. 
- * @param[in] seqNum : Sequence number for this transaction. 
+ * @param[in] thiz : Pointer to stack.
+ * @param[in] seqNum : Sequence number for this transaction.
  * @param[out] ppTrxn : Pointer to pointer to Trxn object.
  * @return NW_OK on success.
  */
 NwRcT
-nwGreTrxnWithSeqNew( NW_IN  NwGreStackT* thiz,  
+nwGreTrxnWithSeqNew( NW_IN  NwGreStackT* thiz,
                         NW_IN  NwU32T seqNum,
                         NW_OUT NwGreTrxnT **ppTrxn)
 {
@@ -309,7 +309,7 @@ nwGreTrxnDelete( NW_INOUT NwGreTrxnT **pthiz)
 /**
  * Send msg to peer via data request to UDP Entity
  *
- * @param[in] thiz : Pointer to stack. 
+ * @param[in] thiz : Pointer to stack.
  * @param[in] pTrxn : Pointer to Trxn object.
  * @param[in] peerIp : Peer Ip address.
  * @param[in] peerPort : Peer Ip port.
@@ -332,10 +332,10 @@ nwGreTrxnCreateAndSendMsg( NW_IN  NwGreStackT* thiz,
   msgHdr = pMsg->msgBuf;
   NW_ASSERT(msgHdr != NULL);
 
-  *(msgHdr++)         = (pMsg->version << 5)            | 
-                        (pMsg->protocolType << 4)       | 
-                        (pMsg->csumPresent << 2)         | 
-                        (pMsg->keyPresent << 1)         | 
+  *(msgHdr++)         = (pMsg->version << 5)            |
+                        (pMsg->protocolType << 4)       |
+                        (pMsg->csumPresent << 2)         |
+                        (pMsg->keyPresent << 1)         |
                         (pMsg->seqNumPresent);
 
   *(msgHdr++)         = (pMsg->msgType);
@@ -355,7 +355,7 @@ nwGreTrxnCreateAndSendMsg( NW_IN  NwGreStackT* thiz,
     {
       *((NwU16T*) msgHdr) = 0x0000;
     }
-    msgHdr += 2; 
+    msgHdr += 2;
 
     if(pMsg->seqNumPresent)
     {
@@ -365,7 +365,7 @@ nwGreTrxnCreateAndSendMsg( NW_IN  NwGreStackT* thiz,
     {
       *((NwU8T*) msgHdr) = 0x00;
     }
-    msgHdr++; 
+    msgHdr++;
 
     if(pMsg->csumPresent)
     {
@@ -375,7 +375,7 @@ nwGreTrxnCreateAndSendMsg( NW_IN  NwGreStackT* thiz,
     {
       *((NwU8T*) msgHdr) = 0x00;
     }
-    msgHdr++; 
+    msgHdr++;
   }
 
   NW_ASSERT(thiz->udp.udpDataReqCallback != NULL);
@@ -408,6 +408,5 @@ nwGreTrxnCreateAndSendMsg( NW_IN  NwGreStackT* thiz,
 #endif
 
 /*--------------------------------------------------------------------------*
- *                          E N D   O F   F I L E                           * 
+ *                          E N D   O F   F I L E                           *
  *--------------------------------------------------------------------------*/
-

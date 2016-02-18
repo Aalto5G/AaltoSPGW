@@ -6,7 +6,7 @@
  *                                                                            *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwMiniUlpEntity.c
  * @brief This file contains example of a minimalistic ULP entity.
 */
@@ -23,7 +23,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -91,7 +91,7 @@ void NW_TMR_CALLBACK(nwMiniUlpDataIndicationCallbackData)
   else
   {
     NW_LOG(NW_LOG_LEVEL_ERRO, "%s", strerror(errno));
-  } 
+  }
 }
 
 /*---------------------------------------------------------------------------
@@ -129,7 +129,7 @@ nwMiniUlpCreateConn(NwMiniUlpEntityT* thiz, char* localIpStr, NwU16T localport, 
    * Create local tunnel endpoint
    */
 
-  NW_LOG(NW_LOG_LEVEL_NOTI, "Creating tunnel endpoint with GRE key %d", localport); 
+  NW_LOG(NW_LOG_LEVEL_NOTI, "Creating tunnel endpoint with GRE key %d", localport);
   ulpReq.apiType                                        = NW_GRE_ULP_API_CREATE_TUNNEL_ENDPOINT;
   ulpReq.apiInfo.createTunnelEndPointInfo.greKey        = localport;
   ulpReq.apiInfo.createTunnelEndPointInfo.hUlpSession   = (NwGreUlpSessionHandleT)thiz;
@@ -239,8 +239,8 @@ nwMiniUlpTpduSend(NwMiniUlpEntityT* thiz, NwU8T* tpduBuf, NwU32T tpduLen , NwU16
   return NW_OK;
 }
 
-NwRcT 
-nwMiniUlpProcessStackReqCallback (NwGreUlpHandleT hUlp, 
+NwRcT
+nwMiniUlpProcessStackReqCallback (NwGreUlpHandleT hUlp,
                        NwGreUlpApiT *pUlpApi)
 {
   NwMiniUlpEntityT* thiz;
@@ -296,4 +296,3 @@ nwMiniUlpProcessStackReqCallback (NwGreUlpHandleT hUlp,
 #ifdef __cplusplus
 }
 #endif
-

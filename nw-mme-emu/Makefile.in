@@ -167,43 +167,43 @@ top_srcdir = @top_srcdir@
 
 # list of sources for the 'NwWimaxBsEmu' binary
 nwLteMmeEmu_SOURCES = \
-                        ../common/tree.h\
-                        ../common/queue.h\
-                        ../common/NwTypes.h\
-                        ../common/NwError.h\
-                        ../common/NwLog.h\
-                        ../common/NwUtils.h\
-                        ../common/NwMem.h\
-                        ../utils/nw-ipv4-if/NwIpv4IfLog.h\
-                        ../utils/nw-ipv4-if/NwIpv4If.h\
-                        ../utils/nw-gtpu-if/NwGtpv1uIfLog.h\
-                        ../utils/nw-gtpu-if/NwGtpv1uIf.h\
-                        ../utils/nw-tmr/NwTmrMgr.h\
-                        ../utils/nw-log/NwLogMgr.h\
-                        ../utils/nw-udp/NwUdpLog.h\
-                        ../utils/nw-udp/NwUdp.h\
-                        ../utils/nw-tmr/NwTmrMgr.c\
-                        ../utils/nw-log/NwLogMgr.c\
-                        ../utils/nw-udp/NwUdp.c\
-                        ../utils/nw-ipv4-if/NwIpv4If.c\
-                        ../utils/nw-gtpu-if/NwGtpv1uIf.c\
-                        ../nw-gtpv2c/shared/NwGtpv2c.h\
-                        ../nw-gtpv2c/shared/NwGtpv2cIe.h\
-                        ../nw-gtpv2c/shared/NwGtpv2cMsg.h\
-                        ../nw-gtpv2c/shared/NwGtpv2cMsgParser.h\
-                        ../common/NwMem.c\
-                        NwMmeLog.h\
-                        NwMmeUeLog.h\
+						../common/tree.h\
+						../common/queue.h\
+						../common/NwTypes.h\
+						../common/NwError.h\
+						../common/NwLog.h\
+						../common/NwUtils.h\
+						../common/NwMem.h\
+						../utils/nw-ipv4-if/NwIpv4IfLog.h\
+						../utils/nw-ipv4-if/NwIpv4If.h\
+						../utils/nw-gtpu-if/NwGtpv1uIfLog.h\
+						../utils/nw-gtpu-if/NwGtpv1uIf.h\
+						../utils/nw-tmr/NwTmrMgr.h\
+						../utils/nw-log/NwLogMgr.h\
+						../utils/nw-udp/NwUdpLog.h\
+						../utils/nw-udp/NwUdp.h\
+						../utils/nw-tmr/NwTmrMgr.c\
+						../utils/nw-log/NwLogMgr.c\
+						../utils/nw-udp/NwUdp.c\
+						../utils/nw-ipv4-if/NwIpv4If.c\
+						../utils/nw-gtpu-if/NwGtpv1uIf.c\
+						../nw-gtpv2c/shared/NwGtpv2c.h\
+						../nw-gtpv2c/shared/NwGtpv2cIe.h\
+						../nw-gtpv2c/shared/NwGtpv2cMsg.h\
+						../nw-gtpv2c/shared/NwGtpv2cMsgParser.h\
+						../common/NwMem.c\
+						NwMmeLog.h\
+						NwMmeUeLog.h\
 			NwMmeUlp.h\
-                        NwMmeDpe.h\
-                        NwMmeUe.h\
+						NwMmeDpe.h\
+						NwMmeUe.h\
 			NwMmeUlp.c\
 			NwMmeDpe.c\
-                        NwMmeMain.c\
-                        NwMmeUe.c
+						NwMmeMain.c\
+						NwMmeUe.c
 
 
-# the additional libraries needed to link nwWimaxBsEmu 
+# the additional libraries needed to link nwWimaxBsEmu
 nwLteMmeEmu_LDADD = $(top_builddir)/nw-gtpv2c/src/libNwGtpv2c.a $(top_builddir)/nw-sdp/src/libNwSdp.a $(top_builddir)/nw-gtpv1u/src/libNwGtpv1u.a $(top_builddir)/nw-gre/src/libNwGre.a  $(top_builddir)/nw-ipv4/src/libNwIpv4.a  $(top_builddir)/nw-event/src/libNwEvent.a $(AM_LDFLAGS)
 all: all-am
 
@@ -212,10 +212,10 @@ all: all-am
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
-	    *$$dep*) \
-	      cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh \
+		*$$dep*) \
+		  cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh \
 		&& exit 0; \
-	      exit 1;; \
+		  exit 1;; \
 	  esac; \
 	done; \
 	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  nw-mme-emu/Makefile'; \
@@ -225,10 +225,10 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
-	    cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh;; \
+		cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh;; \
 	  *) \
-	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
-	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
+		echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
+		cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
@@ -245,7 +245,7 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
 	  if test -f $$p \
 	  ; then \
-	    f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
+		f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
 	   echo " $(INSTALL_PROGRAM_ENV) $(binPROGRAMS_INSTALL) '$$p' '$(DESTDIR)$(bindir)/$$f'"; \
 	   $(INSTALL_PROGRAM_ENV) $(binPROGRAMS_INSTALL) "$$p" "$(DESTDIR)$(bindir)/$$f" || exit 1; \
 	  else :; fi; \
@@ -261,7 +261,7 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-nwLteMmeEmu$(EXEEXT): $(nwLteMmeEmu_OBJECTS) $(nwLteMmeEmu_DEPENDENCIES) 
+nwLteMmeEmu$(EXEEXT): $(nwLteMmeEmu_OBJECTS) $(nwLteMmeEmu_DEPENDENCIES)
 	@rm -f nwLteMmeEmu$(EXEEXT)
 	$(LINK) $(nwLteMmeEmu_OBJECTS) $(nwLteMmeEmu_LDADD) $(LIBS)
 
@@ -383,10 +383,10 @@ NwMem.obj: ../common/NwMem.c
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+		if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
 	  $(AWK) '{ files[$$0] = 1; nonemtpy = 1; } \
-	      END { if (nonempty) { for (i in files) print i; }; }'`; \
+		  END { if (nonempty) { for (i in files) print i; }; }'`; \
 	mkid -fID $$unique
 tags: TAGS
 
@@ -396,14 +396,14 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	here=`pwd`; \
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+		if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
 	  $(AWK) '{ files[$$0] = 1; nonempty = 1; } \
-	      END { if (nonempty) { for (i in files) print i; }; }'`; \
+		  END { if (nonempty) { for (i in files) print i; }; }'`; \
 	if test -z "$(ETAGS_ARGS)$$tags$$unique"; then :; else \
 	  test -n "$$unique" || unique=$$empty_fix; \
 	  $(ETAGS) $(ETAGSFLAGS) $(AM_ETAGSFLAGS) $(ETAGS_ARGS) \
-	    $$tags $$unique; \
+		$$tags $$unique; \
 	fi
 ctags: CTAGS
 CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
@@ -411,13 +411,13 @@ CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	tags=; \
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+		if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
 	  $(AWK) '{ files[$$0] = 1; nonempty = 1; } \
-	      END { if (nonempty) { for (i in files) print i; }; }'`; \
+		  END { if (nonempty) { for (i in files) print i; }; }'`; \
 	test -z "$(CTAGS_ARGS)$$tags$$unique" \
 	  || $(CTAGS) $(CTAGSFLAGS) $(AM_CTAGSFLAGS) $(CTAGS_ARGS) \
-	     $$tags $$unique
+		 $$tags $$unique
 
 GTAGS:
 	here=`$(am__cd) $(top_builddir) && pwd` \
@@ -433,7 +433,7 @@ distdir: $(DISTFILES)
 	list='$(DISTFILES)'; \
 	  dist_files=`for file in $$list; do echo $$file; done | \
 	  sed -e "s|^$$srcdirstrip/||;t" \
-	      -e "s|^$$topsrcdirstrip/|$(top_builddir)/|;t"`; \
+		  -e "s|^$$topsrcdirstrip/|$(top_builddir)/|;t"`; \
 	case $$dist_files in \
 	  */*) $(MKDIR_P) `echo "$$dist_files" | \
 			   sed '/\//!d;s|^|$(distdir)/|;s,/[^/]*$$,,' | \
@@ -442,15 +442,15 @@ distdir: $(DISTFILES)
 	for file in $$dist_files; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  if test -d $$d/$$file; then \
-	    dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`; \
-	    if test -d $(srcdir)/$$file && test $$d != $(srcdir); then \
-	      cp -pR $(srcdir)/$$file $(distdir)$$dir || exit 1; \
-	    fi; \
-	    cp -pR $$d/$$file $(distdir)$$dir || exit 1; \
+		dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`; \
+		if test -d $(srcdir)/$$file && test $$d != $(srcdir); then \
+		  cp -pR $(srcdir)/$$file $(distdir)$$dir || exit 1; \
+		fi; \
+		cp -pR $$d/$$file $(distdir)$$dir || exit 1; \
 	  else \
-	    test -f $(distdir)/$$file \
-	    || cp -p $$d/$$file $(distdir)/$$file \
-	    || exit 1; \
+		test -f $(distdir)/$$file \
+		|| cp -p $$d/$$file $(distdir)/$$file \
+		|| exit 1; \
 	  fi; \
 	done
 check-am: all-am
@@ -473,7 +473,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
 	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
 	  `test -z '$(STRIP)' || \
-	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+		echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
 mostlyclean-generic:
 
 clean-generic:

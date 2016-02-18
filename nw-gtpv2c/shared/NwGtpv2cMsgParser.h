@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - g t p v 2 c                             * 
+ *                              n w - g t p v 2 c                             *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 c    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -39,7 +39,7 @@
 #ifndef __NW_GTPV2C_MSG_PARSER_H__
 #define __NW_GTPV2C_MSG_PARSER_H__
 
-/** 
+/**
  * @file NwGtpv2cMsgParser.h
  * @brief This file defines APIs to parser gtpv2c messages.
 */
@@ -76,10 +76,10 @@ extern "C" {
 NwRcT
 nwGtpv2cMsgParserNew( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                       NW_IN NwU8T     msgType,
-                      NW_IN NwRcT (*ieReadCallback) (NwU8T ieType, 
-                                                       NwU8T ieLength, 
-                                                       NwU8T ieInstance,  
-                                                       NwU8T* ieValue, 
+                      NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                                                       NwU8T ieLength,
+                                                       NwU8T ieInstance,
+                                                       NwU8T* ieValue,
                                                        void* ieReadCallbackArg),
                       NW_IN void* ieReadCallbackArg,
                       NW_IN NwGtpv2cMsgParserT **pthiz);
@@ -101,20 +101,20 @@ nwGtpv2cMsgParserUpdateIe( NW_IN NwGtpv2cMsgParserT* thiz,
                         NW_IN NwU8T ieType,
                         NW_IN NwU8T ieInstance,
                         NW_IN NwU8T iePresence,
-                        NW_IN NwRcT (*ieReadCallback) (NwU8T ieType, 
-                                                       NwU8T ieLength, 
-                                                       NwU8T ieInstance,  
-                                                       NwU8T* ieValue, 
+                        NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                                                       NwU8T ieLength,
+                                                       NwU8T ieInstance,
+                                                       NwU8T* ieValue,
                                                        void* ieReadCallbackArg),
                         NW_IN void* ieReadCallbackArg);
 
 
 NwRcT
 nwGtpv2cMsgParserUpdateIeReadCallback( NW_IN NwGtpv2cMsgParserT* thiz,
-                                       NW_IN NwRcT (*ieReadCallback) (NwU8T ieType, 
-                                                       NwU8T ieLength, 
-                                                       NwU8T ieInstance,  
-                                                       NwU8T* ieValue, 
+                                       NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                                                       NwU8T ieLength,
+                                                       NwU8T ieInstance,
+                                                       NwU8T* ieValue,
                                                        void* ieReadCallbackArg));
 
 
@@ -127,10 +127,10 @@ nwGtpv2cMsgParserAddIe( NW_IN NwGtpv2cMsgParserT* thiz,
                         NW_IN NwU8T ieType,
                         NW_IN NwU8T ieInstance,
                         NW_IN NwU8T iePresence,
-                        NW_IN NwRcT (*ieReadCallback) (NwU8T ieType, 
-                                                       NwU8T ieLength, 
-                                                       NwU8T ieInstance,  
-                                                       NwU8T* ieValue, 
+                        NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                                                       NwU8T ieLength,
+                                                       NwU8T ieInstance,
+                                                       NwU8T* ieValue,
                                                        void* ieReadCallbackArg),
                         NW_IN void* ieReadCallbackArg);
 
@@ -151,4 +151,3 @@ nwGtpv2cMsgParserRun( NW_IN NwGtpv2cMsgParserT* thiz,
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

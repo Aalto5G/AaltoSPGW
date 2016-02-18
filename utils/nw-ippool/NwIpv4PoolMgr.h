@@ -31,7 +31,7 @@
 #include "NwTypes.h"
 #include "NwError.h"
 
-#ifndef __NW_IPV4_POOL_MGR_H__ 
+#ifndef __NW_IPV4_POOL_MGR_H__
 #define __NW_IPV4_POOL_MGR_H__
 
 #ifdef __cplusplus

@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -90,10 +90,10 @@ nwGreMsgNew( NW_IN NwGreStackHandleT hGreStackHandle,
     if(seqNumPresent)
       pMsg->seqNum      = seqNum;
 
-    pMsg->msgLen        = 4 + 
-                          (pMsg->csumPresent ? 4 : 0 ) + 
-                          (pMsg->keyPresent ? 4 : 0 ) +  
-                          (pMsg->seqNumPresent ? 4 : 0 );  
+    pMsg->msgLen        = 4 +
+                          (pMsg->csumPresent ? 4 : 0 ) +
+                          (pMsg->keyPresent ? 4 : 0 ) +
+                          (pMsg->seqNumPresent ? 4 : 0 );
 
 
     *phMsg = (NwGreMsgHandleT) pMsg;
@@ -142,10 +142,10 @@ nwGreGpduMsgNew( NW_IN NwGreStackHandleT hGreStackHandle,
     if(seqNumPresent)
       pMsg->seqNum      = seqNum;
 
-    pMsg->msgLen        = 4 + 
-      (pMsg->csumPresent ? 4 : 0 ) + 
-      (pMsg->keyPresent ? 4 : 0 ) +  
-      (pMsg->seqNumPresent ? 4 : 0 );  
+    pMsg->msgLen        = 4 +
+      (pMsg->csumPresent ? 4 : 0 ) +
+      (pMsg->keyPresent ? 4 : 0 ) +
+      (pMsg->seqNumPresent ? 4 : 0 );
 
     memcpy(pMsg->msgBuf + pMsg->msgLen, tpdu, tpduLength);
     pMsg->msgLen        += tpduLength;
@@ -238,7 +238,7 @@ NwRcT
 nwGreMsgSetTeid(NW_IN NwGreMsgHandleT hMsg, NwU32T teid)
 {
   NwGreMsgT *thiz = (NwGreMsgT*) hMsg;
-  thiz->greKey = teid; 
+  thiz->greKey = teid;
   return NW_OK;
 }
 
@@ -253,7 +253,7 @@ NwRcT
 nwGreMsgSetSeqNumber(NW_IN NwGreMsgHandleT hMsg, NwU32T seqNum)
 {
   NwGreMsgT *thiz = (NwGreMsgT*) hMsg;
-  thiz->seqNum = seqNum; 
+  thiz->seqNum = seqNum;
   return NW_OK;
 }
 
@@ -267,7 +267,7 @@ NwU32T
 nwGreMsgGetTeid(NW_IN NwGreMsgHandleT hMsg)
 {
   NwGreMsgT *thiz = (NwGreMsgT*) hMsg;
-  return (thiz->greKey); 
+  return (thiz->greKey);
 }
 
 
@@ -307,10 +307,10 @@ NwU32T
 nwGreMsgGetTpdu(NW_IN NwGreMsgHandleT hMsg, NwU8T* pTpduBuf, NwU32T* pTpduLength)
 {
   NwGreMsgT *thiz = (NwGreMsgT*) hMsg;
-  NwU8T headerLength = 4 + 
-    (thiz->csumPresent ? 4 : 0 ) + 
-    (thiz->keyPresent ? 4 : 0 ) +  
-    (thiz->seqNumPresent ? 4 : 0 );  
+  NwU8T headerLength = 4 +
+    (thiz->csumPresent ? 4 : 0 ) +
+    (thiz->keyPresent ? 4 : 0 ) +
+    (thiz->seqNumPresent ? 4 : 0 );
 
   *pTpduLength = thiz->msgLen - headerLength;
   memcpy(pTpduBuf, thiz->msgBuf + headerLength, *pTpduLength);
@@ -318,7 +318,7 @@ nwGreMsgGetTpdu(NW_IN NwGreMsgHandleT hMsg, NwU8T* pTpduBuf, NwU32T* pTpduLength
 }
 
 NwRcT
-nwGreMsgAddIeTV1(NW_IN NwGreMsgHandleT hMsg, 
+nwGreMsgAddIeTV1(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
               NW_IN NwU8T       value)
@@ -339,7 +339,7 @@ nwGreMsgAddIeTV1(NW_IN NwGreMsgHandleT hMsg,
 }
 
 NwRcT
-nwGreMsgAddIeTV2(NW_IN NwGreMsgHandleT hMsg, 
+nwGreMsgAddIeTV2(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU8T       instance,
@@ -361,7 +361,7 @@ nwGreMsgAddIeTV2(NW_IN NwGreMsgHandleT hMsg,
 }
 
 NwRcT
-nwGreMsgAddIeTV4(NW_IN NwGreMsgHandleT hMsg, 
+nwGreMsgAddIeTV4(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU8T       instance,
@@ -383,7 +383,7 @@ nwGreMsgAddIeTV4(NW_IN NwGreMsgHandleT hMsg,
 }
 
 NwRcT
-nwGreMsgAddIe(NW_IN NwGreMsgHandleT hMsg, 
+nwGreMsgAddIe(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU8T       instance,
@@ -469,6 +469,5 @@ nwGreMsgHexDump(NwGreMsgHandleT hMsg, FILE* fp)
 
 
 /*--------------------------------------------------------------------------*
- *                          E N D   O F   F I L E                           * 
+ *                          E N D   O F   F I L E                           *
  *--------------------------------------------------------------------------*/
-

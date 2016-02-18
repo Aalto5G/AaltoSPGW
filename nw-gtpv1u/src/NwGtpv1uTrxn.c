@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 u    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -68,9 +68,9 @@ nwGtpv1uTrxnSendMsgRetransmission(NwGtpv1uTrxnT* thiz)
   NW_ASSERT(thiz);
   NW_ASSERT(thiz->pMsg);
 
-  rc = thiz->pStack->udp.udpDataReqCallback(thiz->pStack->udp.hUdp, 
-      thiz->pMsg->msgBuf, 
-      thiz->pMsg->msgLen, 
+  rc = thiz->pStack->udp.udpDataReqCallback(thiz->pStack->udp.hUdp,
+      thiz->pMsg->msgBuf,
+      thiz->pMsg->msgLen,
       thiz->peerIp,
       thiz->peerPort);
 
@@ -172,12 +172,12 @@ nwGtpv1uTrxnStopPeerRspTimer(NwGtpv1uTrxnT* thiz)
 /**
  * Constructor
  *
- * @param[in] thiz : Pointer to stack  
+ * @param[in] thiz : Pointer to stack
  * @param[out] ppTrxn : Pointer to pointer to Trxn object.
  * @return NW_GTPV1U_OK on success.
  */
 NwGtpv1uRcT
-nwGtpv1uTrxnNew( NW_IN  NwGtpv1uStackT* thiz,  
+nwGtpv1uTrxnNew( NW_IN  NwGtpv1uStackT* thiz,
                  NW_OUT NwGtpv1uTrxnT **ppTrxn)
 {
   NwGtpv1uRcT rc = NW_GTPV1U_OK;
@@ -221,13 +221,13 @@ nwGtpv1uTrxnNew( NW_IN  NwGtpv1uStackT* thiz,
 /**
  * Overloaded Constructor
  *
- * @param[in] thiz : Pointer to stack. 
- * @param[in] seqNum : Sequence number for this transaction. 
+ * @param[in] thiz : Pointer to stack.
+ * @param[in] seqNum : Sequence number for this transaction.
  * @param[out] ppTrxn : Pointer to pointer to Trxn object.
  * @return NW_GTPV1U_OK on success.
  */
 NwGtpv1uRcT
-nwGtpv1uTrxnWithSeqNew( NW_IN  NwGtpv1uStackT* thiz,  
+nwGtpv1uTrxnWithSeqNew( NW_IN  NwGtpv1uStackT* thiz,
                         NW_IN  NwU32T seqNum,
                         NW_OUT NwGtpv1uTrxnT **ppTrxn)
 {
@@ -306,7 +306,7 @@ nwGtpv1uTrxnDelete( NW_INOUT NwGtpv1uTrxnT **pthiz)
 /**
  * Send msg to peer via data request to UDP Entity
  *
- * @param[in] thiz : Pointer to stack. 
+ * @param[in] thiz : Pointer to stack.
  * @param[in] pTrxn : Pointer to Trxn object.
  * @param[in] peerIp : Peer Ip address.
  * @param[in] peerPort : Peer Ip port.
@@ -329,10 +329,10 @@ nwGtpv1uTrxnCreateAndSendMsg( NW_IN  NwGtpv1uStackT* thiz,
   msgHdr = pMsg->msgBuf;
   NW_ASSERT(msgHdr != NULL);
 
-  *(msgHdr++)         = (pMsg->version << 5)            | 
-                        (pMsg->protocolType << 4)       | 
-                        (pMsg->extHdrFlag << 2)         | 
-                        (pMsg->seqNumFlag << 1)         | 
+  *(msgHdr++)         = (pMsg->version << 5)            |
+                        (pMsg->protocolType << 4)       |
+                        (pMsg->extHdrFlag << 2)         |
+                        (pMsg->seqNumFlag << 1)         |
                         (pMsg->npduNumFlag);
 
   *(msgHdr++)         = (pMsg->msgType);
@@ -352,7 +352,7 @@ nwGtpv1uTrxnCreateAndSendMsg( NW_IN  NwGtpv1uStackT* thiz,
     {
       *((NwU16T*) msgHdr) = 0x0000;
     }
-    msgHdr += 2; 
+    msgHdr += 2;
 
     if(pMsg->npduNumFlag)
     {
@@ -362,7 +362,7 @@ nwGtpv1uTrxnCreateAndSendMsg( NW_IN  NwGtpv1uStackT* thiz,
     {
       *((NwU8T*) msgHdr) = 0x00;
     }
-    msgHdr++; 
+    msgHdr++;
 
     if(pMsg->extHdrFlag)
     {
@@ -372,7 +372,7 @@ nwGtpv1uTrxnCreateAndSendMsg( NW_IN  NwGtpv1uStackT* thiz,
     {
       *((NwU8T*) msgHdr) = 0x00;
     }
-    msgHdr++; 
+    msgHdr++;
   }
 
   NW_ASSERT(thiz->udp.udpDataReqCallback != NULL);
@@ -405,6 +405,5 @@ nwGtpv1uTrxnCreateAndSendMsg( NW_IN  NwGtpv1uStackT* thiz,
 #endif
 
 /*--------------------------------------------------------------------------*
- *                          E N D   O F   F I L E                           * 
+ *                          E N D   O F   F I L E                           *
  *--------------------------------------------------------------------------*/
-

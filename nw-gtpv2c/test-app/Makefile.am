@@ -2,5 +2,5 @@
 
 # the subdirectories of the project to go into
 SUBDIRS =   \
-           nw-egtping\
-           nw-helloworld
+		   nw-egtping\
+		   nw-helloworld

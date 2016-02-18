@@ -7,7 +7,7 @@
  *----------------------------------------------------------------------------*/
 
 
-/** 
+/**
  * @file NwMiniUdpEntity.h
  * @brief This file contains example of a minimalistic ULP entity.
 */
@@ -18,7 +18,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #ifndef __NW_MINI_UDP_ENTITY_H__
 #define __NW_MINI_UDP_ENTITY_H__

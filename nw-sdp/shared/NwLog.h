@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - s d p                                   * 
+ *                              n w - s d p                                   *
  *                    S o f t     D a t a     P l a n e                       *
  *                                                                            *
  *                                                                            *
@@ -39,8 +39,8 @@
 
 #include "NwTypes.h"
 
-/** 
- * @file NwLog.h 
+/**
+ * @file NwLog.h
  * @brief This header file contains global shared logging definitions.
 */
 
@@ -56,7 +56,7 @@ extern "C" {
 #define NW_LOG_LEVEL_ALER                       (1) /**< action must be taken immediately*/
 #define NW_LOG_LEVEL_CRIT                       (2) /**< critical conditions             */
 #define NW_LOG_LEVEL_ERRO                       (3) /**< error conditions                */
-#define NW_LOG_LEVEL_WARN                       (4) /**< warning conditions              */ 
+#define NW_LOG_LEVEL_WARN                       (4) /**< warning conditions              */
 #define NW_LOG_LEVEL_NOTI                       (5) /**< normal but signification condition */
 #define NW_LOG_LEVEL_INFO                       (6) /**< informational                   */
 #define NW_LOG_LEVEL_DEBG                       (7) /**< debug-level messages            */
@@ -80,5 +80,3 @@ extern "C" {
 #endif
 
 #endif /* __NW_LOG_H__ */
-
-

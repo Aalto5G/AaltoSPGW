@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *    G P R S    T u n n e l i n g    P r o t o c o l   v 2 u   S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -52,7 +52,7 @@ extern "C" {
  *                    P R I V A T E    F U N C T I O N S                    *
  *--------------------------------------------------------------------------*/
 
-static void 
+static void
 nwGtpv1uDisplayBanner( NwGtpv1uStackT* thiz)
 {
   printf(" *----------------------------------------------------------------------------*\n");
@@ -90,7 +90,7 @@ nwGtpv1uDisplayBanner( NwGtpv1uStackT* thiz)
 
 }
 /*---------------------------------------------------------------------------
- * RBTree Search Functions 
+ * RBTree Search Functions
  *--------------------------------------------------------------------------*/
 
 static inline NwS32T
@@ -109,7 +109,7 @@ RB_GENERATE(NwGtpv1uTunnelEndPointIdentifierMap, NwGtpv1uTunnelEndPoint, session
 
   @param[in] a: Pointer to session a.
   @param[in] b: Pointer to session b.
-  @return  An integer greater than, equal to or less than zero according to whether the 
+  @return  An integer greater than, equal to or less than zero according to whether the
   object pointed to by a is greater than, equal to or less than the object pointed to by b.
  */
 
@@ -128,7 +128,7 @@ nwGtpv1uCompareTeid(struct NwGtpv1uTunnelEndPoint* a, struct NwGtpv1uTunnelEndPo
 
   @param[in] a: Pointer to session a.
   @param[in] b: Pointer to session b.
-  @return  An integer greater than, equal to or less than zero according to whether the 
+  @return  An integer greater than, equal to or less than zero according to whether the
   object pointed to by a is greater than, equal to or less than the object pointed to by b.
  */
 
@@ -139,9 +139,9 @@ nwGtpv1uCompareSeqNum(struct NwGtpv1uTrxn* a, struct NwGtpv1uTrxn* b)
     return 1;
   if(a->seqNum < b->seqNum)
     return -1;
-  if(a->peerIp > b->peerIp) 
+  if(a->peerIp > b->peerIp)
     return 1;
-  if(a->peerIp < b->peerIp) 
+  if(a->peerIp < b->peerIp)
     return -1;
   return 0;
 }
@@ -167,10 +167,10 @@ nwGtpv1uCreateAndSendMsg( NwGtpv1uStackT* thiz, NwU32T peerIp, NwU16T peerPort, 
   msgHdr = pMsg->msgBuf;
   NW_ASSERT(msgHdr != NULL);
 
-  *(msgHdr++)         = (pMsg->version << 5)            | 
-    (pMsg->protocolType << 4)       | 
-    (pMsg->extHdrFlag << 2)         | 
-    (pMsg->seqNumFlag << 1)         | 
+  *(msgHdr++)         = (pMsg->version << 5)            |
+    (pMsg->protocolType << 4)       |
+    (pMsg->extHdrFlag << 2)         |
+    (pMsg->seqNumFlag << 1)         |
     (pMsg->npduNumFlag);
 
   *(msgHdr++)         = (pMsg->msgType);
@@ -183,13 +183,13 @@ nwGtpv1uCreateAndSendMsg( NwGtpv1uStackT* thiz, NwU32T peerIp, NwU16T peerPort, 
   if(pMsg->seqNumFlag || pMsg->extHdrFlag || pMsg->npduNumFlag)
   {
     *((NwU16T*) msgHdr) = (pMsg->seqNumFlag ? htons(pMsg->seqNum) : 0x0000);
-    msgHdr += 2; 
+    msgHdr += 2;
 
     *((NwU8T*) msgHdr) = (pMsg->npduNumFlag ? htons(pMsg->npduNum) : 0x00);
-    msgHdr++; 
+    msgHdr++;
 
     *((NwU8T*) msgHdr) = (pMsg->extHdrFlag ? htons(pMsg->nextExtHdrType) : 0x00);
-    msgHdr++; 
+    msgHdr++;
   }
 
   rc = thiz->udp.udpDataReqCallback(thiz->udp.hUdp,
@@ -274,7 +274,7 @@ nwGtpv1uPeerRspTimeout(void* arg)
 }
 
 /*---------------------------------------------------------------------------
- * ULP API Processing Functions 
+ * ULP API Processing Functions
  *--------------------------------------------------------------------------*/
 
 /**
@@ -286,9 +286,9 @@ nwGtpv1uPeerRspTimeout(void* arg)
  */
 
 static NwGtpv1uRcT
-NwGtpv1uCreateTunnelEndPoint( NW_IN  NwGtpv1uStackT* thiz,  
-                    NW_IN  NwU32T teid, 
-                    NW_IN  NwGtpv1uUlpSessionHandleT hUlpSession, 
+NwGtpv1uCreateTunnelEndPoint( NW_IN  NwGtpv1uStackT* thiz,
+                    NW_IN  NwU32T teid,
+                    NW_IN  NwGtpv1uUlpSessionHandleT hUlpSession,
                     NW_OUT NwGtpv1uStackSessionHandleT *phStackSession )
 {
   NwGtpv1uRcT rc = NW_GTPV1U_OK;
@@ -313,13 +313,13 @@ NwGtpv1uCreateTunnelEndPoint( NW_IN  NwGtpv1uStackT* thiz,
       NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Tunnel end-point cannot be created for teid 0x%x. Tunnel already exists", teid);
       rc = nwGtpTunnelEndPointDestroy(thiz, pTunnelEndPoint);
       NW_ASSERT(rc == NW_GTPV1U_OK);
-      *phStackSession = (NwGtpv1uStackSessionHandleT) 0; 
+      *phStackSession = (NwGtpv1uStackSessionHandleT) 0;
       NW_ASSERT(0);
       rc = NW_GTPV1U_FAILURE;
     }
     else
     {
-      *phStackSession = (NwGtpv1uStackSessionHandleT) pTunnelEndPoint; 
+      *phStackSession = (NwGtpv1uStackSessionHandleT) pTunnelEndPoint;
       pTunnelEndPoint = RB_FIND(NwGtpv1uTunnelEndPointIdentifierMap, &(thiz->teidMap), pTunnelEndPoint);
       NW_ASSERT(pTunnelEndPoint);
       NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel end-point 0x%x creation successful for teid 0x%x", pTunnelEndPoint, teid);
@@ -328,7 +328,7 @@ NwGtpv1uCreateTunnelEndPoint( NW_IN  NwGtpv1uStackT* thiz,
   }
   else
   {
-    *phStackSession = (NwGtpv1uStackSessionHandleT) 0; 
+    *phStackSession = (NwGtpv1uStackSessionHandleT) 0;
     rc = NW_GTPV1U_FAILURE;
   }
 
@@ -447,7 +447,7 @@ nwGtpv1uSendto( NwGtpv1uStackT* thiz,  NW_IN NwGtpv1uUlpApiT *pUlpReq)
  */
 
 static NwGtpv1uRcT
-nwGtpv1uProcessGpdu( NwGtpv1uStackT* thiz, 
+nwGtpv1uProcessGpdu( NwGtpv1uStackT* thiz,
                      NW_IN NwCharT* gpdu,
                      NW_IN NwU32T gdpuLen,
                      NW_IN NwU32T peerIp)
@@ -493,11 +493,11 @@ nwGtpv1uProcessGpdu( NwGtpv1uStackT* thiz,
 /**
   Handle Echo Request from Peer Entity.
 
-  @param[in] thiz : Stack context 
+  @param[in] thiz : Stack context
   @return NW_GTPV1U_OK on success.
  */
 
-static NwGtpv1uRcT 
+static NwGtpv1uRcT
 nwGtpv1uHandleEchoReq(NW_IN NwGtpv1uStackT *thiz,
                     NW_IN NwU8T* msgBuf,
                     NW_IN NwU32T msgBufLen,
@@ -525,11 +525,11 @@ nwGtpv1uHandleEchoReq(NW_IN NwGtpv1uStackT *thiz,
 
   NW_ASSERT(NW_GTPV1U_OK == rc);
 
-  /* 
-   * The Restart Counter value in the Recovery information element shall 
-   * not be used, i.e. it shall be set to zero by the sender and shall be 
-   * ignored by the receiver. 
-   */ 
+  /*
+   * The Restart Counter value in the Recovery information element shall
+   * not be used, i.e. it shall be set to zero by the sender and shall be
+   * ignored by the receiver.
+   */
   rc = nwGtpv1uMsgAddIeTV1(hMsg, NW_GTPV1U_IE_RECOVERY, 0x00);
 
   NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Sending NW_GTP_ECHO_RSP message to %x:%x with seq %u", peerIp, peerPort, seqNum);
@@ -698,7 +698,7 @@ nwGtpv1uSetLogMgrEntity( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
 {
   NwGtpv1uRcT rc;
   NwGtpv1uStackT* thiz = (NwGtpv1uStackT*) hGtpuStackHandle;
- 
+
   if(pLogMgrEntity)
   {
     thiz->logMgr = *(pLogMgrEntity);
@@ -723,8 +723,8 @@ nwGtpv1uSetLogLevel( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
  * Process Request from Udp Layer
  *--------------------------------------------------------------------------*/
 
-NwGtpv1uRcT 
-nwGtpv1uProcessUdpReq( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle, 
+NwGtpv1uRcT
+nwGtpv1uProcessUdpReq( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
                     NW_IN NwU8T* udpData,
                     NW_IN NwU32T udpDataLen,
                     NW_IN NwU16T peerPort,
@@ -799,7 +799,7 @@ nwGtpv1uProcessUlpReq( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
     case NW_GTPV1U_ULP_API_CREATE_TUNNEL_ENDPOINT:
       {
         NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received create session req from ulp");
-        rc = NwGtpv1uCreateTunnelEndPoint(thiz, 
+        rc = NwGtpv1uCreateTunnelEndPoint(thiz,
             pUlpReq->apiInfo.createTunnelEndPointInfo.teid,
             pUlpReq->apiInfo.createTunnelEndPointInfo.hUlpSession,
             &(pUlpReq->apiInfo.createTunnelEndPointInfo.hStackSession));
@@ -871,4 +871,3 @@ nwGtpv1uProcessTimeout(void* timeoutInfo)
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

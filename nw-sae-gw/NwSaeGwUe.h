@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - e p c                                 * 
+ *                                n w - e p c                                 *
  *       L T E / S A E        S E R V I N G / P D N       G A T E W A Y       *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwSaeGwUe.h
 */
 
@@ -99,7 +99,7 @@ typedef enum
 /**
  * Fully Qualified Tunnel Endpoint Identifier aka FTEID
  */
-typedef struct 
+typedef struct
 {
   NwBoolT isValid;
   NwBoolT isIpv4;
@@ -117,9 +117,9 @@ typedef struct
 } NwSaeGwPaaT;
 
 /**
- * EPS Bearer  
+ * EPS Bearer
  */
-typedef  struct 
+typedef  struct
 {
   NwU8T                         ebi;
   NwU8T                         cause;
@@ -216,8 +216,8 @@ extern "C" {
 #endif
 
 NwSaeGwUeT*
-nwSaeGwUeNew(NwGtpv2cStackHandleT hGtpv2cStackSgwS11, 
-    NwGtpv2cStackHandleT hGtpv2cStackSgwS5, 
+nwSaeGwUeNew(NwGtpv2cStackHandleT hGtpv2cStackSgwS11,
+    NwGtpv2cStackHandleT hGtpv2cStackSgwS5,
     NwGtpv2cStackHandleT hGtpv2cStackPgwS5);
 
 NwRcT

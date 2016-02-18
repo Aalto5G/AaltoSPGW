@@ -6,7 +6,7 @@
  *                                                                            *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwMiniUlpEntity.c
  * @brief This file contains example of a minimalistic ULP entity.
 */
@@ -25,7 +25,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -161,8 +161,8 @@ nwGtpv2cUlpPing(NwGtpv2cNodeUlpT* thiz,
   return rc;
 }
 
-NwRcT 
-nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp, 
+NwRcT
+nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
                        NwGtpv2cUlpApiT *pUlpApi)
 {
   NwRcT                 rc;
@@ -219,4 +219,3 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
 #ifdef __cplusplus
 }
 #endif
-

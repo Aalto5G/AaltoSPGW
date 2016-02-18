@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 u    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -37,7 +37,7 @@
 #include "NwTypes.h"
 #include "NwGtpv1u.h"
 
-/** 
+/**
  * @file NwGtpv1uMsg.h
  * @brief This file defines APIs for to build new outgoing gtpv1u messages and to parse incoming messages.
 */
@@ -244,7 +244,7 @@ nwGtpv1uMsgGetTpduLength(NW_IN NwGtpv1uMsgHandleT hMsg);
   */
 
 NwGtpv1uRcT
-nwGtpv1uMsgAddIeTV1(NW_IN NwGtpv1uMsgHandleT hMsg, 
+nwGtpv1uMsgAddIeTV1(NW_IN NwGtpv1uMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       value);
 
@@ -258,7 +258,7 @@ nwGtpv1uMsgAddIeTV1(NW_IN NwGtpv1uMsgHandleT hMsg,
   */
 
 NwGtpv1uRcT
-nwGtpv1uMsgAddIeTV2(NW_IN NwGtpv1uMsgHandleT hMsg, 
+nwGtpv1uMsgAddIeTV2(NW_IN NwGtpv1uMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU16T      value);
@@ -273,7 +273,7 @@ nwGtpv1uMsgAddIeTV2(NW_IN NwGtpv1uMsgHandleT hMsg,
   */
 
 NwGtpv1uRcT
-nwGtpv1uMsgAddIeTV4(NW_IN NwGtpv1uMsgHandleT hMsg, 
+nwGtpv1uMsgAddIeTV4(NW_IN NwGtpv1uMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU32T      value);
@@ -289,7 +289,7 @@ nwGtpv1uMsgAddIeTV4(NW_IN NwGtpv1uMsgHandleT hMsg,
   */
 
 NwGtpv1uRcT
-nwGtpv1uMsgAddIe(NW_IN NwGtpv1uMsgHandleT hMsg, 
+nwGtpv1uMsgAddIe(NW_IN NwGtpv1uMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU8T*      pVal);
@@ -314,4 +314,3 @@ nwGtpv1uMsgHexDump(NwGtpv1uMsgHandleT hMsg, FILE* fp);
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

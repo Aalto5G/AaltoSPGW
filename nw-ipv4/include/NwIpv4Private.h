@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                               n w - i p v 4                                * 
+ *                               n w - i p v 4                                *
  *           I n t e r n e t    P r o t o c o l    v 4    S t a c k           *
  *                                                                            *
  *                                                                            *
@@ -43,9 +43,9 @@
 #include "NwIpv4Msg.h"
 
 
-/** 
+/**
  * @file NwIpv4Private.h
- * @brief This header file contains nw-Ipv4 private definitions not to be 
+ * @brief This header file contains nw-Ipv4 private definitions not to be
  * exposed to user application.
 */
 
@@ -89,7 +89,7 @@ typedef struct NwIpv4Stack
   NwIpv4TimerMgrEntityT         tmrMgr;
   NwIpv4LogMgrEntityT           logMgr;
   RB_HEAD(NwIpv4TunnelEndPointIdentifierMap, NwIpv4TunnelEndPoint) ipv4AddrMap;
-} NwIpv4StackT; 
+} NwIpv4StackT;
 
 /**
  * Tunnel End Point class definition
@@ -106,11 +106,11 @@ typedef struct NwIpv4TunnelEndPoint
 
 
 /*--------------------------------------------------------------------------*
- * Timeout Info Type Definition  
+ * Timeout Info Type Definition
  *--------------------------------------------------------------------------*/
 
 /**
- * timeout info 
+ * timeout info
  */
 
 typedef struct NwIpv4TimeoutInfo
@@ -125,7 +125,7 @@ typedef struct NwIpv4TimeoutInfo
  *
  * @param[in] thiz Pointer to stack instance
  * @param[in] timeoutArg Arg to timeout function.
- * @param[out] phTmr Pointer to timer handle. 
+ * @param[out] phTmr Pointer to timer handle.
  * @return NW_IPv4_OK on success.
  */
 
@@ -136,7 +136,7 @@ nwIpv4StartTrxnPeerRspTimer(NwIpv4StackT* thiz, NwIpv4TimeoutInfoT* timeoutInfo,
  * Stop a transaction response timer
  *
  * @param[in] thiz Pointer to stack instance
- * @param[out] phTmr Pointer to timer handle. 
+ * @param[out] phTmr Pointer to timer handle.
  * @return NW_IPv4_OK on success.
  */
 
@@ -185,7 +185,7 @@ typedef struct NwIpv4Trxn
 
 #pragma pack(1)
 
-typedef struct NwIpv4MsgHeader 
+typedef struct NwIpv4MsgHeader
 {
   NwU8T PN:1;
   NwU8T S:1;
@@ -208,4 +208,3 @@ typedef struct NwIpv4MsgHeader
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

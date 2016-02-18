@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -35,8 +35,8 @@
 #ifndef __NW_GRE_ERROR_H__
 #define __NW_GRE_ERROR_H__
 
-/** 
- * @file NwGreError.h 
+/**
+ * @file NwGreError.h
  * @brief This header file contains return error code type definitions.
 */
 
@@ -57,5 +57,3 @@ typedef enum {
 #endif
 
 #endif /* __NW_ERROR_CODE_H__ */
-
-

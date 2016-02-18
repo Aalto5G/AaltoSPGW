@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - g t p v 2 c                             * 
+ *                              n w - g t p v 2 c                             *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 c    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -176,7 +176,7 @@ NwRcT
 nwGtpv2cMsgSetTeid(NW_IN NwGtpv2cMsgHandleT hMsg, NwU32T teid)
 {
   NwGtpv2cMsgT *thiz = (NwGtpv2cMsgT*) hMsg;
-  thiz->teid = teid; 
+  thiz->teid = teid;
   return NW_OK;
 }
 
@@ -191,7 +191,7 @@ NwRcT
 nwGtpv2cMsgSetTeidPresent(NW_IN NwGtpv2cMsgHandleT hMsg, NwBoolT teidPresent)
 {
   NwGtpv2cMsgT *thiz = (NwGtpv2cMsgT*) hMsg;
-  thiz->teidPresent = teidPresent; 
+  thiz->teidPresent = teidPresent;
   return NW_OK;
 }
 
@@ -206,7 +206,7 @@ NwRcT
 nwGtpv2cMsgSetSeqNumber(NW_IN NwGtpv2cMsgHandleT hMsg, NwU32T seqNum)
 {
   NwGtpv2cMsgT *thiz = (NwGtpv2cMsgT*) hMsg;
-  thiz->seqNum = seqNum; 
+  thiz->seqNum = seqNum;
   return NW_OK;
 }
 
@@ -220,7 +220,7 @@ NwU32T
 nwGtpv2cMsgGetTeid(NW_IN NwGtpv2cMsgHandleT hMsg)
 {
   NwGtpv2cMsgT *thiz = (NwGtpv2cMsgT*) hMsg;
-  return (thiz->teid); 
+  return (thiz->teid);
 }
 
  /**
@@ -233,7 +233,7 @@ NwBoolT
 nwGtpv2cMsgGetTeidPresent(NW_IN NwGtpv2cMsgHandleT hMsg)
 {
   NwGtpv2cMsgT *thiz = (NwGtpv2cMsgT*) hMsg;
-  return (thiz->teidPresent); 
+  return (thiz->teidPresent);
 }
 
  /**
@@ -277,7 +277,7 @@ nwGtpv2cMsgGetLength(NW_IN NwGtpv2cMsgHandleT hMsg)
 
 
 NwRcT
-nwGtpv2cMsgAddIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
               NW_IN NwU8T       value)
@@ -298,7 +298,7 @@ nwGtpv2cMsgAddIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg,
 }
 
 NwRcT
-nwGtpv2cMsgAddIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
               NW_IN NwU16T      value)
@@ -319,7 +319,7 @@ nwGtpv2cMsgAddIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg,
 }
 
 NwRcT
-nwGtpv2cMsgAddIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
               NW_IN NwU32T      value)
@@ -340,7 +340,7 @@ nwGtpv2cMsgAddIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg,
 }
 
 NwRcT
-nwGtpv2cMsgAddIe(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIe(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU8T       instance,
@@ -362,7 +362,7 @@ nwGtpv2cMsgAddIe(NW_IN NwGtpv2cMsgHandleT hMsg,
 }
 
 NwRcT
-nwGtpv2cMsgGroupedIeStart(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGroupedIeStart(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance)
 {
@@ -385,11 +385,11 @@ nwGtpv2cMsgGroupedIeStart(NW_IN NwGtpv2cMsgHandleT hMsg,
 }
 
 NwRcT
-nwGtpv2cMsgGroupedIeEnd(NW_IN NwGtpv2cMsgHandleT hMsg) 
+nwGtpv2cMsgGroupedIeEnd(NW_IN NwGtpv2cMsgHandleT hMsg)
 {
   NwGtpv2cMsgT *pMsg = (NwGtpv2cMsgT*) hMsg;
   NwGtpv2cIeTlvT *pIe;
-  
+
   NW_ASSERT(pMsg->groupedIeEncodeStack.top > 0);
 
   pMsg->groupedIeEncodeStack.top--;
@@ -401,7 +401,7 @@ nwGtpv2cMsgGroupedIeEnd(NW_IN NwGtpv2cMsgHandleT hMsg)
 }
 
 NwRcT
-nwGtpv2cMsgAddIeCause(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIeCause(NW_IN NwGtpv2cMsgHandleT hMsg,
                       NW_IN NwU8T instance,
                       NW_IN NwU8T causeValue,
                       NW_IN NwU8T bitFlags,
@@ -425,7 +425,7 @@ nwGtpv2cMsgAddIeCause(NW_IN NwGtpv2cMsgHandleT hMsg,
 }
 
 NwRcT
-nwGtpv2cMsgAddIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       instance,
               NW_IN NwU8T       ifType,
               NW_IN NwU32T      teidOrGreKey,
@@ -436,10 +436,10 @@ nwGtpv2cMsgAddIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
   NwU8T fteidBuf[32];
   NwU8T *pFteidBuf = fteidBuf;
 
-  fteidBuf[0] = (ifType & 0x1F); 
+  fteidBuf[0] = (ifType & 0x1F);
   pFteidBuf++;
 
-  *((NwU32T*)(pFteidBuf)) = htonl((teidOrGreKey)); 
+  *((NwU32T*)(pFteidBuf)) = htonl((teidOrGreKey));
   pFteidBuf += 4;
 
   if(ipv4Addr)
@@ -460,28 +460,28 @@ nwGtpv2cMsgAddIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
 
 
 NwBoolT
-nwGtpv2cMsgIsIePresent(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgIsIePresent(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance)
 {
   NwGtpv2cMsgT *thiz = (NwGtpv2cMsgT*) hMsg;
   if((NwGtpv2cIeTv1T*) thiz->pIe[type][instance])
-    return NW_TRUE; 
-  return NW_FALSE; 
+    return NW_TRUE;
+  return NW_FALSE;
 }
 
 NwRcT
-nwGtpv2cMsgGetIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGetIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
                         NW_OUT NwU8T* pVal)
 {
   NwGtpv2cMsgT *thiz = (NwGtpv2cMsgT*) hMsg;
-  NwGtpv2cIeTv1T *pIe; 
+  NwGtpv2cIeTv1T *pIe;
   NW_ASSERT(instance <= NW_GTPV2C_IE_INSTANCE_MAXIMUM);
   if(thiz->isIeValid[type][instance])
   {
-    pIe = (NwGtpv2cIeTv1T*) thiz->pIe[type][instance]; 
+    pIe = (NwGtpv2cIeTv1T*) thiz->pIe[type][instance];
     if(ntohs(pIe->l) != 0x01)
       return NW_GTPV2C_IE_INCORRECT;
 
@@ -498,11 +498,11 @@ nwGtpv2cMsgGetIeTV2( NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_OUT NwU16T* pVal)
 {
   NwGtpv2cMsgT *thiz = (NwGtpv2cMsgT*) hMsg;
-  NwGtpv2cIeTv2T *pIe; 
+  NwGtpv2cIeTv2T *pIe;
   NW_ASSERT(instance <= NW_GTPV2C_IE_INSTANCE_MAXIMUM);
   if(thiz->isIeValid[type][instance])
   {
-    pIe = (NwGtpv2cIeTv2T*) thiz->pIe[type][instance]; 
+    pIe = (NwGtpv2cIeTv2T*) thiz->pIe[type][instance];
     if(ntohs(pIe->l) != 0x02)
       return NW_GTPV2C_IE_INCORRECT;
 
@@ -519,11 +519,11 @@ nwGtpv2cMsgGetIeTV4( NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_OUT NwU32T* pVal)
 {
   NwGtpv2cMsgT *thiz = (NwGtpv2cMsgT*) hMsg;
-  NwGtpv2cIeTv4T *pIe; 
+  NwGtpv2cIeTv4T *pIe;
   NW_ASSERT(instance <= NW_GTPV2C_IE_INSTANCE_MAXIMUM);
   if(thiz->isIeValid[type][instance])
   {
-    pIe = (NwGtpv2cIeTv4T*) thiz->pIe[type][instance]; 
+    pIe = (NwGtpv2cIeTv4T*) thiz->pIe[type][instance];
     if(ntohs(pIe->l) != 0x04)
       return NW_GTPV2C_IE_INCORRECT;
 
@@ -540,11 +540,11 @@ nwGtpv2cMsgGetIeTV8( NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_OUT NwU64T* pVal)
 {
   NwGtpv2cMsgT *thiz = (NwGtpv2cMsgT*) hMsg;
-  NwGtpv2cIeTv8T *pIe; 
+  NwGtpv2cIeTv8T *pIe;
   NW_ASSERT(instance <= NW_GTPV2C_IE_INSTANCE_MAXIMUM);
   if(thiz->isIeValid[type][instance])
   {
-    pIe = (NwGtpv2cIeTv8T*) thiz->pIe[type][instance]; 
+    pIe = (NwGtpv2cIeTv8T*) thiz->pIe[type][instance];
     if(ntohs(pIe->l) != 0x08)
       return NW_GTPV2C_IE_INCORRECT;
 
@@ -568,7 +568,7 @@ nwGtpv2cMsgGetIeTlv( NW_IN NwGtpv2cMsgHandleT hMsg,
   NW_ASSERT(instance <= NW_GTPV2C_IE_INSTANCE_MAXIMUM);
   if(thiz->isIeValid[type][instance])
   {
-    pIe = (NwGtpv2cIeTlvT*) thiz->pIe[type][instance]; 
+    pIe = (NwGtpv2cIeTlvT*) thiz->pIe[type][instance];
     if(ntohs(pIe->l) <= maxLen)
     {
       if(pVal) memcpy(pVal, ((NwU8T*) pIe) + 4, ntohs(pIe->l));
@@ -591,7 +591,7 @@ nwGtpv2cMsgGetIeTlvP( NW_IN NwGtpv2cMsgHandleT hMsg,
   NW_ASSERT(instance <= NW_GTPV2C_IE_INSTANCE_MAXIMUM);
   if(thiz->isIeValid[type][instance])
   {
-    pIe = (NwGtpv2cIeTlvT*) thiz->pIe[type][instance]; 
+    pIe = (NwGtpv2cIeTlvT*) thiz->pIe[type][instance];
     if(ppVal) *ppVal = ((NwU8T*) pIe) + 4;
     if(pLen)  *pLen  = ntohs(pIe->l);
     return NW_OK;
@@ -600,7 +600,7 @@ nwGtpv2cMsgGetIeTlvP( NW_IN NwGtpv2cMsgHandleT hMsg,
 }
 
 NwRcT
-nwGtpv2cMsgGetIeCause(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGetIeCause(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN  NwU8T       instance,
               NW_OUT NwU8T*      causeValue,
               NW_OUT NwU8T*      flags,
@@ -613,7 +613,7 @@ nwGtpv2cMsgGetIeCause(NW_IN NwGtpv2cMsgHandleT hMsg,
   NW_ASSERT(instance <= NW_GTPV2C_IE_INSTANCE_MAXIMUM);
   if(thiz->isIeValid[NW_GTPV2C_IE_CAUSE][instance])
   {
-    pIe = (NwGtpv2cIeTlvT*) thiz->pIe[NW_GTPV2C_IE_CAUSE][instance]; 
+    pIe = (NwGtpv2cIeTlvT*) thiz->pIe[NW_GTPV2C_IE_CAUSE][instance];
     *causeValue = *((NwU8T*)(((NwU8T*)pIe) + 4));
     *flags      = *((NwU8T*)(((NwU8T*)pIe) + 5));
     if(pIe->l == 6)
@@ -628,7 +628,7 @@ nwGtpv2cMsgGetIeCause(NW_IN NwGtpv2cMsgHandleT hMsg,
 }
 
 NwRcT
-nwGtpv2cMsgGetIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGetIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN  NwU8T       instance,
               NW_OUT NwU8T*      ifType,
               NW_OUT NwU32T*     teidOrGreKey,
@@ -642,14 +642,14 @@ nwGtpv2cMsgGetIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
 
   if(thiz->isIeValid[NW_GTPV2C_IE_FTEID][instance])
   {
-    pIe = (NwGtpv2cIeTlvT*) thiz->pIe[NW_GTPV2C_IE_FTEID][instance]; 
+    pIe = (NwGtpv2cIeTlvT*) thiz->pIe[NW_GTPV2C_IE_FTEID][instance];
     NwU8T flags;
     NwU8T* pIeValue     = ((NwU8T*) pIe) + 4;
     flags               = (*pIeValue) & 0xE0;
     *ifType             = (*pIeValue) & 0x1F;
     pIeValue += 1;
 
-    *teidOrGreKey       = ntohl(*((NwU32T*)(pIeValue))); 
+    *teidOrGreKey       = ntohl(*((NwU32T*)(pIeValue)));
     pIeValue += 4;
 
     if(flags & 0x80)
@@ -728,6 +728,5 @@ nwGtpv2cMsgHexDump(NwGtpv2cMsgHandleT hMsg, FILE* fp)
 
 
 /*--------------------------------------------------------------------------*
- *                          E N D   O F   F I L E                           * 
+ *                          E N D   O F   F I L E                           *
  *--------------------------------------------------------------------------*/
-

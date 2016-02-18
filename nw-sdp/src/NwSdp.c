@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - s d p                                   * 
+ *                              n w - s d p                                   *
  *                    S o f t     D a t a     P l a n e                       *
  *                                                                            *
  *                                                                            *
@@ -138,12 +138,12 @@ void NW_EVT_CALLBACK(nwSdpUdpDataIndicationCallback)
   else
   {
     NW_LOG(thiz->pStack, NW_LOG_LEVEL_ERRO, "%s", strerror(errno));
-  } 
+  }
 }
 #endif
 
 static NwSdpRcT
-nwSdpCreateFlowEndPoint( NW_IN  NwSdpT* thiz,  
+nwSdpCreateFlowEndPoint( NW_IN  NwSdpT* thiz,
     NW_IN NwSdpFlowContextT* pFlowContext,
     NW_IN NwSdpFlowEndPointT*  pFlowEndPoint)
 {
@@ -266,7 +266,7 @@ nwSdpCreateFlowEndPoint( NW_IN  NwSdpT* thiz,
 }
 
 static NwSdpRcT
-nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,  
+nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
     NW_IN NwSdpFlowContextT* pFlowContext,
     NW_IN NwSdpFlowEndPointT* pFlowEndPoint)
 {
@@ -357,7 +357,7 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
 }
 
 /*---------------------------------------------------------------------------
- * ULP API Processing Functions 
+ * ULP API Processing Functions
  *--------------------------------------------------------------------------*/
 
 /**
@@ -369,7 +369,7 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
  */
 
 static NwSdpRcT
-nwSdpCreateFlow( NW_IN  NwSdpT* thiz,  
+nwSdpCreateFlow( NW_IN  NwSdpT* thiz,
     NW_IN NwSdpUlpApiT *pUlpReq)
 {
   NwSdpRcT rc = NW_SDP_OK;
@@ -399,7 +399,7 @@ nwSdpCreateFlow( NW_IN  NwSdpT* thiz,
   {
     NW_ASSERT(pFlowContext);
   }
-  
+
   pUlpReq->apiInfo.createFlowInfo.hSdpSession = (NwSdpSessionHandleT) pFlowContext;
 
   NW_LEAVE(thiz);
@@ -449,7 +449,7 @@ nwSdpUpdateFlow( NW_IN NwSdpT* thiz, NW_IN NwSdpUlpApiT *pUlpReq)
 }
 
 NwSdpRcT
-nwSdpProcessIpv4DataIndication(NwSdpT* thiz, 
+nwSdpProcessIpv4DataIndication(NwSdpT* thiz,
               NwSdpFlowContextT* pFlowContext,
               NwIpv4MsgHandleT hMsg)
 {
@@ -536,7 +536,7 @@ nwChecksum(NwU8T *data, NwU16T checklen, NwU8T *chksm)
 
 
 NwSdpRcT
-nwSdpProcessGtpuDataIndication(NwSdpT* thiz, 
+nwSdpProcessGtpuDataIndication(NwSdpT* thiz,
               NwSdpFlowContextT* pFlowContext,
               NwGtpv1uMsgHandleT hMsg)
 {
@@ -556,7 +556,7 @@ nwSdpProcessGtpuDataIndication(NwSdpT* thiz,
         if(thiz->hIpv4Stack)
         {
           /* Send over IP*/
-          rc = nwIpv4MsgFromBufferNew(thiz->hIpv4Stack,  
+          rc = nwIpv4MsgFromBufferNew(thiz->hIpv4Stack,
               nwGtpv1uMsgGetTpduHandle(hMsg),
               nwGtpv1uMsgGetTpduLength(hMsg),
               &(ulpReq.apiInfo.sendtoInfo.hMsg));
@@ -678,7 +678,7 @@ NwSdpRcT nwSdpProcessGtpv1uStackReqCallback(NwGtpv1uUlpHandleT hUlp,
   return NW_SDP_OK;
 }
 
-static NwRcT 
+static NwRcT
 nwSdpProcessGreStackReqCallback(NwGreUlpHandleT hUlp,
                            NwGreUlpApiT *pUlpApi)
 {
@@ -769,7 +769,7 @@ nwSdpFinalize( NW_IN  NwSdpHandleT hSdp)
 }
 
 
-/** 
+/**
   Create a new SDP GRE service instance
 
  @param[in] hSdp : Stack handle.
@@ -820,7 +820,7 @@ nwSdpCreateGreService1( NW_IN NwSdpHandleT hSdp,
   return rc;
 }
 
-/** 
+/**
  Create Ipv4 service instance
 
  @param[in] hSdp : Stack handle.
@@ -841,7 +841,7 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
                                                         NwU8T* dataBuf,
                                                         NwU32T dataSize),
                         NW_IN NwSdpRcT          (*pIpv4TlArpDataReqCb) (
-                                                        NwU32T          udpHandle,       
+                                                        NwU32T          udpHandle,
                                                         NwU16T           opCode,
                                                         NwU8T            *pTargetMac,
                                                         NwU8T            *pTargetIpAddr,
@@ -873,13 +873,13 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
   NW_LOG(thiz, NW_LOG_LEVEL_INFO, "IPv4 Stack Handle '%X' Creation Successful!", thiz->hIpv4Stack);
 
   /*---------------------------------------------------------------------------
-   * Set up mode uplink or downlink. 
+   * Set up mode uplink or downlink.
    *--------------------------------------------------------------------------*/
   rc = nwIpv4SetMode(thiz->hIpv4Stack, mode);
   NW_ASSERT( rc == NW_SDP_OK );
 
   /*---------------------------------------------------------------------------
-   * Set up Mem Entity 
+   * Set up Mem Entity
    *--------------------------------------------------------------------------*/
 
   ipv4MemMgr.hMemMgr            = thiz->memMgr.hMemMgr;
@@ -891,7 +891,7 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
 
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
 
   ipv4TmrMgr.tmrMgrHandle        = thiz->tmrMgr.tmrMgrHandle;
@@ -902,7 +902,7 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
   NW_ASSERT( rc == NW_SDP_OK );
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
 
   ipv4LogMgr.logMgrHandle   = (NwIpv4LogMgrHandleT) thiz->logMgr.logMgrHandle;
@@ -912,13 +912,13 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
   NW_ASSERT( rc == NW_SDP_OK );
 
   /*---------------------------------------------------------------------------
-   * Set Ipv4 log level  
+   * Set Ipv4 log level
    *--------------------------------------------------------------------------*/
 
   rc = nwIpv4SetLogLevel(thiz->hIpv4Stack, thiz->logLevel);
 
   /*---------------------------------------------------------------------------
-   * Set ULP Entity 
+   * Set ULP Entity
    *--------------------------------------------------------------------------*/
 
   ipv4Ulp.hUlp = (NwIpv4UlpHandleT) thiz;
@@ -928,7 +928,7 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
   NW_ASSERT( rc == NW_SDP_OK );
 
   /*---------------------------------------------------------------------------
-   * Set LLP Entity 
+   * Set LLP Entity
    *--------------------------------------------------------------------------*/
 
   memcpy(ipv4Llp.llpHwAddr, pHwAddr, 6);
@@ -945,7 +945,7 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
   return rc;
 }
 
-/** 
+/**
  Create GTPU service instance
 
  @param[in] hSdp : Stack handle.
@@ -989,7 +989,7 @@ nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
   NW_LOG(thiz, NW_LOG_LEVEL_INFO, "GTPU Stack Handle '%X' Creation Successful!", thiz->hGtpv1uStack);
 
   /*---------------------------------------------------------------------------
-   * Set up Mem Manager 
+   * Set up Mem Manager
    *--------------------------------------------------------------------------*/
 
   gtpuMemMgr.hMemMgr            = thiz->memMgr.hMemMgr;
@@ -1001,7 +1001,7 @@ nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
 
 
   /*---------------------------------------------------------------------------
-   * Set up Tmr Manager 
+   * Set up Tmr Manager
    *--------------------------------------------------------------------------*/
 
   gtpuTmrMgr.tmrMgrHandle        = thiz->tmrMgr.tmrMgrHandle;
@@ -1012,7 +1012,7 @@ nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
   NW_ASSERT( rc == NW_SDP_OK );
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
 
   gtpuLogMgr.logMgrHandle   = (NwGtpv1uLogMgrHandleT) thiz->logMgr.logMgrHandle;
@@ -1022,13 +1022,13 @@ nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
   NW_ASSERT( rc == NW_SDP_OK );
 
   /*---------------------------------------------------------------------------
-   * Set GTPv1u log level  
+   * Set GTPv1u log level
    *--------------------------------------------------------------------------*/
 
   rc = nwGtpv1uSetLogLevel(thiz->hGtpv1uStack, thiz->logLevel);
 
   /*---------------------------------------------------------------------------
-   * Set ULP Entity 
+   * Set ULP Entity
    *--------------------------------------------------------------------------*/
 
   gtpuUlp.hUlp = (NwGtpv1uUlpHandleT) thiz;
@@ -1038,7 +1038,7 @@ nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
   NW_ASSERT( rc == NW_SDP_OK );
 
   /*---------------------------------------------------------------------------
-   * Set UDP Entity 
+   * Set UDP Entity
    *--------------------------------------------------------------------------*/
 
   gtpuUdp.hUdp = (NwGtpv1uUdpHandleT) hGtpuTlInterface;
@@ -1052,7 +1052,7 @@ nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
   return rc;
 }
 
-/** 
+/**
  Configure GRE service instance
 
  @param[in] hSdp : Stack handle.
@@ -1139,7 +1139,7 @@ nwSdpSetGreServiceTransportInterface( NW_IN NwSdpHandleT hSdp,
   return rc;
 }
 
-/** 
+/**
   Create a new SDP service instance
 
  @param[in] hSdp : Stack handle.
@@ -1282,8 +1282,8 @@ nwSdpSetServiceLogLevel( NW_IN NwSdpHandleT hSdp,
  * Process Request from IPv4 Layer
  *--------------------------------------------------------------------------*/
 
-NwSdpRcT 
-nwSdpProcessIpv4DataInd( NW_IN NwSdpHandleT hSdp, 
+NwSdpRcT
+nwSdpProcessIpv4DataInd( NW_IN NwSdpHandleT hSdp,
                     NW_IN NwSdpServiceHandleT hIpv4,
                     NW_IN NwU8T* ipv4Buf,
                     NW_IN NwU32T ipv4BufLen)
@@ -1297,8 +1297,8 @@ nwSdpProcessIpv4DataInd( NW_IN NwSdpHandleT hSdp,
   return rc;
 }
 
-NwSdpRcT 
-nwSdpProcessGreDataInd( NW_IN NwSdpHandleT hSdp, 
+NwSdpRcT
+nwSdpProcessGreDataInd( NW_IN NwSdpHandleT hSdp,
                     NW_IN NwSdpServiceHandleT hGre,
                     NW_IN NwCharT* greBuf,
                     NW_IN NwU32T greBufLen,
@@ -1314,8 +1314,8 @@ nwSdpProcessGreDataInd( NW_IN NwSdpHandleT hSdp,
   return rc;
 }
 
-NwSdpRcT 
-nwSdpProcessGtpuDataInd( NW_IN NwSdpHandleT hSdp, 
+NwSdpRcT
+nwSdpProcessGtpuDataInd( NW_IN NwSdpHandleT hSdp,
                     NW_IN NwU8T* udpData,
                     NW_IN NwU32T udpDataLen,
                     NW_IN NwU16T peerPort,
@@ -1334,8 +1334,8 @@ nwSdpProcessGtpuDataInd( NW_IN NwSdpHandleT hSdp,
   return rc;
 }
 
-NwSdpRcT 
-nwSdpProcessUdpDataInd( NW_IN NwSdpHandleT hSdp, 
+NwSdpRcT
+nwSdpProcessUdpDataInd( NW_IN NwSdpHandleT hSdp,
                     NW_IN NwU8T* udpData,
                     NW_IN NwU32T udpDataLen,
                     NW_IN NwU16T peerPort,
@@ -1437,4 +1437,3 @@ nwSdpProcessTimeout(void* timeoutInfo)
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

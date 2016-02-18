@@ -1,4 +1,3 @@
-
 #include "NwEvt.h"
 #include "NwTypes.h"
 #include "NwGtpv2c.h"
@@ -7,7 +6,7 @@
 #define __NW_UDP_H__
 
 /*---------------------------------------------------------------------------
- *                         U D P     E N T I T Y 
+ *                         U D P     E N T I T Y
  *--------------------------------------------------------------------------*/
 
 #define NW_GTPC_UDP_PORT                                        (2123)
@@ -22,7 +21,7 @@ typedef struct
 } NwUdpT;
 
 
-NwRcT 
+NwRcT
 nwUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
              NwU8T* dataBuf,
              NwU32T dataSize,

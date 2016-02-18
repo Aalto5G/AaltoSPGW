@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - e p c                                 * 
+ *                                n w - e p c                                 *
  *       L T E / S A E        S E R V I N G / P D N       G A T E W A Y       *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwSaeGwUeFsm.c
  */
 
@@ -84,16 +84,16 @@ NwSaeGwUeFsmNew()
     memset(thiz, 0x00, sizeof(NwSaeGwUeFsmT));
 
     /* Initialize states */
-    thiz->pState[NW_SAE_GW_UE_STATE_INIT] = nwSaeGwStateInitNew(); 
-    thiz->pState[NW_SAE_GW_UE_STATE_SAE_SESSION_CREATED] = nwSaeGwStateSaeSessionCreatedNew(); 
-    thiz->pState[NW_SAE_GW_UE_STATE_SGW_SESSION_CREATED] = nwSaeGwStateSgwSessionCreatedNew(); 
-    thiz->pState[NW_SAE_GW_UE_STATE_PGW_SESSION_CREATED] = nwSaeGwStatePgwSessionCreatedNew(); 
-    thiz->pState[NW_SAE_GW_UE_STATE_SAE_SESSION_ESTABLISHED] = nwSaeGwStateSaeSessionEstablishedNew(); 
-    thiz->pState[NW_SAE_GW_UE_STATE_SGW_SESSION_ESTABLISHED] = nwSaeGwStateSgwSessionEstablishedNew(); 
-    thiz->pState[NW_SAE_GW_UE_STATE_WT_PGW_CREATE_SESSION_RSP] = nwSaeGwStateAwaitPgwCreateSessionRspNew(); 
-    thiz->pState[NW_SAE_GW_UE_STATE_WT_PGW_DELETE_SESSION_RSP] = nwSaeGwStateAwaitPgwDeleteSessionRspNew(); 
+    thiz->pState[NW_SAE_GW_UE_STATE_INIT] = nwSaeGwStateInitNew();
+    thiz->pState[NW_SAE_GW_UE_STATE_SAE_SESSION_CREATED] = nwSaeGwStateSaeSessionCreatedNew();
+    thiz->pState[NW_SAE_GW_UE_STATE_SGW_SESSION_CREATED] = nwSaeGwStateSgwSessionCreatedNew();
+    thiz->pState[NW_SAE_GW_UE_STATE_PGW_SESSION_CREATED] = nwSaeGwStatePgwSessionCreatedNew();
+    thiz->pState[NW_SAE_GW_UE_STATE_SAE_SESSION_ESTABLISHED] = nwSaeGwStateSaeSessionEstablishedNew();
+    thiz->pState[NW_SAE_GW_UE_STATE_SGW_SESSION_ESTABLISHED] = nwSaeGwStateSgwSessionEstablishedNew();
+    thiz->pState[NW_SAE_GW_UE_STATE_WT_PGW_CREATE_SESSION_RSP] = nwSaeGwStateAwaitPgwCreateSessionRspNew();
+    thiz->pState[NW_SAE_GW_UE_STATE_WT_PGW_DELETE_SESSION_RSP] = nwSaeGwStateAwaitPgwDeleteSessionRspNew();
 
-    rc = nwSaeGwStateSetParentState(thiz->pState[NW_SAE_GW_UE_STATE_SGW_SESSION_CREATED], 
+    rc = nwSaeGwStateSetParentState(thiz->pState[NW_SAE_GW_UE_STATE_SGW_SESSION_CREATED],
                                     thiz->pState[NW_SAE_GW_UE_STATE_SAE_SESSION_CREATED]);
     NW_ASSERT( NW_OK == rc );
     gpSaeGwFsm = thiz;
@@ -158,4 +158,3 @@ nwSaeGwUeFsmRun(NwSaeGwUeFsmT* thiz, NwSaeGwUeT* pUe, NwSaeGwUeEventInfoT* pEv, 
 #ifdef __cplusplus
 }
 #endif
-

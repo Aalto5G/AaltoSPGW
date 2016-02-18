@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - s d p                                   * 
+ *                              n w - s d p                                   *
  *                    S o f t     D a t a     P l a n e                       *
  *                                                                            *
  *                                                                            *
@@ -35,8 +35,8 @@
 #ifndef __NW_SDP_ERROR_H__
 #define __NW_SDP_ERROR_H__
 
-/** 
- * @file NwSdpError.h 
+/**
+ * @file NwSdpError.h
  * @brief This header file contains return error code type definitions.
 */
 
@@ -55,5 +55,3 @@ typedef enum {
 #endif
 
 #endif /* __NW_ERROR_CODE_H__ */
-
-

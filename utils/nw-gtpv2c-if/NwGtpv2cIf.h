@@ -1,4 +1,3 @@
-
 #ifndef __NW_GTPV2C_IF_H__
 #define __NW_GTPV2C_IF_H__
 
@@ -7,7 +6,7 @@
 #include "NwGtpv2c.h"
 
 /*---------------------------------------------------------------------------
- *                         U D P     E N T I T Y 
+ *                         U D P     E N T I T Y
  *--------------------------------------------------------------------------*/
 
 #define NW_GTPC_UDP_PORT                                                (2123)
@@ -21,13 +20,13 @@ typedef struct
 } NwGtpv2cIfT;
 
 
-NwRcT 
+NwRcT
 nwGtpv2cIfInitialize(NwGtpv2cIfT* thiz, NwU32T ipAddr, NwGtpv2cStackHandleT hGtpcStack);
 
-NwRcT 
+NwRcT
 nwGtpv2cIfDestroy(NwGtpv2cIfT* thiz);
 
-NwRcT 
+NwRcT
 nwGtpv2cIfGetSelectionObject(NwGtpv2cIfT* thiz, NwU32T *pSelObj);
 
 void NW_EVT_CALLBACK(nwGtpv2cIfDataIndicationCallback);

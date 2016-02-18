@@ -12,6 +12,6 @@ helloworld_SOURCES =    \
 			NwMiniTmrMgrEntity.c\
 			NwMiniUlpEntity.c\
 			NwMiniUdpEntity.c\
-                        helloworld.c
+						helloworld.c
 
 helloworld_LDADD =  ../../src/libNwGtpv2c.a -levent $(AM_LDFLAGS)

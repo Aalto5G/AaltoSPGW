@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - e v e n t                               * 
+ *                              n w - e v e n t                               *
  *                                                                            *
  *     A s y n c h r o n o u s    E v e n t    N o t i f i c a t i o n        *
  *                               L i b r a r y                                *
@@ -93,7 +93,7 @@ typedef enum {
 #define NW_EVENT_LOG_LEVEL_ALER                         (1) /**< Action must be taken immediately*/
 #define NW_EVENT_LOG_LEVEL_CRIT                         (2) /**< Critical conditions             */
 #define NW_EVENT_LOG_LEVEL_ERRO                         (3) /**< Error conditions                */
-#define NW_EVENT_LOG_LEVEL_WARN                         (4) /**< Warning conditions              */ 
+#define NW_EVENT_LOG_LEVEL_WARN                         (4) /**< Warning conditions              */
 #define NW_EVENT_LOG_LEVEL_NOTI                         (5) /**< Normal but signification condition */
 #define NW_EVENT_LOG_LEVEL_INFO                         (6) /**< Informational                   */
 #define NW_EVENT_LOG_LEVEL_DEBG                         (7) /**< Debug-level messages            */
@@ -110,7 +110,7 @@ typedef enum {
  * Timer Type Flags
  *--------------------------------------------------------------------------*/
 
-#define NW_EVENT_TIMER_REPETITIVE                       (0x8000)        /**< A repetitive timer */ 
+#define NW_EVENT_TIMER_REPETITIVE                       (0x8000)        /**< A repetitive timer */
 #define NW_EVENT_TIMER_ONE_SHOT                         (0x4000)        /**< A one shot timer   */
 
 /*---------------------------------------------------------------------------
@@ -146,16 +146,16 @@ typedef TAILQ_ENTRY(NwEvent) NwActiveTailqEntryT;
  * Event class definition
  */
 
-typedef struct NwEvent 
+typedef struct NwEvent
 {
-  NwEventCallbackT              eventCallback;       
+  NwEventCallbackT              eventCallback;
   void*                         eventCallbackArg;
   NwEventU32T                   eventPriority;       /* Smaller numbers are higher priority*/
   NwEventU32T                   eventFd;             /* File Descriptor  */
   NwEventU32T                   eventFlags;
   NwTimevalT                    eventTimeout;
   NwTimevalT                    eventDuration;
-  NwActiveTailqEntryT           eventActiveqEntry;       
+  NwActiveTailqEntryT           eventActiveqEntry;
   NwEventU32T                   timerMinHeapIndex;
   void*                         eventBase;
   struct NwEvent                *pNext;
@@ -172,29 +172,29 @@ typedef NwEventT NwTimerEventT;
  * Constructor
  *--------------------------------------------------------------------------*/
 
-/** 
+/**
  Initialize a global instance of library.
 
  @return NW_OK on success.
  */
 
-extern NwEventRcT 
+extern NwEventRcT
 nwEventInitialize();
 
 /*---------------------------------------------------------------------------
  * Destructor
  *--------------------------------------------------------------------------*/
 
-/** 
+/**
  Finalize library.
 
  @return NW_OK on success.
  */
 
-extern NwEventRcT 
+extern NwEventRcT
 nwEventFinalize();
 
-/** 
+/**
  Initialize a event priority levels library.
 
  @param[in] noOfPriorityLevels: No of priority levels.
@@ -210,8 +210,8 @@ nwEventPriorityInit( NwEventU32T noOfPriorityLevels);
  *--------------------------------------------------------------------------*/
 
 /**
- Create a timer. 
-     
+ Create a timer.
+
  @param[out] ppTmrId: Pointer to Timer Handle.
  @param[in] cb: The function to be called back on timeout.
  @param[in] cbArg: The argument to the callback on timeout.
@@ -221,18 +221,18 @@ nwEventPriorityInit( NwEventU32T noOfPriorityLevels);
  @return NW_OK on success.
  */
 
-extern NwEventRcT 
+extern NwEventRcT
 nwEventTimerCreate(NwEventT**           ppTmrId,                /* pointer to the timer handle         */
-                   NwEventCallbackT     cb,                     /* function to be called on timeout     */ 
+                   NwEventCallbackT     cb,                     /* function to be called on timeout     */
                    void*                cbArg,                  /* argument to the callback on timeout  */
                    NwEventU32T          timeoutSec,             /* timeout, in sec                      */
                    NwEventU32T          timeoutUsec,            /* timeout, in micro sec                */
                    NwEventU32T          timerFlags );           /* one shot or repetitive               */
-               
+
 
 /**
- Create and start a timer. 
-     
+ Create and start a timer.
+
  @param[out] ppTmrId: Timer Handle.
  @param[in] cb: The function to be called back on timeout.
  @param[in] cbArg: The argument to the callback on timeout.
@@ -242,8 +242,8 @@ nwEventTimerCreate(NwEventT**           ppTmrId,                /* pointer to th
  @return NW_OK on success.
  */
 
-extern NwEventRcT 
-nwEventTimerCreateAndStart(NwEventT**           ppTmrId,        /* pointer to the timer handle          */ 
+extern NwEventRcT
+nwEventTimerCreateAndStart(NwEventT**           ppTmrId,        /* pointer to the timer handle          */
                            NwEventCallbackT     cb,             /* function to be called on timeout     */
                            void*                cbArg,          /* argument to the callback on timeout  */
                            NwEventU32T          timeoutSec,     /* timeout, in sec                      */
@@ -252,56 +252,56 @@ nwEventTimerCreateAndStart(NwEventT**           ppTmrId,        /* pointer to th
 
 
 /**
- Destroy a timer. 
-     
- @param[out] pTmrId: Timer Handle.
- @return NW_OK on success.
- */
+ Destroy a timer.
 
-extern NwEventRcT 
-nwEventTimerDestroy (NwEventT*  pTmrId);
-
-/**
- Start a timer. 
-     
- @param[out] pTmrId: Timer Handle.
- @return NW_OK on success.
- */
-
-extern NwEventRcT 
-nwEventTimerStart(NwEventT*     pTmrId);              
-
-
-/**
- Stop a timer. 
-     
- @param[out] pTmrId: Timer Handle.
- @return NW_OK on success.
- */
-
-extern NwEventRcT 
-nwEventTimerStop (NwEventT*     pTmrId);
-
-/**
- Restart a timer. 
-     
  @param[out] pTmrId: Timer Handle.
  @return NW_OK on success.
  */
 
 extern NwEventRcT
-nwEventTimerRestart ( NwEventT* pTmrId ); 
+nwEventTimerDestroy (NwEventT*  pTmrId);
 
 /**
- Update a timer. 
-     
+ Start a timer.
+
+ @param[out] pTmrId: Timer Handle.
+ @return NW_OK on success.
+ */
+
+extern NwEventRcT
+nwEventTimerStart(NwEventT*     pTmrId);
+
+
+/**
+ Stop a timer.
+
+ @param[out] pTmrId: Timer Handle.
+ @return NW_OK on success.
+ */
+
+extern NwEventRcT
+nwEventTimerStop (NwEventT*     pTmrId);
+
+/**
+ Restart a timer.
+
+ @param[out] pTmrId: Timer Handle.
+ @return NW_OK on success.
+ */
+
+extern NwEventRcT
+nwEventTimerRestart ( NwEventT* pTmrId );
+
+/**
+ Update a timer.
+
  @param[in] pTmrId: Timer Handle.
  @param[in] tv: New timeout value.
  @return NW_OK on success.
  */
 
-extern NwEventRcT 
-nwEventTimerUpdate( NwEventT    *pTmrId,      
+extern NwEventRcT
+nwEventTimerUpdate( NwEventT    *pTmrId,
                     struct      timeval tv );
 
 
@@ -310,12 +310,12 @@ nwEventTimerUpdate( NwEventT    *pTmrId,
  *--------------------------------------------------------------------------*/
 
 /**
- Add a file descriptor event. 
-     
+ Add a file descriptor event.
+
  @return NW_OK on success.
  */
 
-extern NwEventRcT 
+extern NwEventRcT
 nwEventAdd(NwEventT             *phEvent,       /**< pointer to event handle                                    */
            NwEventU32T          eventFd,        /**< file descriptor                                            */
            NwEventCallbackT     cb,             /**< function to be called back on the occurence of an event    */
@@ -324,12 +324,12 @@ nwEventAdd(NwEventT             *phEvent,       /**< pointer to event handle    
 
 
 /**
- Add a file descriptor event. 
-     
+ Add a file descriptor event.
+
  @return NW_OK on success.
  */
 
-extern NwEventRcT 
+extern NwEventRcT
 nwEventRemove(NwEventT *phEvent                 /**< pointer to event handle                                    */);
 
 /*---------------------------------------------------------------------------
@@ -337,22 +337,22 @@ nwEventRemove(NwEventT *phEvent                 /**< pointer to event handle    
  *--------------------------------------------------------------------------*/
 
 /**
- Execute the Event Loop. 
-     
+ Execute the Event Loop.
+
  @return NW_OK on success.
  */
 
-extern NwEventRcT 
+extern NwEventRcT
 nwEventLoop();
 
 
 /**
- Execute the Event Loop Once. 
-     
+ Execute the Event Loop Once.
+
  @return NW_OK on success.
  */
 
-extern NwEventRcT 
+extern NwEventRcT
 nwEventLoopOnce(NwEventU32T flags);
 
 #ifdef __cplusplus
@@ -364,4 +364,3 @@ nwEventLoopOnce(NwEventU32T flags);
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                               n w - i p v 4                                * 
+ *                               n w - i p v 4                                *
  *           I n t e r n e t    P r o t o c o l    v 4    S t a c k           *
  *                                                                            *
  *                                                                            *
@@ -113,7 +113,7 @@ nwIpv4SessionSendMsgApiToUlpEntity(NwIpv4TunnelEndPointT* thiz,
 
   api.apiType                         = NW_IPv4_ULP_API_RECV_TPDU;
   api.apiInfo.recvMsgInfo.hUlpSession = thiz->hUlpSession;
-  rc = nwIpv4MsgFromBufferNew((NwIpv4StackHandleT)thiz, pIpPdu, ipPduLen, &api.apiInfo.recvMsgInfo.hMsg); 
+  rc = nwIpv4MsgFromBufferNew((NwIpv4StackHandleT)thiz, pIpPdu, ipPduLen, &api.apiInfo.recvMsgInfo.hMsg);
 
   NW_ASSERT(thiz->pStack->ulp.ulpReqCallback != NULL);
 
@@ -129,4 +129,3 @@ nwIpv4SessionSendMsgApiToUlpEntity(NwIpv4TunnelEndPointT* thiz,
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

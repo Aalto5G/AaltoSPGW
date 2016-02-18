@@ -12,6 +12,6 @@ helloworld_SOURCES =    \
 			NwMiniTmrMgrEntity.c\
 			NwMiniUlpEntity.c\
 			NwMiniLlpEntity.c\
-                        helloworld.c
+						helloworld.c
 
 helloworld_LDADD =  ../../src/libNwIpv4.a -levent $(AM_LDFLAGS)

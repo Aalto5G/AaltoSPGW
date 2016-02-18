@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - m m e                                 * 
+ *                                n w - m m e                                 *
  *    L T E / S A E    M O B I L I T Y   M A N A G E M E N T   E N T I T Y    *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwMmeDpe.c
  */
 
@@ -140,7 +140,7 @@ nwMmeDpeInitialize()
   NW_MME_LOG(NW_LOG_LEVEL_INFO, "SDP Handle '%X' Creation Successful!", thiz->hSdp);
 
   /*
-   * Set up Memory Manager Entity 
+   * Set up Memory Manager Entity
    */
 
   memMgr.hMemMgr                = 0;
@@ -151,9 +151,9 @@ nwMmeDpeInitialize()
   NW_ASSERT( NW_OK == rc );
 
 
-  /* 
-   * Set up Log Entity 
-   */ 
+  /*
+   * Set up Log Entity
+   */
 
   logMgr.logMgrHandle           = (NwSdpLogMgrHandleT) nwLogMgrGetInstance();
   logMgr.logReqCallback         = nwMmeDpeHandleSdpLogRequest;
@@ -165,7 +165,7 @@ nwMmeDpeInitialize()
   NW_ASSERT( NW_OK == rc );
 
   /*
-   * Set up Timer Manager Entity 
+   * Set up Timer Manager Entity
    */
 
   tmrMgr.tmrMgrHandle           = 0;
@@ -242,7 +242,7 @@ nwMmeDpeDestroy(NwMmeDpeT* thiz)
  */
 
 NwRcT
-nwMmeDpeCreateGtpuIpv4Flow(NwMmeDpeT*   thiz, 
+nwMmeDpeCreateGtpuIpv4Flow(NwMmeDpeT*   thiz,
                          NwU32T         hSession,
                          NwU32T         teidIngress,
                          NwU32T         *pTeidIngress,
@@ -264,9 +264,9 @@ nwMmeDpeCreateGtpuIpv4Flow(NwMmeDpeT*   thiz,
   rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
   NW_ASSERT( NW_OK == rc );
 
-  *pTeidIngress  = ulpReq.apiInfo.createFlowInfo.ingressEndPoint.flowKey.gtpuTeid; 
+  *pTeidIngress  = ulpReq.apiInfo.createFlowInfo.ingressEndPoint.flowKey.gtpuTeid;
   *pIpv4Ingress  = ulpReq.apiInfo.createFlowInfo.ingressEndPoint.ipv4Addr;
-  *phBearer     = (NwU32T) ulpReq.apiInfo.createFlowInfo.hSdpSession; 
+  *phBearer     = (NwU32T) ulpReq.apiInfo.createFlowInfo.hSdpSession;
   return rc;
 }
 
@@ -275,7 +275,7 @@ nwMmeDpeCreateGtpuIpv4Flow(NwMmeDpeT*   thiz,
  */
 
 NwRcT
-nwMmeDpeCreateIpv4GtpuFlow(NwMmeDpeT*   thiz, 
+nwMmeDpeCreateIpv4GtpuFlow(NwMmeDpeT*   thiz,
                          NwU32T         hSession,
                          NwU32T         teidEgress,
                          NwU32T         ipv4Egress,
@@ -298,7 +298,7 @@ nwMmeDpeCreateIpv4GtpuFlow(NwMmeDpeT*   thiz,
   rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
   NW_ASSERT( NW_OK == rc );
 
-  *phBearer = (NwU32T) ulpReq.apiInfo.createFlowInfo.hSdpSession; 
+  *phBearer = (NwU32T) ulpReq.apiInfo.createFlowInfo.hSdpSession;
   return rc;
 }
 
@@ -307,7 +307,7 @@ nwMmeDpeCreateIpv4GtpuFlow(NwMmeDpeT*   thiz,
  */
 
 NwRcT
-nwMmeDpeCreateGtpuGtpuFlow(NwMmeDpeT*   thiz, 
+nwMmeDpeCreateGtpuGtpuFlow(NwMmeDpeT*   thiz,
                          NwU32T         hSession,
                          NwU32T         teidEgress,
                          NwU32T         ipv4Egress,
@@ -335,7 +335,7 @@ nwMmeDpeCreateGtpuGtpuFlow(NwMmeDpeT*   thiz,
   *teidIngress  = ulpReq.apiInfo.createFlowInfo.ingressEndPoint.flowKey.gtpuTeid;
   *ipv4Ingress  = ulpReq.apiInfo.createFlowInfo.ingressEndPoint.ipv4Addr;
 
-  *phBearer       = (NwU32T) ulpReq.apiInfo.createFlowInfo.hSdpSession; 
+  *phBearer       = (NwU32T) ulpReq.apiInfo.createFlowInfo.hSdpSession;
 
   return rc;
 }
@@ -345,7 +345,7 @@ nwMmeDpeCreateGtpuGtpuFlow(NwMmeDpeT*   thiz,
  */
 
 NwRcT
-nwMmeDpeDestroyFlow(NwMmeDpeT*   thiz, 
+nwMmeDpeDestroyFlow(NwMmeDpeT*   thiz,
                     NwU32T         hBearer)
 {
   NwRcT rc;

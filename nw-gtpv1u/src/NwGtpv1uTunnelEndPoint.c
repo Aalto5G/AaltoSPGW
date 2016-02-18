@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *    G P R S    T u n n e l i n g    P r o t o c o l   v 2 u   S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -61,7 +61,7 @@ static NwGtpv1uTunnelEndPointT *gpTunnelEndPointPool = NULL;
 /**
   Constructor
 
-  @param[in] msid: MSID 
+  @param[in] msid: MSID
   @param[in] peerAddr: Address of the peer.
   @return Pointer to Session on success, NULL n failure.
  */
@@ -133,4 +133,3 @@ nwGtpSessionSendMsgApiToUlpEntity(NwGtpv1uTunnelEndPointT* thiz,
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

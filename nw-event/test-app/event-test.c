@@ -20,7 +20,7 @@
 
 #include "NwEvent.h"
 
-typedef struct 
+typedef struct
 {
   NwEventT evfifo;
   int socket;
@@ -95,4 +95,3 @@ main (int argc, char **argv)
 
   return (0);
 }
-

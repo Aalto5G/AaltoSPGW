@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -61,7 +61,7 @@ static NwGreTunnelEndPointT* gpGreTunnelEndPointPool = NULL;
 /**
   Constructor
 
-  @param[in] msid: MSID 
+  @param[in] msid: MSID
   @param[in] peerAddr: Address of the peer.
   @return Pointer to Session on success, NULL n failure.
  */
@@ -132,4 +132,3 @@ nwGreSessionSendMsgApiToUlpEntity(NwGreTunnelEndPointT* thiz,
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

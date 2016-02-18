@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - g t p v 2 c                             * 
+ *                              n w - g t p v 2 c                             *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 c    S t a c k     *
  *                                                                            *
  *           M I N I M A L I S T I C     D E M O N S T R A T I O N            *
@@ -10,7 +10,7 @@
  *----------------------------------------------------------------------------*/
 
 
-/** 
+/**
  * @file hello-world.c
  * @brief This is a test program demostrating usage of nw-gtpv2c library.
 */
@@ -28,18 +28,18 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 static
 NwCharT* gLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI", "INFO", "DEBG"};
 
 /*---------------------------------------------------------------------------
- *                T H E      M A I N      F U N C T I O N 
+ *                T H E      M A I N      F U N C T I O N
  *--------------------------------------------------------------------------*/
 
 int main(int argc, char* argv[])
 {
-  NwRcT                         rc; 
+  NwRcT                         rc;
   NwU32T                        logLevel;
   NwU8T*                        logLevelStr;
 
@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
   NW_EVT_INIT();
 
   /*---------------------------------------------------------------------------
-   *  Initialize Log Manager 
+   *  Initialize Log Manager
    *--------------------------------------------------------------------------*/
   nwMiniLogMgrInit(nwMiniLogMgrGetInstance(), logLevel);
 
@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
   rc = nwGtpv2cSetLogLevel(hGtpv2cStack, logLevel);
 
   /*---------------------------------------------------------------------------
-   * Set up Ulp Entity 
+   * Set up Ulp Entity
    *--------------------------------------------------------------------------*/
   rc = nwGtpv2cUlpInit(&ulpObj, hGtpv2cStack, argv[2]);
   NW_ASSERT(NW_OK == rc);
@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
   NW_ASSERT(NW_OK == rc);
 
   /*---------------------------------------------------------------------------
-   * Set up Udp Entity 
+   * Set up Udp Entity
    *--------------------------------------------------------------------------*/
   rc = nwGtpv2cUdpInit(&udpObj, hGtpv2cStack, (argv[1]));
   NW_ASSERT(NW_OK == rc);
@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
   NW_ASSERT(NW_OK == rc);
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
   tmrMgr.tmrMgrHandle = 0;
   tmrMgr.tmrStartCallback = nwTimerStart;
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
   NW_ASSERT(NW_OK == rc);
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
   logMgr.logMgrHandle   = (NwGtpv2cLogMgrHandleT) nwMiniLogMgrGetInstance();
   logMgr.logReqCallback  = nwMiniLogMgrLogRequest;
@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
   NW_ASSERT(NW_OK == rc);
 
   /*---------------------------------------------------------------------------
-   * Event loop 
+   * Event loop
    *--------------------------------------------------------------------------*/
 
   NW_EVT_LOOP();

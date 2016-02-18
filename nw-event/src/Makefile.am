@@ -6,7 +6,7 @@ lib_LIBRARIES = libNwEvent.a
 # Where to install the headers on the system
 libNwEvent_adir = $(includedir)/NwEvent
 
-# The headers 
+# The headers
 libNwEvent_a_HEADERS =    \
 			../include/queue.h\
 			../include/NwEvent.h
@@ -15,5 +15,3 @@ libNwEvent_a_HEADERS =    \
 libNwEvent_a_SOURCES =    \
 			$(libNwEvent_a_HEADERS) \
 			NwEvent.c
-
-

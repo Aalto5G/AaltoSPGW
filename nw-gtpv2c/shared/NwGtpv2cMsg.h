@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - g t p v 2 c                             * 
+ *                              n w - g t p v 2 c                             *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 c    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -37,7 +37,7 @@
 #include "NwTypes.h"
 #include "NwGtpv2c.h"
 
-/** 
+/**
  * @file NwGtpv2cMsg.h
  * @brief This file defines APIs for to build new outgoing gtpv2c messages and to parse incoming messages.
  */
@@ -350,7 +350,7 @@ nwGtpv2cMsgGetLength(NW_IN NwGtpv2cMsgHandleT hMsg);
   */
 
 NwRcT
-nwGtpv2cMsgAddIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
               NW_IN NwU8T       value);
@@ -366,7 +366,7 @@ nwGtpv2cMsgAddIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg,
   */
 
 NwRcT
-nwGtpv2cMsgAddIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
               NW_IN NwU16T      value);
@@ -382,7 +382,7 @@ nwGtpv2cMsgAddIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg,
   */
 
 NwRcT
-nwGtpv2cMsgAddIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
               NW_IN NwU32T      value);
@@ -399,7 +399,7 @@ nwGtpv2cMsgAddIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg,
   */
 
 NwRcT
-nwGtpv2cMsgAddIe(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIe(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU8T       instance,
@@ -417,7 +417,7 @@ nwGtpv2cMsgAddIe(NW_IN NwGtpv2cMsgHandleT hMsg,
   */
 
 NwRcT
-nwGtpv2cMsgAddIeCause(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIeCause(NW_IN NwGtpv2cMsgHandleT hMsg,
                       NW_IN NwU8T instance,
                       NW_IN NwU8T causeValue,
                       NW_IN NwU8T bitFlags,
@@ -436,7 +436,7 @@ nwGtpv2cMsgAddIeCause(NW_IN NwGtpv2cMsgHandleT hMsg,
   */
 
 NwRcT
-nwGtpv2cMsgAddIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgAddIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       instance,
               NW_IN NwU8T       ifType,
               NW_IN NwU32T      teidOrGreKey,
@@ -444,7 +444,7 @@ nwGtpv2cMsgAddIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T*      pIpv6Addr);
 
 NwRcT
-nwGtpv2cMsgGroupedIeStart(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGroupedIeStart(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance);
 
@@ -463,7 +463,7 @@ nwGtpv2cMsgGroupedIeEnd(NW_IN NwGtpv2cMsgHandleT hMsg);
   */
 
 NwBoolT
-nwGtpv2cMsgIsIePresent(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgIsIePresent(NW_IN NwGtpv2cMsgHandleT hMsg,
                        NW_IN NwU8T type,
                        NW_IN NwU8T instance);
 
@@ -478,7 +478,7 @@ nwGtpv2cMsgIsIePresent(NW_IN NwGtpv2cMsgHandleT hMsg,
   */
 
 NwRcT
-nwGtpv2cMsgGetIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGetIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
                         NW_OUT NwU8T* pVal);
@@ -495,7 +495,7 @@ nwGtpv2cMsgGetIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg,
 
 
 NwRcT
-nwGtpv2cMsgGetIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGetIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
                         NW_OUT NwU16T* pVal);
@@ -512,7 +512,7 @@ nwGtpv2cMsgGetIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg,
 
 
 NwRcT
-nwGtpv2cMsgGetIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGetIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
                         NW_OUT NwU32T* pVal);
@@ -529,7 +529,7 @@ nwGtpv2cMsgGetIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg,
 
 
 NwRcT
-nwGtpv2cMsgGetIeTV8(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGetIeTV8(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
                         NW_OUT NwU64T* pVal);
@@ -547,7 +547,7 @@ nwGtpv2cMsgGetIeTV8(NW_IN NwGtpv2cMsgHandleT hMsg,
   */
 
 NwRcT
-nwGtpv2cMsgGetIeTlv(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGetIeTlv(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
                         NW_IN NwU16T maxLen,
@@ -566,7 +566,7 @@ nwGtpv2cMsgGetIeTlv(NW_IN NwGtpv2cMsgHandleT hMsg,
   */
 
 NwRcT
-nwGtpv2cMsgGetIeTlvP(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGetIeTlvP(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
                         NW_OUT NwU8T** ppVal,
@@ -585,7 +585,7 @@ nwGtpv2cMsgGetIeTlvP(NW_IN NwGtpv2cMsgHandleT hMsg,
   */
 
 NwRcT
-nwGtpv2cMsgGetIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGetIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN  NwU8T       instance,
               NW_OUT NwU8T*      ifType,
               NW_OUT NwU32T*     teidOrGreKey,
@@ -593,7 +593,7 @@ nwGtpv2cMsgGetIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_OUT NwU8T*      pIpv6Addr);
 
 NwRcT
-nwGtpv2cMsgGetIeCause(NW_IN NwGtpv2cMsgHandleT hMsg, 
+nwGtpv2cMsgGetIeCause(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN  NwU8T       instance,
               NW_OUT NwU8T*      causeValue,
               NW_OUT NwU8T*      flags,
@@ -629,4 +629,3 @@ nwGtpv2cMsgHexDump(NwGtpv2cMsgHandleT hMsg, FILE* fp);
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

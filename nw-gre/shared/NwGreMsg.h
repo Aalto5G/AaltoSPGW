@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -37,7 +37,7 @@
 #include "NwTypes.h"
 #include "NwGre.h"
 
-/** 
+/**
  * @file NwGreMsg.h
  * @brief This file defines APIs for to build new outgoing gre messages and to parse incoming messages.
 */
@@ -237,7 +237,7 @@ nwGreMsgGetTpdu(NW_IN NwGreMsgHandleT hMsg, NwU8T* pTpduBuf, NwU32T* pTpduLength
   */
 
 NwRcT
-nwGreMsgAddIeTV1(NW_IN NwGreMsgHandleT hMsg, 
+nwGreMsgAddIeTV1(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
               NW_IN NwU8T       value);
@@ -253,7 +253,7 @@ nwGreMsgAddIeTV1(NW_IN NwGreMsgHandleT hMsg,
   */
 
 NwRcT
-nwGreMsgAddIeTV2(NW_IN NwGreMsgHandleT hMsg, 
+nwGreMsgAddIeTV2(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU8T       instance,
@@ -270,7 +270,7 @@ nwGreMsgAddIeTV2(NW_IN NwGreMsgHandleT hMsg,
   */
 
 NwRcT
-nwGreMsgAddIeTV4(NW_IN NwGreMsgHandleT hMsg, 
+nwGreMsgAddIeTV4(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU8T       instance,
@@ -288,7 +288,7 @@ nwGreMsgAddIeTV4(NW_IN NwGreMsgHandleT hMsg,
   */
 
 NwRcT
-nwGreMsgAddIe(NW_IN NwGreMsgHandleT hMsg, 
+nwGreMsgAddIe(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
               NW_IN NwU8T       instance,
@@ -314,4 +314,3 @@ nwGreMsgHexDump(NwGreMsgHandleT hMsg, FILE* fp);
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

@@ -6,7 +6,7 @@
  *                                                                            *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file hello-world.c
  * @brief This file contains example of a minimalistic log manager entity.
 */
@@ -18,7 +18,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #ifndef __NW_MINI_LOG_MGR_H__
 #define __NW_MINI_LOG_MGR_H__
@@ -33,7 +33,7 @@
     }                                                                   \
   } while(0)
 
-/** 
+/**
  * MiniLogMgr Class Definition
  */
 typedef struct NwMiniLogMgr
@@ -50,27 +50,27 @@ typedef struct NwMiniLogMgr
 extern "C" {
 #endif
 
-/** 
+/**
  * Get global singleton MiniLogMgr instance
  */
 NwMiniLogMgrT* nwMiniLogMgrGetInstance();
 
-/** 
- * Initialize MiniLogMgr 
+/**
+ * Initialize MiniLogMgr
  * @param thiz : Pointer to global singleton MiniLogMgr instance
  * @param logLevel : Log Level
  */
 NwRcT nwMiniLogMgrInit(NwMiniLogMgrT* thiz, NwU32T logLevel );
 
-/** 
- * Set MiniLogMgr log level 
+/**
+ * Set MiniLogMgr log level
  * @param thiz : Pointer to global singleton MiniLogMgr instance
  * @param logLevel : Log Level
  */
 NwRcT nwMiniLogMgrSetLogLevel(NwMiniLogMgrT* thiz, NwU32T logLevel);
 
-/** 
- * Process log request from stack 
+/**
+ * Process log request from stack
  * @param thiz : Pointer to global singleton MiniLogMgr instance
  * @param logLevel : Log Level
  * @param file : Filename
@@ -83,7 +83,7 @@ NwRcT nwMiniLogMgrLogRequest (NwGtpv2cLogMgrHandleT logMgrHandle,
     NwU32T line,
     NwCharT* logStr);
 
-#ifdef __cplusplus 
+#ifdef __cplusplus
 }
 #endif
 

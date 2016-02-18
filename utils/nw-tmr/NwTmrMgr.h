@@ -27,9 +27,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwTmr.h
- * @brief 
+ * @brief
 */
 
 #include <stdio.h>
@@ -53,13 +53,13 @@ extern "C" {
 #define NW_TIMER_TYPE_ONE_SHOT                          (0)
 #define NW_TIMER_TYPE_REPETITIVE                        (1)
 
-extern NwRcT 
+extern NwRcT
 nwTmrMgrInitialize( NwTimerMgrHandleT *tmrMgrHandle);
 
-extern NwRcT 
+extern NwRcT
 nwTmrMgrFinalize( NwTimerMgrHandleT tmrMgrHandle);
 
-extern NwRcT 
+extern NwRcT
 nwTmrMgrStartTimer( NwTimerMgrHandleT tmrMgrHandle,
     NwU32T timeoutSec,
     NwU32T timeoutUsec,
@@ -68,7 +68,7 @@ nwTmrMgrStartTimer( NwTimerMgrHandleT tmrMgrHandle,
     void*  timeoutArg,
     NwTimerHandleT* phTmr);
 
-extern NwRcT 
+extern NwRcT
 nwTmrMgrStopTimer( NwTimerMgrHandleT tmrMgrHandle,
     NwTimerHandleT hTmr);
 

@@ -7,7 +7,7 @@
  *----------------------------------------------------------------------------*/
 
 
-/** 
+/**
  * @file NwMiniUdpEntity.c
  * @brief This file contains example of a minimalistic ULP entity.
 */
@@ -27,7 +27,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #define MAX_UDP_PAYLOAD_LEN             (4096)
 
@@ -150,4 +150,3 @@ NwRcT nwGtpv2cUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
 #ifdef __cplusplus
 }
 #endif
-

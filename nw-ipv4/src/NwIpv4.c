@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                               n w - i p v 4                                * 
+ *                               n w - i p v 4                                *
  *           I n t e r n e t    P r o t o c o l    v 4    S t a c k           *
  *                                                                            *
  *                                                                            *
@@ -69,7 +69,7 @@ typedef struct NwArpHdr
  *                    P R I V A T E    F U N C T I O N S                    *
  *--------------------------------------------------------------------------*/
 
-static void 
+static void
 nwIpv4DisplayBanner( NwIpv4StackT* thiz)
 {
   printf(" *----------------------------------------------------------------------------*\n");
@@ -107,7 +107,7 @@ nwIpv4DisplayBanner( NwIpv4StackT* thiz)
 
 }
 /*---------------------------------------------------------------------------
- * RBTree Search Functions 
+ * RBTree Search Functions
  *--------------------------------------------------------------------------*/
 
 static inline NwS32T
@@ -120,7 +120,7 @@ RB_GENERATE(NwIpv4TunnelEndPointIdentifierMap, NwIpv4TunnelEndPoint, sessionMapR
 
   @param[in] a: Pointer to session a.
   @param[in] b: Pointer to session b.
-  @return  An integer greater than, equal to or less than zero according to whether the 
+  @return  An integer greater than, equal to or less than zero according to whether the
   object pointed to by a is greater than, equal to or less than the object pointed to by b.
  */
 
@@ -171,7 +171,7 @@ nwIpv4SendUlpMessageIndication( NW_IN NwIpv4StackT* thiz,
 
 
 /*---------------------------------------------------------------------------
- * ULP API Processing Functions 
+ * ULP API Processing Functions
  *--------------------------------------------------------------------------*/
 
 /**
@@ -183,9 +183,9 @@ nwIpv4SendUlpMessageIndication( NW_IN NwIpv4StackT* thiz,
  */
 
 static NwIpv4RcT
-NwIpv4CreateTunnelEndPoint( NW_IN  NwIpv4StackT* thiz,  
-                    NW_IN  NwU32T ipv4Addr, 
-                    NW_IN  NwIpv4UlpSessionHandleT hUlpSession, 
+NwIpv4CreateTunnelEndPoint( NW_IN  NwIpv4StackT* thiz,
+                    NW_IN  NwU32T ipv4Addr,
+                    NW_IN  NwIpv4UlpSessionHandleT hUlpSession,
                     NW_OUT NwIpv4StackSessionHandleT *phStackSession )
 {
   NwIpv4RcT rc = NW_IPv4_OK;
@@ -210,7 +210,7 @@ NwIpv4CreateTunnelEndPoint( NW_IN  NwIpv4StackT* thiz,
       NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Tunnel end-point cannot be created for ipv4Addr 0x%x. TEID already exists", ipv4Addr);
       rc = nwIpv4TunnelEndPointDestroy(thiz, pTunnelEndPoint);
       NW_ASSERT(rc == NW_IPv4_OK);
-      *phStackSession = (NwIpv4StackSessionHandleT) 0; 
+      *phStackSession = (NwIpv4StackSessionHandleT) 0;
       rc = NW_IPv4_FAILURE;
     }
     else
@@ -222,18 +222,18 @@ NwIpv4CreateTunnelEndPoint( NW_IN  NwIpv4StackT* thiz,
       if(thiz->llp.llpArpDataReqCallback)
       {
         rc = thiz->llp.llpArpDataReqCallback(thiz->llp.hLlp,
-            ARPOP_REQUEST, 
+            ARPOP_REQUEST,
             bcastMac,
             (NwU8T*)&ipv4Addr,
             (NwU8T*)&ipv4Addr);
       }
 
-      *phStackSession = (NwIpv4StackSessionHandleT) pTunnelEndPoint; 
+      *phStackSession = (NwIpv4StackSessionHandleT) pTunnelEndPoint;
     }
   }
   else
   {
-    *phStackSession = (NwIpv4StackSessionHandleT) 0; 
+    *phStackSession = (NwIpv4StackSessionHandleT) 0;
     rc = NW_IPv4_FAILURE;
   }
 
@@ -308,7 +308,7 @@ nwIpv4Sendto( NwIpv4StackT* thiz,  NW_IN NwIpv4UlpApiT *pUlpReq)
  */
 
 static NwIpv4RcT
-nwIpv4ProcessPdu( NwIpv4StackT* thiz, 
+nwIpv4ProcessPdu( NwIpv4StackT* thiz,
                   NW_IN NwCharT* pdu,
                   NW_IN NwU32T gPduLen)
 
@@ -339,16 +339,16 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
     NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Version              - %u", (pHdr->ch[0] & 0xf0) >> 4);
     NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Header Length        - %u", pHdr->ch[0] & 0x0f);
     NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Protocol             - %u", pHdr->protocol);
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Source IP            - %d.%d.%d.%d", 
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Source IP            - %d.%d.%d.%d",
         (pHdr->srcAddr & 0x000000FF),
-        (pHdr->srcAddr & 0x0000FF00) >> 8, 
-        (pHdr->srcAddr & 0x00FF0000) >> 16, 
-        (pHdr->srcAddr & 0xFF000000) >> 24); 
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destination IP       - %d.%d.%d.%d", 
+        (pHdr->srcAddr & 0x0000FF00) >> 8,
+        (pHdr->srcAddr & 0x00FF0000) >> 16,
+        (pHdr->srcAddr & 0xFF000000) >> 24);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destination IP       - %d.%d.%d.%d",
         (pHdr->dstAddr & 0x000000FF),
-        (pHdr->dstAddr & 0x0000FF00) >> 8, 
-        (pHdr->dstAddr & 0x00FF0000) >> 16, 
-        (pHdr->dstAddr & 0xFF000000) >> 24); 
+        (pHdr->dstAddr & 0x0000FF00) >> 8,
+        (pHdr->dstAddr & 0x00FF0000) >> 16,
+        (pHdr->dstAddr & 0xFF000000) >> 24);
 
 
     tunnelEndPointKey.ipv4Addr = (thiz->mode == NW_IPv4_MODE_DOWNLINK ? pHdr->dstAddr : pHdr->srcAddr);
@@ -378,23 +378,23 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
     NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "HW Address Length          - %u", pHdr->hwAddrLen);
     NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Protocol Address Length    - %u", pHdr->protoAddrLen);
     NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Op Code                    - %u", ntohs(pHdr->opCode));
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sender IP Address          - %d.%d.%d.%d", 
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sender IP Address          - %d.%d.%d.%d",
         (pHdr->senderIpAddr[0]),
-        (pHdr->senderIpAddr[1]) , 
-        (pHdr->senderIpAddr[2]) , 
-        (pHdr->senderIpAddr[3])); 
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Target IP                  - %d.%d.%d.%d", 
+        (pHdr->senderIpAddr[1]) ,
+        (pHdr->senderIpAddr[2]) ,
+        (pHdr->senderIpAddr[3]));
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Target IP                  - %d.%d.%d.%d",
         (pHdr->targetIpAddr[0]),
-        (pHdr->targetIpAddr[1]), 
-        (pHdr->targetIpAddr[2]), 
-        (pHdr->targetIpAddr[3])); 
+        (pHdr->targetIpAddr[1]),
+        (pHdr->targetIpAddr[2]),
+        (pHdr->targetIpAddr[3]));
 
     memcpy(&(tunnelEndPointKey.ipv4Addr), pHdr->targetIpAddr, sizeof(NwU32T));
     pTunnelEndPoint = RB_FIND(NwIpv4TunnelEndPointIdentifierMap, &(thiz->ipv4AddrMap), &tunnelEndPointKey);
     if(pTunnelEndPoint)
     {
       rc = thiz->llp.llpArpDataReqCallback(thiz->llp.hLlp,
-          ARPOP_REPLY, 
+          ARPOP_REPLY,
           pHdr->senderMac,
           pHdr->senderIpAddr,
           pHdr->targetIpAddr);
@@ -402,12 +402,12 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
       NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"Sending ARP reponse!");
     }
     else
-	{
-	  NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"Tunnel Endpoint not found for %d.%d.%d.%d, ignoring ARP request", 
-	         (pHdr->targetIpAddr[0]),
-	         (pHdr->targetIpAddr[1]),
-	         (pHdr->targetIpAddr[2]),
-	         (pHdr->targetIpAddr[3]));
+    {
+      NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"Tunnel Endpoint not found for %d.%d.%d.%d, ignoring ARP request",
+             (pHdr->targetIpAddr[0]),
+             (pHdr->targetIpAddr[1]),
+             (pHdr->targetIpAddr[2]),
+             (pHdr->targetIpAddr[3]));
     }
   }
   else
@@ -586,7 +586,7 @@ nwIpv4SetLogMgrEntity( NW_IN NwIpv4StackHandleT hIpv4StackHandle,
 {
   NwIpv4RcT rc;
   NwIpv4StackT* thiz = (NwIpv4StackT*) hIpv4StackHandle;
- 
+
   if(pLogMgrEntity)
   {
     thiz->logMgr = *(pLogMgrEntity);
@@ -611,8 +611,8 @@ nwIpv4SetLogLevel( NW_IN NwIpv4StackHandleT hIpv4StackHandle,
  * Process Request from LLP Layer
  *--------------------------------------------------------------------------*/
 
-NwIpv4RcT 
-nwIpv4ProcessLlpDataInd( NW_IN NwIpv4StackHandleT hIpv4StackHandle, 
+NwIpv4RcT
+nwIpv4ProcessLlpDataInd( NW_IN NwIpv4StackHandleT hIpv4StackHandle,
                     NW_IN NwU8T* data,
                     NW_IN NwU32T dataLen)
 {
@@ -640,7 +640,7 @@ nwIpv4ProcessUlpReq( NW_IN NwIpv4StackHandleT hIpv4StackHandle,
     case NW_IPv4_ULP_API_CREATE_TUNNEL_ENDPOINT:
       {
         NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received create session req from ulp");
-        rc = NwIpv4CreateTunnelEndPoint(thiz, 
+        rc = NwIpv4CreateTunnelEndPoint(thiz,
             pUlpReq->apiInfo.createTunnelEndPointInfo.ipv4Addr,
             pUlpReq->apiInfo.createTunnelEndPointInfo.hUlpSession,
             &(pUlpReq->apiInfo.createTunnelEndPointInfo.hStackSession));
@@ -705,4 +705,3 @@ nwIpv4ProcessTimeout(void* timeoutInfo)
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

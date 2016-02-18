@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -15,7 +13,7 @@
 #include "NwUdpLog.h"
 
 /*---------------------------------------------------------------------------
- *                          U D P     E N T I T Y 
+ *                          U D P     E N T I T Y
  *--------------------------------------------------------------------------*/
 
 static void NW_EVT_CALLBACK(nwUdpDataIndicationCallbackData)
@@ -64,7 +62,7 @@ NwRcT nwUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
   peerAddr.sin_port         = htons(peerPort);
   peerAddr.sin_addr.s_addr  = (peerIpAddr);
   memset(peerAddr.sin_zero, '\0', sizeof (peerAddr.sin_zero));
-  
+
   nwLogHexDump(dataBuf, dataSize);
 
   bytesSent = sendto (thiz->hSocket, dataBuf, dataSize, 0, (struct sockaddr *) &peerAddr, sizeof(peerAddr));
@@ -109,5 +107,3 @@ NwRcT nwUdpInit(NwUdpT* thiz, NwU32T ipAddr, NwGtpv2cStackHandleT hGtpcStack)
 
   return NW_OK;
 }
-
-

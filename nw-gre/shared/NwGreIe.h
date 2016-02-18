@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwGreIe.h
  * @brief This header file contains Information Element definitions for GRE
  * as per 3GPP TS 29274-930.
@@ -56,12 +56,11 @@
  *   G T P V 2 C      C A U S E      V A L U E     D E F I N I T I O N S    *
  *--------------------------------------------------------------------------*/
 
-#define NW_GRE_CAUSE_REQUEST_ACCEPTED                                (16) 
-#define NW_GRE_CAUSE_MANDATORY_IE_MISSING                            (70) 
+#define NW_GRE_CAUSE_REQUEST_ACCEPTED                                (16)
+#define NW_GRE_CAUSE_MANDATORY_IE_MISSING                            (70)
 
 #endif  /* __NW_GRE_IE_H__ */
 
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

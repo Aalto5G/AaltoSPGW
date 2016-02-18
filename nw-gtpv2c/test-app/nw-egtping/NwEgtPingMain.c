@@ -3,7 +3,7 @@
  *----------------------------------------------------------------------------*/
 
 
-/** 
+/**
  * @file NwEgtPingMain.c
  * @brief This is a program demostrating usage of nw-gtpv2c library for eGTP ping.
 */
@@ -23,7 +23,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 static
 NwCharT* gLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI", "INFO", "DEBG"};
@@ -135,12 +135,12 @@ nwEgtPingParseCmdLineOpts(int argc, char* argv[])
 }
 
 /*---------------------------------------------------------------------------
- *                T H E      M A I N      F U N C T I O N 
+ *                T H E      M A I N      F U N C T I O N
  *--------------------------------------------------------------------------*/
 
 int main(int argc, char* argv[])
 {
-  NwRcT                         rc; 
+  NwRcT                         rc;
   NwU32T                        logLevel;
   NwU8T*                        logLevelStr;
 
@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
   NW_EVT_INIT();
 
   /*---------------------------------------------------------------------------
-   *  Initialize Log Manager 
+   *  Initialize Log Manager
    *--------------------------------------------------------------------------*/
   nwMiniLogMgrInit(nwMiniLogMgrGetInstance(), logLevel);
 
@@ -211,7 +211,7 @@ int main(int argc, char* argv[])
   rc = nwGtpv2cSetLogLevel(hGtpv2cStack, logLevel);
 
   /*---------------------------------------------------------------------------
-   * Set up Ulp Entity 
+   * Set up Ulp Entity
    *--------------------------------------------------------------------------*/
   rc = nwGtpv2cUlpInit(&ulpObj, hGtpv2cStack, egtPing.localIpStr);
   NW_ASSERT(NW_OK == rc);
@@ -223,7 +223,7 @@ int main(int argc, char* argv[])
   NW_ASSERT(NW_OK == rc);
 
   /*---------------------------------------------------------------------------
-   * Set up Udp Entity 
+   * Set up Udp Entity
    *--------------------------------------------------------------------------*/
   rc = nwGtpv2cUdpInit(&udpObj, hGtpv2cStack, egtPing.localIpStr);
   NW_ASSERT(NW_OK == rc);
@@ -235,7 +235,7 @@ int main(int argc, char* argv[])
   NW_ASSERT(NW_OK == rc);
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
   tmrMgr.tmrMgrHandle = 0;
   tmrMgr.tmrStartCallback = nwTimerStart;
@@ -245,7 +245,7 @@ int main(int argc, char* argv[])
   NW_ASSERT(NW_OK == rc);
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
   logMgr.logMgrHandle   = (NwGtpv2cLogMgrHandleT) nwMiniLogMgrGetInstance();
   logMgr.logReqCallback  = nwMiniLogMgrLogRequest;
@@ -257,7 +257,7 @@ int main(int argc, char* argv[])
    *  Send Message Request to Gtpv2c Stack Instance
    *--------------------------------------------------------------------------*/
   NW_LOG(NW_LOG_LEVEL_NOTI, "EGTPING %s ("NW_IPV4_ADDR")", egtPing.targetIpStr, NW_IPV4_ADDR_FORMAT(inet_addr(egtPing.targetIpStr)));
-  rc = nwGtpv2cUlpPing(&ulpObj, 
+  rc = nwGtpv2cUlpPing(&ulpObj,
                         inet_addr(egtPing.targetIpStr),
                         egtPing.pingCount,
                         egtPing.pingInterval,
@@ -266,12 +266,12 @@ int main(int argc, char* argv[])
   NW_ASSERT(NW_OK == rc);
 
   /*---------------------------------------------------------------------------
-   * Install signal handler 
+   * Install signal handler
    *--------------------------------------------------------------------------*/
   signal(SIGINT, nwEgtPingHandleSignal);
 
   /*---------------------------------------------------------------------------
-   * Event loop 
+   * Event loop
    *--------------------------------------------------------------------------*/
 
   NW_EVT_LOOP();

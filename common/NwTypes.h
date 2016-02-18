@@ -34,7 +34,7 @@
 #ifndef __NW_TYPES_H__
 #define __NW_TYPES_H__
 
-/** 
+/**
  * @file NwTypes.h
  * @brief This header file contains basic type definitions.
 */
@@ -74,5 +74,3 @@ typedef signed int              NwFdT;          /**< Use this for file descripto
 #endif
 
 #endif /* __NW_TYPES_H__ */
-
-

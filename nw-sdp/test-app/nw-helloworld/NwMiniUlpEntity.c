@@ -6,7 +6,7 @@
  *                                                                            *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwMiniUlpEntity.c
  * @brief This file contains example of a minimalistic ULP entity.
 */
@@ -22,7 +22,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -148,8 +148,8 @@ nwMiniUlpTpduSend(NwMiniUlpEntityT* thiz, NwU8T* tpduBuf, NwU32T tpduLen , NwU16
   return NW_SDP_OK;
 }
 
-NwSdpRcT 
-nwMiniUlpProcessStackReqCallback (NwSdpUlpHandleT hUlp, 
+NwSdpRcT
+nwMiniUlpProcessStackReqCallback (NwSdpUlpHandleT hUlp,
                        NwSdpUlpApiT *pUlpApi)
 {
   NwMiniUlpEntityT* thiz;
@@ -168,4 +168,3 @@ nwMiniUlpProcessStackReqCallback (NwSdpUlpHandleT hUlp,
 #ifdef __cplusplus
 }
 #endif
-

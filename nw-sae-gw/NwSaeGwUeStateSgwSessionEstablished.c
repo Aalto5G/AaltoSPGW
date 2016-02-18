@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - e p c                                 * 
+ *                                n w - e p c                                 *
  *       L T E / S A E        S E R V I N G / P D N       G A T E W A Y       *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwSaeGwUeStateSgwSessionEstablished.c
  */
 
@@ -93,7 +93,7 @@ nwSaeGwDecodeFteid(NwU8T* ieValue, void* arg)
 
   if(pFteid->isIpv4)
   {
-    pFteid->ipv4Addr = ntohl(*((NwU32T*)(ieValue))); 
+    pFteid->ipv4Addr = ntohl(*((NwU32T*)(ieValue)));
     ieValue += 4;
   }
   if(pFteid->isIpv6)
@@ -120,9 +120,9 @@ nwSaeGwDecodeBearerContextToBeCreated(NwSaeGwUeT* thiz, NwGtpv2cMsgHandleT hReqM
       NW_GTPV2C_IE_INSTANCE_ZERO,
       &pBufEpsBearerContext,
       &epsBearerContextLength);
-  if( NW_OK != rc ) 
-  { 
-    return rc; 
+  if( NW_OK != rc )
+  {
+    return rc;
   }
 
   pBufEpsBearerContextEnd = pBufEpsBearerContext + epsBearerContextLength;
@@ -196,8 +196,8 @@ nwSaeGwDecodeBearerContextToBeRemoved(NwSaeGwUeT *thiz, NwGtpv2cMsgHandleT hReqM
       NW_GTPV2C_IE_INSTANCE_ZERO,
       &pBufEpsBearerContext,
       &epsBearerContextLength);
-  if( NW_OK == rc ) 
-  { 
+  if( NW_OK == rc )
+  {
     pBufEpsBearerContextEnd = pBufEpsBearerContext + epsBearerContextLength;
 
     while( pBufEpsBearerContext < pBufEpsBearerContextEnd)
@@ -331,9 +331,9 @@ nwSaeGwUeSgwSendModifyBearerResponseToMme(NwSaeGwUeT* thiz,
     rc = nwGtpv2cMsgAddIeCause((ulpReq.hMsg), 0, pError->cause, NW_GTPV2C_CAUSE_BIT_NONE, 0, 0);
     NW_ASSERT( NW_OK == rc );
 
-    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg), 
-        0, 
-        NW_GTPV2C_IFTYPE_S1U_SGW_GTPU, 
+    rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg),
+        0,
+        NW_GTPV2C_IFTYPE_S1U_SGW_GTPU,
         ((NwU32T)(thiz->epsBearer[pModifyBearerReq->epsBearerTobeCreated.ebi].s1uTunnel.fteidSgw.teidOrGreKey)),
         ((NwU32T)(thiz->epsBearer[pModifyBearerReq->epsBearerTobeCreated.ebi].s1uTunnel.fteidSgw.ipv4Addr)),
         NULL);
@@ -392,7 +392,7 @@ nwSaeGwUeSgwSendDeleteSessionResponseToMme(NwSaeGwUeT* thiz,
 }
 
   static NwRcT
-nwSaeGwUeHandleSgwS11ModifyBearerRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv) 
+nwSaeGwUeHandleSgwS11ModifyBearerRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT                 rc;
   NwGtpv2cErrorT        error;
@@ -476,8 +476,8 @@ nwSaeGwUeHandleSgwS11ModifyBearerRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
     rc = nwSaeGwUlpModifyDownlinkEpsBearer(thiz->hSgw, thiz, modifyBearerReq.epsBearerTobeCreated.ebi);
     NW_ASSERT( NW_OK == rc );
 
-    thiz->epsBearer[modifyBearerReq.epsBearerTobeCreated.ebi].s1uTunnel.fteidEnodeB = 
-      modifyBearerReq.epsBearerTobeCreated.s1u.fteidEnodeB; 
+    thiz->epsBearer[modifyBearerReq.epsBearerTobeCreated.ebi].s1uTunnel.fteidEnodeB =
+      modifyBearerReq.epsBearerTobeCreated.s1u.fteidEnodeB;
 
     error.cause = NW_GTPV2C_CAUSE_REQUEST_ACCEPTED;
 
@@ -609,12 +609,12 @@ nwSaeGwUeHandleSgwS11DeleteSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
     error.cause = NW_GTPV2C_CAUSE_REQUEST_ACCEPTED;
     rc = nwSaeGwUeSgwSendDeleteSessionResponseToMme(thiz, pUlpApi->apiInfo.initialReqIndInfo.hTrxn, &(error), NULL);
 
-    thiz->state = ((thiz->sessionType == NW_SAE_GW_UE_SESSION_TYPE_SGW) ? 
+    thiz->state = ((thiz->sessionType == NW_SAE_GW_UE_SESSION_TYPE_SGW) ?
         NW_SAE_GW_UE_STATE_END : NW_SAE_GW_UE_STATE_PGW_SESSION_CREATED);
   }
 
 #if 0 /* Moved to EntryAction of NW_SAE_GW_UE_STATE_WT_PGW_DELETE_SESSION_RSP state */
-  
+
 
   /*
    * Send Message Request to Gtpv2c Stack Instance
@@ -758,4 +758,3 @@ nwSaeGwStateSgwSessionEstablishedDelete(NwSaeUeStateT* thiz)
 #ifdef __cplusplus
 }
 #endif
-

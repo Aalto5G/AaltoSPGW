@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                               n w - i p v 4                                * 
+ *                               n w - i p v 4                                *
  *           I n t e r n e t    P r o t o c o l    v 4    S t a c k           *
  *                                                                            *
  *                                                                            *
@@ -35,8 +35,8 @@
 #ifndef __NW_IPv4_ERROR_H__
 #define __NW_IPv4_ERROR_H__
 
-/** 
- * @file NwIpv4Error.h 
+/**
+ * @file NwIpv4Error.h
  * @brief This header file contains return error code type definitions.
 */
 
@@ -55,5 +55,3 @@ typedef enum {
 #endif
 
 #endif /* __NW_ERROR_CODE_H__ */
-
-

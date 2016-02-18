@@ -29,9 +29,9 @@
 
 #ifndef __NW_EVT_H__
 #define __NW_EVT_H__
-/** 
+/**
  * @file NwEvt.h
- * @brief 
+ * @brief
 */
 
 #ifdef __WITH_LIBEVENT__
@@ -63,8 +63,8 @@ typedef struct event                    NwEventT;
 #define NW_EVT_CALLBACK(__cbFunc)       __cbFunc(void *arg)
 #define NW_TMR_CALLBACK(__cbFunc)       __cbFunc(void *arg)
 
-#define NW_EVT_INIT                     nwEventInitialize 
-#define NW_EVT_LOOP                     nwEventLoop 
+#define NW_EVT_INIT                     nwEventInitialize
+#define NW_EVT_LOOP                     nwEventLoop
 
 #define NW_EVENT_ADD(__ev, __evSelObj, __evCallback, __evCallbackArg, __evFlags)        \
   do {                                                                                  \

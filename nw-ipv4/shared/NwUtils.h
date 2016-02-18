@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                               n w - i p v 4                                * 
+ *                               n w - i p v 4                                *
  *           I n t e r n e t    P r o t o c o l    v 4    S t a c k           *
  *                                                                            *
  *                                                                            *
@@ -37,15 +37,13 @@
 #define __NW_UTILS_H__
 
 
-/** 
- * @file NwUtils.h 
+/**
+ * @file NwUtils.h
  * @brief This header file contains utility macro and function definitions.
 */
 
 #define NW_ASSERT                                       assert                  /**< Assertion */
-        
+
 #define NW_CHK_NULL_PTR(_ptr)                           NW_ASSERT(_ptr != NULL) /**< Null pointer check */
 
 #endif /* __NW_UTILS_H__ */
-
-

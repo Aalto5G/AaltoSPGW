@@ -1,4 +1,3 @@
-
 #include "NwTypes.h"
 #include "NwError.h"
 #include "NwGtpv1u.h"
@@ -8,7 +7,7 @@
 #define __NW_GTPV1U_IF_H__
 
 /*---------------------------------------------------------------------------
- *                         U D P     E N T I T Y 
+ *                         U D P     E N T I T Y
  *--------------------------------------------------------------------------*/
 
 #define NW_GTPU_UDP_PORT                                                (2152)

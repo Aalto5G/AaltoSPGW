@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - g t p v 2 c                             * 
+ *                              n w - g t p v 2 c                             *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 c    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -47,9 +47,9 @@
 #include "NwGtpv2cMsgIeParseInfo.h"
 #include "NwGtpv2cTunnel.h"
 
-/** 
+/**
  * @file NwGtpv2cPrivate.h
- * @brief This header file contains nw-gtpv2c private definitions not to be 
+ * @brief This header file contains nw-gtpv2c private definitions not to be
  * exposed to user application.
 */
 
@@ -110,15 +110,15 @@ typedef struct NwGtpv2cStack
   RB_HEAD( NwGtpv2cOutstandingRxSeqNumTrxnMap, NwGtpv2cTrxn ) outstandingRxSeqNumMap;
   RB_HEAD( NwGtpv2cActiveTimerList, NwGtpv2cTimeoutInfo     ) activeTimerList;
   NwHandleT                     hTmrMinHeap;
-} NwGtpv2cStackT; 
+} NwGtpv2cStackT;
 
 
 /*--------------------------------------------------------------------------*
- * Timeout Info Type Definition  
+ * Timeout Info Type Definition
  *--------------------------------------------------------------------------*/
 
 /**
- * gtpv2c timeout info 
+ * gtpv2c timeout info
  */
 
 typedef struct NwGtpv2cTimeoutInfo
@@ -239,4 +239,3 @@ nwGtpv2cStopTimer(NwGtpv2cStackT* thiz,
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

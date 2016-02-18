@@ -27,7 +27,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwIpv4If.h
  * @brief This files defines IP interface entity.
  */
@@ -41,7 +41,7 @@
 #include "NwSdp.h"
 
 /*---------------------------------------------------------------------------
- *                         U D P     E N T I T Y 
+ *                         U D P     E N T I T Y
  *--------------------------------------------------------------------------*/
 
 #define MAX_IP_PAYLOAD_LEN                                     (4096)
@@ -75,7 +75,7 @@ void NW_EVT_CALLBACK(nwIpv4IfDataIndicationCallback);
 
 void NW_EVT_CALLBACK(nwIpv4IfArpDataIndicationCallback);
 
-NwRcT 
+NwRcT
 nwIpv4IfIpv4DataReq(NwSdpHandleT hSdp,
              NwU8T* dataBuf,
              NwU32T dataSize);

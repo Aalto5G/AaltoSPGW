@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                               n w - i p v 4                                * 
+ *                               n w - i p v 4                                *
  *           I n t e r n e t    P r o t o c o l    v 4    S t a c k           *
  *                                                                            *
  *                                                                            *
@@ -37,8 +37,8 @@
 #include <stdio.h>
 #include <libgen.h>
 
-/** 
- * @file NwIpv4Log.h 
+/**
+ * @file NwIpv4Log.h
  * @brief This header contains logging related definitions.
 */
 
@@ -96,4 +96,3 @@ extern "C" {
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-

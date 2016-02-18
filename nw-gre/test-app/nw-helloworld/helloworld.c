@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                             n w - g t p v 2 u                              * 
+ *                             n w - g t p v 2 u                              *
  *  G e n e r i c    R o u t i n g    E n c a p s u l a t i o n    S t a c k  *
  *                                                                            *
  *           M I N I M A L I S T I C     D E M O N S T R A T I O N            *
@@ -10,7 +10,7 @@
  *----------------------------------------------------------------------------*/
 
 
-/** 
+/**
  * @file hello-world.c
  * @brief This is a test program demostrating usage of nw-gre library.
 */
@@ -27,15 +27,15 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 /*---------------------------------------------------------------------------
- *                T H E      M A I N      F U N C T I O N 
+ *                T H E      M A I N      F U N C T I O N
  *--------------------------------------------------------------------------*/
 
 int main(int argc, char* argv[])
 {
-  NwRcT rc; 
+  NwRcT rc;
   char*                         logLevelStr;
   NwU32T                        logLevel;
   NwU32T                        num_of_connections;
@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
   NW_EVT_INIT();
 
   /*---------------------------------------------------------------------------
-   *  Initialize Log Manager 
+   *  Initialize Log Manager
    *--------------------------------------------------------------------------*/
 
   nwMiniLogMgrInit(&logObj, logLevel);
@@ -107,9 +107,9 @@ int main(int argc, char* argv[])
   }
 
   NW_LOG(NW_LOG_LEVEL_INFO, "Gre Stack Handle '%X' Creation Successful!", hGreStack);
-  
+
   /*---------------------------------------------------------------------------
-   * Set up Ulp Entity 
+   * Set up Ulp Entity
    *--------------------------------------------------------------------------*/
 
   rc = nwMiniUlpInit(&ulpObj, hGreStack);
@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
 
 
   /*---------------------------------------------------------------------------
-   * Set up Udp Entity 
+   * Set up Udp Entity
    *--------------------------------------------------------------------------*/
 
   rc = nwMiniUdpInit(&udpObj, hGreStack, (argv[2]));
@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
   NW_ASSERT( NW_OK == rc );
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
 
   tmrMgr.tmrMgrHandle = 0;
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
   NW_ASSERT( NW_OK == rc );
 
   /*---------------------------------------------------------------------------
-   * Set up Log Entity 
+   * Set up Log Entity
    *--------------------------------------------------------------------------*/
 
   logMgr.logMgrHandle   = (NwGreLogMgrHandleT) &logObj;
@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
   NW_ASSERT( NW_OK == rc );
 
   /*---------------------------------------------------------------------------
-   * Set GRE log level  
+   * Set GRE log level
    *--------------------------------------------------------------------------*/
 
   rc = nwGreSetLogLevel(hGreStack, logLevel);
@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
   }
 
   /*---------------------------------------------------------------------------
-   * Event loop 
+   * Event loop
    *--------------------------------------------------------------------------*/
 
   NW_EVT_LOOP();

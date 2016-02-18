@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                                n w - e p c                                 * 
+ *                                n w - e p c                                 *
  *       L T E / S A E        S E R V I N G / P D N       G A T E W A Y       *
  *                                                                            *
  *                                                                            *
@@ -31,7 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwSaeGwUeStateAwaitPgwDeleteSessionRsp.c
  */
 
@@ -96,7 +96,7 @@ nwSaeGwUeSgwSendDeleteSessionResponseToMme(NwSaeGwUeT* thiz,
 }
 
 static NwRcT
-nwSaeGwUeHandleSgwS5DeleteSessionResponse(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv) 
+nwSaeGwUeHandleSgwS5DeleteSessionResponse(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT rc;
   NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
@@ -111,7 +111,7 @@ nwSaeGwUeHandleSgwS5DeleteSessionResponse(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
 }
 
 static NwRcT
-nwSaeGwUeHandleSgwS5DeleteSessionResponseNack(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv) 
+nwSaeGwUeHandleSgwS5DeleteSessionResponseNack(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT rc;
   NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
@@ -127,7 +127,7 @@ nwSaeGwUeHandleSgwS5DeleteSessionResponseNack(NwSaeGwUeT* thiz, NwSaeGwUeEventIn
 }
 
 static NwRcT
-nwSaeGwStateAwaitPgwDeleteSessionEntryAction(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv) 
+nwSaeGwStateAwaitPgwDeleteSessionEntryAction(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT rc;
   NwGtpv2cUlpApiT       ulpReq;
@@ -168,18 +168,18 @@ nwSaeGwStateAwaitPgwDeleteSessionRspNew()
   NwRcT rc;
   NwSaeUeStateT* thiz = nwSaeGwStateNew();
 
-  rc = nwSaeGwStateSetEntryAction(thiz, 
-      nwSaeGwStateAwaitPgwDeleteSessionEntryAction); 
+  rc = nwSaeGwStateSetEntryAction(thiz,
+      nwSaeGwStateAwaitPgwDeleteSessionEntryAction);
   NW_ASSERT(NW_OK == rc);
 
-  rc = nwSaeGwStateSetEventHandler(thiz, 
-      NW_SAE_GW_UE_EVENT_SGW_GTPC_S5_DELETE_SESSION_RSP, 
-      nwSaeGwUeHandleSgwS5DeleteSessionResponse); 
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_SGW_GTPC_S5_DELETE_SESSION_RSP,
+      nwSaeGwUeHandleSgwS5DeleteSessionResponse);
   NW_ASSERT(NW_OK == rc);
 
-  rc = nwSaeGwStateSetEventHandler(thiz, 
-      NW_SAE_GW_UE_EVENT_NACK, 
-      NULL /*nwSaeGwUeHandleSgwS5DeleteSessionResponseNack*/); 
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_NACK,
+      NULL /*nwSaeGwUeHandleSgwS5DeleteSessionResponseNack*/);
   NW_ASSERT(NW_OK == rc);
 
   return thiz;
@@ -194,4 +194,3 @@ nwSaeGwStateAwaitPgwDeleteSessionRspDelete(NwSaeUeStateT* thiz)
 #ifdef __cplusplus
 }
 #endif
-

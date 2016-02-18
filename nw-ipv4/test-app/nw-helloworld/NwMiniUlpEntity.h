@@ -6,7 +6,7 @@
  *                                                                            *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwMiniUlpEntity.h
  * @brief This file contains example of a minimalistic ULP entity.
 */
@@ -14,8 +14,8 @@
 #include <stdio.h>
 #include <assert.h>
 #include "NwEvt.h"
-#ifndef __NW_MINI_ULP_H__ 
-#define __NW_MINI_ULP_H__ 
+#ifndef __NW_MINI_ULP_H__
+#define __NW_MINI_ULP_H__
 
 typedef struct
 {
@@ -52,8 +52,8 @@ nwMiniUlpSendMsg(NwMiniUlpEntityT* thiz);
 NwIpv4RcT
 nwMiniUlpTpduSend(NwMiniUlpEntityT* thiz, NwU8T* tpduBuf, NwU32T tpduLen , NwU16T fromPort);
 
-NwIpv4RcT 
-nwMiniUlpProcessStackReqCallback (NwIpv4UlpHandleT hUlp, 
+NwIpv4RcT
+nwMiniUlpProcessStackReqCallback (NwIpv4UlpHandleT hUlp,
                        NwIpv4UlpApiT *pUlpApi);
 
 #ifdef __cplusplus

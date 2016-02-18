@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -20,7 +18,7 @@ extern "C" {
 #endif
 
 /*---------------------------------------------------------------------------
- *                          U D P     E N T I T Y 
+ *                          U D P     E N T I T Y
  *--------------------------------------------------------------------------*/
 
 NwRcT nwGtpv1uIfInitialize(NwGtpv1uIfT* thiz, NwU32T ipAddr, NwSdpHandleT hSdp)
@@ -102,7 +100,7 @@ NwRcT nwGtpv1uIfDataReq(NwGtpv1uUdpHandleT udpHandle,
   peerAddr.sin_port         = htons(peerPort);
   peerAddr.sin_addr.s_addr  = htonl(peerIpAddr);
   memset(peerAddr.sin_zero, '\0', sizeof (peerAddr.sin_zero));
-  
+
   nwLogHexDump(dataBuf, dataSize);
 
   bytesSent = sendto (thiz->hSocket, dataBuf, dataSize, 0, (struct sockaddr *) &peerAddr, sizeof(peerAddr));
@@ -118,5 +116,3 @@ NwRcT nwGtpv1uIfDataReq(NwGtpv1uUdpHandleT udpHandle,
 #ifdef __cplusplus
 }
 #endif
-
-

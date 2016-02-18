@@ -6,7 +6,7 @@
  *                                                                            *
  *----------------------------------------------------------------------------*/
 
-/** 
+/**
  * @file NwMiniUlpEntity.h
  * @brief This file contains example of a minimalistic ULP entity.
 */
@@ -16,8 +16,8 @@
 #include "NwEvt.h"
 #include "NwLog.h"
 
-#ifndef __NW_MINI_ULP_H__ 
-#define __NW_MINI_ULP_H__ 
+#ifndef __NW_MINI_ULP_H__
+#define __NW_MINI_ULP_H__
 
 typedef struct
 {
@@ -39,8 +39,8 @@ nwGtpv2cUlpDestroy(NwGtpv2cNodeUlpT* thiz);
 NwRcT
 nwGtpv2cUlpCreateSessionRequestToPeer(NwGtpv2cNodeUlpT* thiz);
 
-NwRcT 
-nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp, 
+NwRcT
+nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
                        NwGtpv2cUlpApiT *pUlpApi);
 
 #ifdef __cplusplus

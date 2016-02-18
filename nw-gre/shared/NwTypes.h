@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - g t p v 2 c                             * 
+ *                              n w - g t p v 2 c                             *
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 c    S t a c k     *
  *                                                                            *
  *                                                                            *
@@ -37,7 +37,7 @@
 #ifndef __NW_TYPES_H__
 #define __NW_TYPES_H__
 
-/** 
+/**
  * @file NwTypes.h
  * @brief This header file contains basic type definitions.
 */
@@ -78,5 +78,3 @@ typedef signed int              NwFdT;          /**< Use this for file descripto
 #endif
 
 #endif /* __NW_TYPES_H__ */
-
-

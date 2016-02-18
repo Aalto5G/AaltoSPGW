@@ -73,7 +73,7 @@ nwIpv4PoolMgrNew(NwU32T startIp, NwU32T endIp, NwU32T mask)
       ((NwIpv4DescriptorT*)thiz->pIpAddrTbl[i])->index  = i;
       ((NwIpv4DescriptorT*)thiz->pIpAddrTbl[i])->next   = thiz->pFreePool;
       thiz->pFreePool             = (NwIpv4DescriptorT*) thiz->pIpAddrTbl[i];
-    } 
+    }
   }
 
   return (NwIpv4PoolMgrHandleT) thiz;

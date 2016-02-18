@@ -7,7 +7,7 @@
  *----------------------------------------------------------------------------*/
 
 
-/** 
+/**
  * @file NwMiniUdpEntity.c
  * @brief This file contains example of a minimalistic ULP entity.
 */
@@ -27,7 +27,7 @@
 
 #ifndef NW_ASSERT
 #define NW_ASSERT assert
-#endif 
+#endif
 
 #define MAX_UDP_PAYLOAD_LEN             (4096)
 
@@ -39,7 +39,7 @@ extern "C" {
  * Private functions
  *--------------------------------------------------------------------------*/
 
-typedef struct 
+typedef struct
 {
   int           hSocket;
   NwEventT      ev;
@@ -268,4 +268,3 @@ NwSdpRcT nwMiniUdpDataReq(NwSdpUdpHandleT udpHandle,
 #ifdef __cplusplus
 }
 #endif
-
