@@ -355,6 +355,47 @@ nwSaeGwDpeCreateGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
 }
 
 /**
+ * Create Gtpu to Gtpu flow with Soft Data Plane
+ */
+
+NwRcT
+nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
+                         NwU32T         hSession,
+                         NwU32T         teidIngress,
+                         NwU32T         teidEgress,
+                         NwU32T         ipv4Egress,
+                         NwU32T         *pTeidIngress,
+                         NwU32T         *pIpv4Ingress,
+                         NwU32T         *phBearer)
+{
+  /* Check*/
+  NwRcT                 rc;
+  NwSdpUlpApiT          ulpReq;
+
+  ulpReq.apiType                              = NW_SDP_ULP_API_UPDATE_FLOW;
+  ulpReq.apiInfo.updateFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
+
+  ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowType                = NW_FLOW_TYPE_GTPU;
+  ulpReq.apiInfo.updateFlowInfo.ingressFlow.ipv4Addr                = thiz->gtpuIf.ipAddr;
+  ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowKey.gtpuTeid        = teidIngress;
+
+  ulpReq.apiInfo.updateFlowInfo.egressFlow.flowType                 = NW_FLOW_TYPE_GTPU;
+  ulpReq.apiInfo.updateFlowInfo.egressFlow.ipv4Addr                 = ipv4Egress;
+  ulpReq.apiInfo.updateFlowInfo.egressFlow.flowKey.gtpuTeid         = teidEgress;
+
+  NW_ASSERT(teidEgress != 0);
+  rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
+  NW_ASSERT( NW_OK == rc );
+
+  *pTeidIngress  = ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowKey.gtpuTeid;
+  *pIpv4Ingress  = ulpReq.apiInfo.updateFlowInfo.ingressFlow.ipv4Addr;
+
+  *phBearer       = (NwU32T) ulpReq.apiInfo.createFlowInfo.hSdpSession;
+
+  return rc;
+}
+
+/**
  * Destroy a flow with Soft Data Plane
  */
 

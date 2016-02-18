@@ -1644,7 +1644,7 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
     /*
      * Create SGW-GTPU to eNodeB-GTPU downlink user plane flow
      */
-    rc = nwSaeGwDpeCreateGtpuGtpuFlow(thiz->pDpe,
+    rc = nwSaeGwDpeModifyGtpuGtpuFlow(thiz->pDpe,
         (NwU32T)thiz,
         (NwU32T)&pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
