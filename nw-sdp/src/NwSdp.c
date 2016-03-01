@@ -532,7 +532,7 @@ nwSdpUpdateFlow( NW_IN NwSdpT* thiz,
   }
 
   rc = nwSdpUpdateFlowEndPoint(thiz, pFlowContext,
-                               &pFlowContext->ingressEndPoint
+                               &pFlowContext->ingressEndPoint,
                                &pUpdateFlowInfo->egressFlow);
   NW_ASSERT(rc == NW_SDP_OK);
 
