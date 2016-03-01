@@ -363,22 +363,12 @@ nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
     NW_IN NwSdpFlowEndPointT* pFlowEndPoint,
     NW_IN NwSdpFlowEndPointT* pNewFlowEndPoint)
 {
-  NwGtpv1uUlpApiT ulpReq, ulpReqCreate, ulpReqDelete;
+  NwGtpv1uUlpApiT ulpReq;
   NwSdpRcT rc  = NW_SDP_OK;
-
-  if(!(pFlowEndPoint->hTunnelEndPoint.gtpu))
-  {
-    return NW_SDP_FAILURE;
-  }
-
   if(!(thiz->hGtpv1uStack))
   {
     return NW_SDP_FAILURE;
   }
-
-  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Modifying GTPU tunnel endpoint with teid 0x%x for handle 0x%x",
-         pFlowEndPoint->flowKey.gtpuTeid, (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu);
-
   /* Send End Marker */
   NW_ASSERT(pFlowContext->egressEndPoint.ipv4Addr != 0);
   NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending End Marker over GTPU teid 0x%x to "
@@ -404,23 +394,108 @@ nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
   rc = nwGtpv1uMsgDelete(thiz->hGtpv1uStack, (ulpReq.apiInfo.sendtoInfo.hMsg));
   NW_ASSERT( rc == NW_SDP_OK );
 
-  /* Create new endpoint Request*/
-  ulpReqCreate.apiType                                        = NW_GTPV1U_ULP_API_CREATE_TUNNEL_ENDPOINT;
-  ulpReqCreate.apiInfo.createTunnelEndPointInfo.teid          = pFlowEndPoint->flowKey.gtpuTeid;
-  ulpReqCreate.apiInfo.createTunnelEndPointInfo.hUlpSession   = (NwGtpv1uUlpSessionHandleT)pFlowContext;
+  switch(pFlowEndPoint->flowType)
+  {
+    case NW_FLOW_TYPE_IPv4:
+      {
+        if(!(thiz->hIpv4Stack))
+        {
+          return NW_SDP_FAILURE;
+        }
+        if(!(pFlowEndPoint->hTunnelEndPoint.ipv4))
+        {
+          NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "IPv4 end point does not exist on data plane!");
+          return NW_SDP_FAILURE;
+        }
+        NwIpv4UlpApiT ulpReqCreate, ulpReqDelete;
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Modifying IPv4 tunnel endpoint with teid "NW_IPV4_ADDR,
+               NW_IPV4_ADDR_FORMAT(pFlowEndPoint->flowKey.ipv4Addr));
+        /* Create new endpoint Request*/
+        ulpReqCreate.apiType                                        = NW_IPv4_ULP_API_CREATE_TUNNEL_ENDPOINT;
+        ulpReqCreate.apiInfo.createTunnelEndPointInfo.ipv4Addr      = pFlowEndPoint->flowKey.ipv4Addr;
+        ulpReqCreate.apiInfo.createTunnelEndPointInfo.hUlpSession   = (NwGtpv1uUlpSessionHandleT)pFlowContext;
 
-  /* Delete old endpoint*/
-  ulpReqDelete.apiType = NW_GTPV1U_ULP_API_DESTROY_TUNNEL_ENDPOINT;
-  ulpReqDelete.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu;
-  rc = nwGtpv1uProcessUlpReq(thiz->hGtpv1uStack, &ulpReqDelete);
-  NW_ASSERT( rc == NW_SDP_OK );
+        /* Delete old endpoint*/
+        ulpReqDelete.apiType = NW_IPv4_ULP_API_DESTROY_TUNNEL_ENDPOINT;
+        ulpReqDelete.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = (NwIpv4UlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.ipv4;
+        rc = nwIpv4ProcessUlpReq(thiz->hIpv4Stack, &ulpReqDelete);
+        NW_ASSERT( rc == NW_SDP_OK );
 
-  /* Create new endpoint */
-  pFlowContext->egressEndPoint.flowKey.gtpuTeid = pNewFlowEndPoint->flowKey.gtpuTeid;
-  pFlowContext->egressEndPoint.ipv4Addr = pNewFlowEndPoint->ipv4Addr;
-  rc = nwGtpv1uProcessUlpReq(thiz->hGtpv1uStack, &ulpReqCreate);
-  NW_ASSERT( rc == NW_SDP_OK );
-  pFlowEndPoint->hTunnelEndPoint.gtpu = ulpReqCreate.apiInfo.createTunnelEndPointInfo.hStackSession;
+        /* Create new endpoint */
+        pFlowContext->egressEndPoint.flowKey.gtpuTeid = pNewFlowEndPoint->flowKey.gtpuTeid;
+        pFlowContext->egressEndPoint.ipv4Addr = pNewFlowEndPoint->ipv4Addr;
+        rc = nwIpv4ProcessUlpReq(thiz->hIpv4Stack, &ulpReqCreate);
+        pFlowEndPoint->hTunnelEndPoint.ipv4 = ulpReq.apiInfo.createTunnelEndPointInfo.hStackSession;
+      }
+      break;
+
+    case NW_FLOW_TYPE_GTPU:
+      {
+        if(!(pFlowEndPoint->hTunnelEndPoint.gtpu))
+        {
+          return NW_SDP_FAILURE;
+        }
+        NwGtpv1uUlpApiT ulpReqCreate, ulpReqDelete;
+        NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Modifying GTPU tunnel endpoint with teid 0x%x for handle 0x%x",
+               pFlowEndPoint->flowKey.gtpuTeid, (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu);
+
+        /* Create new endpoint Request*/
+        ulpReqCreate.apiType                                        = NW_GTPV1U_ULP_API_CREATE_TUNNEL_ENDPOINT;
+        ulpReqCreate.apiInfo.createTunnelEndPointInfo.teid          = pFlowEndPoint->flowKey.gtpuTeid;
+        ulpReqCreate.apiInfo.createTunnelEndPointInfo.hUlpSession   = (NwGtpv1uUlpSessionHandleT)pFlowContext;
+
+        /* Delete old endpoint*/
+        ulpReqDelete.apiType = NW_GTPV1U_ULP_API_DESTROY_TUNNEL_ENDPOINT;
+        ulpReqDelete.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu;
+        rc = nwGtpv1uProcessUlpReq(thiz->hGtpv1uStack, &ulpReqDelete);
+        NW_ASSERT( rc == NW_SDP_OK );
+
+        /* Create new endpoint */
+        pFlowContext->egressEndPoint.flowKey.gtpuTeid = pNewFlowEndPoint->flowKey.gtpuTeid;
+        pFlowContext->egressEndPoint.ipv4Addr = pNewFlowEndPoint->ipv4Addr;
+        rc = nwGtpv1uProcessUlpReq(thiz->hGtpv1uStack, &ulpReqCreate);
+        NW_ASSERT( rc == NW_SDP_OK );
+        pFlowEndPoint->hTunnelEndPoint.gtpu = ulpReqCreate.apiInfo.createTunnelEndPointInfo.hStackSession;
+      }
+      break;
+    case NW_FLOW_TYPE_GRE:
+      {
+        if(!(thiz->hGreStack))
+        {
+          return NW_SDP_FAILURE;
+        }
+        if(!(pFlowEndPoint->hTunnelEndPoint.gre))
+        {
+          return NW_SDP_FAILURE;
+        }
+        NwGreUlpApiT  ulpReqCreate, ulpReqDelete;
+        NW_LOG(thiz, NW_LOG_LEVEL_NOTI, "Modifying GRE tunnel endpoint with key %d",
+               pFlowEndPoint->flowKey.greKey);
+
+        /* Create new endpoint Request*/
+        ulpReqCreate.apiType                                        = NW_GRE_ULP_API_CREATE_TUNNEL_ENDPOINT;
+        ulpReqCreate.apiInfo.createTunnelEndPointInfo.greKey        = pFlowEndPoint->flowKey.greKey;
+        ulpReqCreate.apiInfo.createTunnelEndPointInfo.hUlpSession   = (NwGtpv1uUlpSessionHandleT)pFlowContext;
+
+        /* Delete old endpoint*/
+        ulpReqDelete.apiType                                        = NW_GRE_ULP_API_DESTROY_TUNNEL_ENDPOINT;
+        ulpReqDelete.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gre;
+        rc = nwGreProcessUlpReq(thiz->hGreStack, &ulpReq);
+        NW_ASSERT( rc == NW_SDP_OK );
+        /* Create new endpoint */
+        pFlowContext->egressEndPoint.flowKey.gtpuTeid = pNewFlowEndPoint->flowKey.gtpuTeid;
+        pFlowContext->egressEndPoint.ipv4Addr = pNewFlowEndPoint->ipv4Addr;
+        rc = nwGreProcessUlpReq(thiz->hGreStack, &ulpReq);
+        NW_ASSERT( rc == NW_SDP_OK );
+        pFlowEndPoint->hTunnelEndPoint.gre = ulpReq.apiInfo.createTunnelEndPointInfo.hStackSession;
+      }
+      break;
+    default:
+      {
+        NW_LOG(thiz, NW_LOG_LEVEL_NOTI, "Unsupported encapsulation type %u", pFlowEndPoint->flowType);
+        return NW_SDP_FAILURE;
+      }
+  }
 
   return rc;
 }

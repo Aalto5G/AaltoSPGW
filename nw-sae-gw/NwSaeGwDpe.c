@@ -314,6 +314,40 @@ nwSaeGwDpeCreateIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
   return rc;
 }
 
+
+/**
+ * Create Ipv4 to Gtpu flow with Soft Data Plane
+ */
+
+NwRcT
+nwSaeGwDpeModifyIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
+                         NwU32T         hSession,
+                         NwU32T         teidEgress,
+                         NwU32T         ipv4Egress,
+                         NwU32T         ipv4Ingress,
+                         NwU32T         hBearer)
+{
+  NwRcT rc;
+  NwSdpUlpApiT           ulpReq;
+
+  ulpReq.apiType                              = NW_SDP_ULP_API_UPDATE_FLOW;
+  ulpReq.apiInfo.updateFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
+  ulpReq.apiInfo.updateFlowInfo.hSdpSession   = (NwSdpSessionHandleT) hBearer;
+
+  ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowType                = NW_FLOW_TYPE_IPv4;
+  ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowKey.ipv4Addr        = ipv4Ingress;
+
+  ulpReq.apiInfo.updateFlowInfo.egressFlow.ipv4Addr                 = ipv4Egress;
+  ulpReq.apiInfo.updateFlowInfo.egressFlow.flowType                 = NW_FLOW_TYPE_GTPU;
+  ulpReq.apiInfo.updateFlowInfo.egressFlow.flowKey.gtpuTeid         = teidEgress;
+
+  rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
+  NW_ASSERT( NW_OK == rc );
+
+  return rc;
+}
+
+
 /**
  * Create Gtpu to Gtpu flow with Soft Data Plane
  */

@@ -1618,21 +1618,16 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
    */
   if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_SAE)
   {
-    if(pUe->epsBearer[ebi].hSgwDownlink)
-    {
-      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
-          pUe->epsBearer[ebi].hSgwDownlink);
-    }
     /*
      * Create PGW-IPv4 to eNodeB-GTPU downlink user plane flow
      */
-    rc = nwSaeGwDpeCreateIpv4GtpuFlow(thiz->pDpe,
+    rc = nwSaeGwDpeModifyIpv4GtpuFlow(thiz->pDpe,
         (NwU32T)thiz,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
         *((NwU32T*)(pUe->paa.ipv4Addr)),
-        &(pUe->epsBearer[ebi].hSgwDownlink));
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Creating Downlink Bearer for egress TIED 0x%x IP "NW_IPV4_ADDR, pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
+        pUe->epsBearer[ebi].hSgwDownlink);
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Modifying Downlink Bearer for egress TIED 0x%x IP "NW_IPV4_ADDR, pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_SGW)
   {
@@ -1647,7 +1642,7 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr,
         pUe->epsBearer[ebi].hSgwDownlink);
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Creating SGW Downlink Bearer for EBI %u ingress to egress TIED 0x%x IP "NW_IPV4_ADDR, ebi, pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey, NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr));
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Modifying SGW Downlink Bearer for EBI %u ingress to egress TIED 0x%x IP "NW_IPV4_ADDR, ebi, pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey, NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr));
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_PGW)
   {
