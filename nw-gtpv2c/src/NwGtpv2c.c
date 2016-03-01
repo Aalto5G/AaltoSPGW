@@ -1112,8 +1112,11 @@ nwGtpv2cInitialize( NW_INOUT NwGtpv2cStackHandleT* hGtpcStackHandle)
 NwRcT
 nwGtpv2cFinalize( NW_IN  NwGtpv2cStackHandleT hGtpcStackHandle)
 {
+  NwGtpv2cStackT* thiz = (NwGtpv2cStackT*)hGtpcStackHandle;
   if(!hGtpcStackHandle)
     return NW_FAILURE;
+
+  nwGtpv2cTmrMinHeapDelete(thiz->hTmrMinHeap);
 
   free((void*)hGtpcStackHandle);
   return NW_OK;

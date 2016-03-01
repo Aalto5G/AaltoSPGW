@@ -85,7 +85,7 @@ _nwMemNew(NwU32T size, NwCharT* fn, NwU32T ln)
   {
     if(memPool[size] == NULL)
     {
-      memChunk = malloc (sizeof(NwMemChunkT) + 4 + 4 + size + 4);
+      memChunk = calloc (1, sizeof(NwMemChunkT) + 4 + 4 + size + 4);
       NW_ASSERT(memChunk);
       memChunk->pNext = NULL;
       mem = (NwU8T*) memChunk + sizeof(NwMemChunkT);
