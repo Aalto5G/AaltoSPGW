@@ -1636,11 +1636,6 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_SGW)
   {
-    if(pUe->epsBearer[ebi].hSgwDownlink)
-    {
-      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
-          pUe->epsBearer[ebi].hSgwDownlink);
-    }
     /*
      * Create SGW-GTPU to eNodeB-GTPU downlink user plane flow
      */
@@ -1651,7 +1646,7 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr,
-        &pUe->epsBearer[ebi].hSgwDownlink);
+        pUe->epsBearer[ebi].hSgwDownlink);
     NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Creating SGW Downlink Bearer for EBI %u ingress to egress TIED 0x%x IP "NW_IPV4_ADDR, ebi, pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey, NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr));
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_PGW)

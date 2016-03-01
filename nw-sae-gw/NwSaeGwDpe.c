@@ -366,7 +366,7 @@ nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
                          NwU32T         ipv4Egress,
                          NwU32T         *pTeidIngress,
                          NwU32T         *pIpv4Ingress,
-                         NwU32T         *phBearer)
+                         NwU32T         hBearer)
 {
   /* Check*/
   NwRcT                 rc;
@@ -374,6 +374,7 @@ nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
 
   ulpReq.apiType                              = NW_SDP_ULP_API_UPDATE_FLOW;
   ulpReq.apiInfo.updateFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
+  ulpReq.apiInfo.updateFlowInfo.hSdpSession   = (NwSdpSessionHandleT) hBearer;
 
   ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowType                = NW_FLOW_TYPE_GTPU;
   ulpReq.apiInfo.updateFlowInfo.ingressFlow.ipv4Addr                = thiz->gtpuIf.ipAddr;
@@ -389,8 +390,6 @@ nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
 
   *pTeidIngress  = ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowKey.gtpuTeid;
   *pIpv4Ingress  = ulpReq.apiInfo.updateFlowInfo.ingressFlow.ipv4Addr;
-
-  *phBearer       = (NwU32T) ulpReq.apiInfo.createFlowInfo.hSdpSession;
 
   return rc;
 }

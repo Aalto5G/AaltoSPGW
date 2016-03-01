@@ -360,24 +360,24 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
 static NwSdpRcT
 nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
     NW_IN NwSdpFlowContextT* pFlowContext,
-    NW_IN NwSdpFlowEndPointT* pOldFlowEndPoint,
-    NW_OUT NwSdpFlowEndPointT* pNewFlowEndPoint)
+    NW_IN NwSdpFlowEndPointT* pFlowEndPoint,
+    NW_IN NwSdpFlowEndPointT* pNewFlowEndPoint)
 {
   NwGtpv1uUlpApiT ulpReq, ulpReqCreate, ulpReqDelete;
   NwSdpRcT rc  = NW_SDP_OK;
 
-  if(pOldFlowEndPoint->hTunnelEndPoint.gtpu)
+  if(!(pFlowEndPoint->hTunnelEndPoint.gtpu))
   {
     return NW_SDP_FAILURE;
   }
 
-  if(thiz->hGtpv1uStack)
+  if(!(thiz->hGtpv1uStack))
   {
     return NW_SDP_FAILURE;
   }
 
   NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Modifying GTPU tunnel endpoint with teid 0x%x for handle 0x%x",
-         pOldFlowEndPoint->flowKey.gtpuTeid, (NwGtpv1uUlpSessionHandleT)pOldFlowEndPoint->hTunnelEndPoint.gtpu);
+         pFlowEndPoint->flowKey.gtpuTeid, (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu);
 
   /* Send End Marker */
   NW_ASSERT(pFlowContext->egressEndPoint.ipv4Addr != 0);
@@ -406,19 +406,21 @@ nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
 
   /* Create new endpoint Request*/
   ulpReqCreate.apiType                                        = NW_GTPV1U_ULP_API_CREATE_TUNNEL_ENDPOINT;
-  ulpReqCreate.apiInfo.createTunnelEndPointInfo.teid          = pNewFlowEndPoint->flowKey.gtpuTeid;
+  ulpReqCreate.apiInfo.createTunnelEndPointInfo.teid          = pFlowEndPoint->flowKey.gtpuTeid;
   ulpReqCreate.apiInfo.createTunnelEndPointInfo.hUlpSession   = (NwGtpv1uUlpSessionHandleT)pFlowContext;
 
   /* Delete old endpoint*/
   ulpReqDelete.apiType = NW_GTPV1U_ULP_API_DESTROY_TUNNEL_ENDPOINT;
-  ulpReqDelete.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = (NwGtpv1uUlpSessionHandleT)pOldFlowEndPoint->hTunnelEndPoint.gtpu;
+  ulpReqDelete.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu;
   rc = nwGtpv1uProcessUlpReq(thiz->hGtpv1uStack, &ulpReqDelete);
   NW_ASSERT( rc == NW_SDP_OK );
 
   /* Create new endpoint */
+  pFlowContext->egressEndPoint.flowKey.gtpuTeid = pNewFlowEndPoint->flowKey.gtpuTeid;
+  pFlowContext->egressEndPoint.ipv4Addr = pNewFlowEndPoint->ipv4Addr;
   rc = nwGtpv1uProcessUlpReq(thiz->hGtpv1uStack, &ulpReqCreate);
   NW_ASSERT( rc == NW_SDP_OK );
-  pNewFlowEndPoint->hTunnelEndPoint.gtpu                = ulpReqCreate.apiInfo.createTunnelEndPointInfo.hStackSession;
+  pFlowEndPoint->hTunnelEndPoint.gtpu = ulpReqCreate.apiInfo.createTunnelEndPointInfo.hStackSession;
 
   return rc;
 }
@@ -505,12 +507,12 @@ nwSdpDestroyFlow( NwSdpT* thiz,  NW_IN NwSdpUlpApiT *pUlpReq)
  */
 
 static NwSdpRcT
-nwSdpUpdateFlow( NW_IN NwSdpT* thiz, NW_IN NwSdpUlpApiT *pUlpReq)
+nwSdpUpdateFlow( NW_IN NwSdpT* thiz,
+    NW_IN NwSdpUlpApiT *pUlpReq)
 {
   NwSdpRcT rc = NW_SDP_OK;
   NwSdpFlowContextT* pFlowContext;
   NwSdpUpdateFlowInfoT* pUpdateFlowInfo;
-  NwGtpv1uUlpApiT           ulpReq;
   NW_ENTER(thiz);
 
   pUpdateFlowInfo = &(pUlpReq->apiInfo.updateFlowInfo);
@@ -520,17 +522,17 @@ nwSdpUpdateFlow( NW_IN NwSdpT* thiz, NW_IN NwSdpUlpApiT *pUlpReq)
   {
     return NW_SDP_FAILURE;
   }
-  if(pFlowContext->ingressEndPoint.hTunnelEndPoint.gtpu != pUpdateFlowInfo->ingressFlow.hTunnelEndPoint.gtpu)
+  if(pFlowContext->ingressEndPoint.flowKey.gtpuTeid != pUpdateFlowInfo->ingressFlow.flowKey.gtpuTeid)
   {
     return NW_SDP_FAILURE;
   }
-  if(pFlowContext->egressEndPoint.flowType == NW_FLOW_TYPE_GTPU)
+  if(pFlowContext->egressEndPoint.flowType != NW_FLOW_TYPE_GTPU)
   {
     return NW_SDP_FAILURE;
   }
 
   rc = nwSdpUpdateFlowEndPoint(thiz, pFlowContext,
-                               &pFlowContext->egressEndPoint,
+                               &pFlowContext->ingressEndPoint
                                &pUpdateFlowInfo->egressFlow);
   NW_ASSERT(rc == NW_SDP_OK);
 
