@@ -77,6 +77,7 @@ typedef struct
   NwU32T                        s4cIpv4AddrSgw;
   NwU32T                        s5cIpv4AddrPgw;
   NwU8T                         apn[1024];
+  NwU8T                         stateDir[256];
   NwU32T                        ippoolSubnet;
   NwU32T                        ippoolMask;
   NwSaeGwDpeT                   *pDpe;

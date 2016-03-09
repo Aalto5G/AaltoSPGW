@@ -1168,6 +1168,51 @@ nwSaeGwUlpDelete(NwSaeGwUlpT*  thiz)
   return NW_OK;
 }
 
+
+static NwRcT
+nwSaeGwGetRestartCounter(const char *stateDir, NwU32T ipAddr, NwU8T *restartCounter)
+{
+  int fd = 0;
+  NwU8T r=0;
+  char filename[512];
+  char addr[INET_ADDRSTRLEN];
+  NwU32T _ipAddr = htonl(ipAddr);
+  bzero(filename, 512);
+  bzero(addr, INET_ADDRSTRLEN);
+  inet_ntop(AF_INET, &_ipAddr, addr, 50);
+
+  strcat(strcat(strcpy(filename, stateDir), "/recovery-"), addr);
+  NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Accessing state file %s", filename);
+
+  if(access(filename, R_OK|W_OK)==0)
+  {
+    fd = open(filename, O_RDWR);
+    if(fd == -1)
+    {
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_ERRO, "Couldn't read file %s, %s ",
+                    filename, strerror(errno));
+      return NW_FAILURE;
+    }
+    read(fd, &r, sizeof(NwU8T));
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Read from %s (fd=%d) restartCounter %d", filename, fd, r);
+    r++;
+    close(fd);
+  }
+  fd = open(filename, O_TRUNC | O_RDWR | O_CREAT, 0644);
+  if(fd == -1)
+  {
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_ERRO, "Couldn't write/create file %s, %s ",
+                  filename, strerror(errno));
+    return NW_FAILURE;
+  }
+  NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Updating restart Counter (fd=%d) %d", fd, r);
+  write(fd, &r, sizeof(NwU8T));
+  close(fd);
+
+  *restartCounter = r;
+  return NW_OK;
+}
+
 NwRcT
 nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
                      NwU32T           saeGwType,
@@ -1177,6 +1222,7 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
   NwGtpv2cUlpEntityT            ulp;
   NwGtpv2cUdpEntityT            udp;
   NwU32T                        gtpcIfSelObj;
+  NwU8T                         restartCounter=0;
 
   NW_ASSERT(thiz);
 
@@ -1195,6 +1241,11 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
     /* Create SGW-S11 Gtpv2c Service Access Point*/
 
     rc = nwSaeGwUlpCreateGtpv2cStackInstance(thiz, &thiz->sgw.s11c.hGtpv2cStack);
+    NW_ASSERT( NW_OK == rc );
+
+    rc = nwSaeGwGetRestartCounter(pCfg->stateDir, thiz->sgw.s11c.ipv4Addr, &restartCounter);
+    NW_ASSERT( NW_OK == rc );
+    rc = nwGtpv2cSetRestartCounter(thiz->sgw.s11c.hGtpv2cStack, restartCounter);
     NW_ASSERT( NW_OK == rc );
 
     /* Initialize and Set UDP Entity */
@@ -1224,6 +1275,11 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
     rc = nwSaeGwUlpCreateGtpv2cStackInstance(thiz, &thiz->sgw.s5c.hGtpv2cStack);
     NW_ASSERT( NW_OK == rc );
 
+    rc = nwSaeGwGetRestartCounter(pCfg->stateDir, thiz->sgw.s5c.ipv4Addr, &restartCounter);
+    NW_ASSERT( NW_OK == rc );
+    rc = nwGtpv2cSetRestartCounter(thiz->sgw.s5c.hGtpv2cStack, restartCounter);
+    NW_ASSERT( NW_OK == rc );
+
     /* Initialize and Set UDP Entity */
     rc = nwGtpv2cIfInitialize(&thiz->sgw.s5c.udpIf, thiz->sgw.s5c.ipv4Addr, thiz->sgw.s5c.hGtpv2cStack);
     NW_ASSERT( NW_OK == rc );
@@ -1250,6 +1306,11 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
     /* Create PGW-S5 Gtpv2c Service Access Point*/
 
     rc = nwSaeGwUlpCreateGtpv2cStackInstance(thiz, &thiz->pgw.s5c.hGtpv2cStack);
+    NW_ASSERT( NW_OK == rc );
+
+    rc = nwSaeGwGetRestartCounter(pCfg->stateDir, thiz->pgw.s5c.ipv4Addr, &restartCounter);
+    NW_ASSERT( NW_OK == rc );
+    rc = nwGtpv2cSetRestartCounter(thiz->pgw.s5c.hGtpv2cStack, restartCounter);
     NW_ASSERT( NW_OK == rc );
 
     /* Initialize and Set UDP Entity */

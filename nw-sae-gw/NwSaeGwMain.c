@@ -41,6 +41,8 @@
 #include <string.h>
 #include <assert.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -258,6 +260,16 @@ nwSaeGwInitialize(NwSaeGwT* thiz)
   NwRcT rc = NW_OK;
   NwSaeGwUlpT* pGw;
   NwSaeGwUlpConfigT cfg;
+
+  struct stat st = {0};
+  char* stateDir = getenv("NW_STATE_DIR");
+  if(stateDir == NULL){
+      stateDir = "/var/lib/nwepc";
+  }
+  strcpy(cfg.stateDir,stateDir);
+  if (stat(cfg.stateDir, &st) == -1) {
+    mkdir(cfg.stateDir, 0755);
+  }
 
   /* Create Data Plane instance. */
 

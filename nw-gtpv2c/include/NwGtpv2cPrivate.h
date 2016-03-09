@@ -100,7 +100,7 @@ typedef struct NwGtpv2cStack
 
   NwU32T                        seqNum;
   NwU32T                        logLevel;
-  NwU32T                        restartCounter;
+  NwU8T                         restartCounter;
 
   NwGtpv2cMsgIeParseInfoT       *pGtpv2cMsgIeParseInfo[NW_GTP_MSG_END];
   struct NwGtpv2cTimeoutInfo    *activeTimerInfo;

@@ -1223,6 +1223,19 @@ nwGtpv2cSetLogLevel( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
 }
 
 /**
+ Set restart counter.
+ */
+
+NwRcT
+nwGtpv2cSetRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
+                           NW_IN NwU8T restartCounter)
+{
+  NwGtpv2cStackT* thiz = (NwGtpv2cStackT*) hGtpcStackHandle;
+  thiz->restartCounter = restartCounter;
+  return NW_OK;
+}
+
+/**
  * Process Request from Udp Layer
  */
 

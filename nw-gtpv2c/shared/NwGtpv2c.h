@@ -540,6 +540,17 @@ NwRcT
 nwGtpv2cSetLogLevel( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                      NW_IN NwU32T logLevel);
 
+/**
+ Set restart counter.
+
+ @param[in] hGtpcStackHandle : Stack handle
+ @param[in] restartCounter : Restart Counter.
+ @return NW_OK on success.
+ */
+
+NwRcT
+nwGtpv2cSetRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
+                           NW_IN NwU8T restartCounter);
 
 /**
  Process Data Request from UDP entity.
