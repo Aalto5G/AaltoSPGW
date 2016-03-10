@@ -1,7 +1,9 @@
 # this is example-file: configure.ac
 
 # initial information about the project
-AC_INIT([NwEpc],[0.16],[beta])
+AC_INIT([NwEpc],[0.18.1],[vicent.ferrerguasch@aalto.fi], [NwEPC], [])
+
+AC_PREREQ([2.68])
 
 # check if the source folder is correct
 AC_CONFIG_SRCDIR([nw-mme-emu/NwMmeMain.c])
@@ -14,8 +16,8 @@ AC_PROG_CXXCPP
 AC_PROG_CXX
 AC_PROG_RANLIB
 
-# automake initialisation and check for minimal automake API version 1.9
-AM_INIT_AUTOMAKE([1.9])
+# automake initialisation
+AM_INIT_AUTOMAKE([-Wall -Werror])
 
 # use the C compiler for the following checks
 AC_LANG([C])
@@ -32,6 +34,8 @@ AC_TYPE_SIZE_T
 # --> set these variables instead of CXXFLAGS or LDFLAGS
 AC_SUBST([AM_CFLAGS])
 AC_SUBST([AM_LDFLAGS])
+
+AM_SILENT_RULES([yes])
 
 # files to generate via autotools (.am or .in source files)
 AC_CONFIG_FILES([Makefile])

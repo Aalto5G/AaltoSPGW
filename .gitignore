@@ -8,6 +8,12 @@
 *.m4
 *.log
 **/Makefile
+**/Makefile.in
+autom4te.cache/
+compile
+depcomp
+install-sh
+configure
 config.status
 nw-event/test-app/event-test
 nw-event/test-app/time-test

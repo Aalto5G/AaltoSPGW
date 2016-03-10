@@ -31,6 +31,7 @@ This note describes a brief tutorial on nwEPC software usage.
 
 2. Execute following commands:
 
+ $ autoreconf -i
  $ ./configure
  $ make
  $ make install
