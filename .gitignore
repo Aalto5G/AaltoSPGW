@@ -12,6 +12,7 @@
 autom4te.cache/
 compile
 depcomp
+missing
 install-sh
 configure
 config.status
