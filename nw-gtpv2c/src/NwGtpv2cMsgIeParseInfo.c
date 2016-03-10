@@ -77,6 +77,15 @@ NwGtpv2cMsgIeInfoT createSessionReqBearerCtxtTobeRemovedIeInfoTbl[] =
 };
 
 static
+NwGtpv2cMsgIeInfoT echoReqIeInfoTbl[] =
+{
+  { NW_GTPV2C_IE_RECOVERY       ,       1,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY, NULL},
+
+  /* Do not add below this */
+  { 0, 0, 0}
+};
+
+static
 NwGtpv2cMsgIeInfoT echoRspIeInfoTbl[] =
 {
   { NW_GTPV2C_IE_RECOVERY       ,       1,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY, NULL},
@@ -96,6 +105,8 @@ NwGtpv2cMsgIeInfoT createSessionReqIeInfoTbl[] =
   { NW_GTPV2C_IE_RAT_TYPE       ,       1,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY  , NULL},
   { NW_GTPV2C_IE_APN            ,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY  , NULL},
   { NW_GTPV2C_IE_APN_RESTRICTION,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY  , NULL},
+  { NW_GTPV2C_IE_AMBR           ,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, NULL},
+  { NW_GTPV2C_IE_PCO            ,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, NULL},
   { NW_GTPV2C_IE_SELECTION_MODE ,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY  , NULL},
   { NW_GTPV2C_IE_PDN_TYPE       ,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY  , NULL},
   { NW_GTPV2C_IE_PAA            ,       5,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY  , NULL},
@@ -146,6 +157,8 @@ NwGtpv2cMsgIeInfoT createSessionRspIeInfoTbl[] =
   { NW_GTPV2C_IE_CAUSE          ,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY  , NULL },
   { NW_GTPV2C_IE_PAA            ,       5,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, NULL },
   { NW_GTPV2C_IE_APN_RESTRICTION,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, NULL },
+  { NW_GTPV2C_IE_AMBR           ,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, NULL },
+  { NW_GTPV2C_IE_PCO            ,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, NULL },
   { NW_GTPV2C_IE_FTEID          ,       9,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, NULL },
   { NW_GTPV2C_IE_FTEID          ,       9,      NW_GTPV2C_IE_INSTANCE_ONE , NW_GTPV2C_IE_PRESENCE_CONDITIONAL, NULL },
   { NW_GTPV2C_IE_BEARER_CONTEXT ,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY  , NULL },
@@ -264,6 +277,12 @@ nwGtpv2cMsgIeParseInfoNew(NwGtpv2cStackHandleT hStack, NwU8T msgType)
 
     switch(msgType)
     {
+      case NW_GTP_ECHO_REQ:
+        {
+          rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, echoReqIeInfoTbl);
+          NW_ASSERT(NW_OK == rc);
+        }
+        break;
       case NW_GTP_ECHO_RSP:
         {
           rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, echoRspIeInfoTbl);

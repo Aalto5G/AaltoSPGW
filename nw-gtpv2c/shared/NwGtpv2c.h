@@ -158,6 +158,7 @@ typedef enum
   NW_GTPV2C_ULP_API_TRIGGERED_RSP_IND,                  /**< Recieve a triggered rsp message from stack */
   NW_GTPV2C_ULP_API_TRIGGERED_REQ_IND,                  /**< Recieve a triggered req message from stack */
   NW_GTPV2C_ULP_API_RSP_FAILURE_IND,                    /**< Rsp failure for gtpv2 message from stack   */
+  NW_GTPV2C_ULP_API_PEER_RESTART_IND,                   /**< Detected restart or peer node from stack   */
 
   /* Local tunnel management APIs from ULP to stack */
 
@@ -293,6 +294,16 @@ typedef struct
 
 /**
  * API information elements between ULP and Stack for
+ * receving a peer restart indication from stack.
+ */
+
+typedef struct
+{
+  NW_IN    NwU32T                       peerIp;
+} NwGtpv2cPeerRestartIndInfoT;
+
+/**
+ * API information elements between ULP and Stack for
  * creating local tunnel.
  */
 
@@ -333,6 +344,7 @@ typedef struct
     NwGtpv2cTriggeredRspIndInfoT        triggeredRspIndInfo;
     NwGtpv2cTriggeredReqIndInfoT        triggeredReqIndInfo;
     NwGtpv2cRspFailureIndInfoT          rspFailureInfo;
+    NwGtpv2cPeerRestartIndInfoT         peerRestartInfo;
     NwGtpv2cCreateLocalTunnelInfoT      createLocalTunnelInfo;
     NwGtpv2cDeleteLocalTunnelInfoT      deleteLocalTunnelInfo;
   } apiInfo;

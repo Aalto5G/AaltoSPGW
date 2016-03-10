@@ -109,6 +109,7 @@ typedef struct NwGtpv2cStack
   RB_HEAD( NwGtpv2cOutstandingTxSeqNumTrxnMap, NwGtpv2cTrxn ) outstandingTxSeqNumMap;
   RB_HEAD( NwGtpv2cOutstandingRxSeqNumTrxnMap, NwGtpv2cTrxn ) outstandingRxSeqNumMap;
   RB_HEAD( NwGtpv2cActiveTimerList, NwGtpv2cTimeoutInfo     ) activeTimerList;
+  RB_HEAD( NwGtpv2cPathMap, NwGtpv2cPathS                   ) pathMap;
   NwHandleT                     hTmrMinHeap;
 } NwGtpv2cStackT;
 
@@ -194,13 +195,15 @@ typedef struct NwGtpv2cTrxn
 
 typedef struct NwGtpv2cPathS
 {
-  NwU32T                        hUlpPath;                               /**< Handle to ULP path contect         */
   NwU32T                        ipv4Address;
   NwU32T                        restartCounter;
   NwU16T                        t3ResponseTimout;
   NwU16T                        n3RequestCount;
   NwGtpv2cTimerHandleT          hKeepAliveTmr;                          /**< Handle to path keep alive echo timer */
   RB_ENTRY (NwGtpv2cPathS)      pathMapRbtNode;
+  NwU32T                        tunnelCount;
+  NwGtpv2cStackT*               pStack;
+  struct NwGtpv2cPathS*         next;
 } NwGtpv2cPathT;
 
 
@@ -208,6 +211,7 @@ RB_PROTOTYPE(NwGtpv2cTunnelMap, NwGtpv2cTunnel, tunnelMapRbtNode, nwGtpv2cCompar
 RB_PROTOTYPE(NwGtpv2cOutstandingTxSeqNumTrxnMap, NwGtpv2cTrxn, outstandingTxSeqNumMapRbtNode, nwGtpv2cCompareSeqNum)
 RB_PROTOTYPE(NwGtpv2cOutstandingRxSeqNumTrxnMap, NwGtpv2cTrxn, outstandingRxSeqNumMapRbtNode, nwGtpv2cCompareSeqNum)
 RB_PROTOTYPE(NwGtpv2cActiveTimerList, NwGtpv2cTimeoutInfo, activeTimerListRbtNode, nwGtpv2cCompareOutstandingTxRexmitTime)
+RB_PROTOTYPE(NwGtpv2cPathMap, NwGtpv2cPathS, pathMapRbtNode, nwGtpv2cComparePath)
 
 /**
  * Start Timer with ULP Timer Manager

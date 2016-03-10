@@ -25,6 +25,7 @@ libNwGtpv2c_a_HEADERS =    \
 			../shared/NwGtpv2cIe.h\
 			../include/NwGtpv2cPrivate.h\
 			../include/NwGtpv2cTrxn.h\
+			../include/NwGtpv2cPath.h\
 			../include/NwGtpv2cTunnel.h\
 			../include/NwGtpv2cMsgIeParseInfo.h\
 			../include/NwGtpv2cLog.h\
@@ -35,6 +36,7 @@ libNwGtpv2c_a_HEADERS =    \
 libNwGtpv2c_a_SOURCES =    \
 			$(libNwGtpv2_a_HEADERS) \
 			NwGtpv2cTrxn.c\
+			NwGtpv2cPath.c\
 			NwGtpv2cTunnel.c\
 			NwGtpv2cMsg.c\
 			NwGtpv2cMsgIeParseInfo.c\

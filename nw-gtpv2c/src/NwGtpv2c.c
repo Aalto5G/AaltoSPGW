@@ -42,6 +42,7 @@
 #include "NwGtpv2c.h"
 #include "NwGtpv2cIe.h"
 #include "NwGtpv2cTrxn.h"
+#include "NwGtpv2cPath.h"
 #include "NwGtpv2cLog.h"
 
 #ifdef _NWGTPV2C_HAVE_TIMERADD
@@ -365,6 +366,30 @@ nwGtpv2cCompareOutstandingTxRexmitTime(struct NwGtpv2cTimeoutInfo* a, struct NwG
 
 RB_GENERATE(NwGtpv2cActiveTimerList, NwGtpv2cTimeoutInfo, activeTimerListRbtNode, nwGtpv2cCompareOutstandingTxRexmitTime)
 
+/*---------------------------------------------------------------------------
+ * Path RB-tree data structure.
+ *--------------------------------------------------------------------------*/
+
+/**
+  Comparator funtion for comparing two path.
+
+  @param[in] a: Pointer to session a.
+  @param[in] b: Pointer to session b.
+  @return  An integer greater than, equal to or less than zero according to whether the
+  object pointed to by a is greater than, equal to or less than the object pointed to by b.
+ */
+
+static inline NwS32T
+nwGtpv2cComparePath(struct NwGtpv2cPathS* a, struct NwGtpv2cPathS* b)
+{
+  if(a->ipv4Address > b->ipv4Address)
+    return 1;
+  if(a->ipv4Address < b->ipv4Address)
+    return -1;
+  return 0;
+}
+
+RB_GENERATE(NwGtpv2cPathMap, NwGtpv2cPathS, pathMapRbtNode, nwGtpv2cComparePath)
 
 
 /**
@@ -478,6 +503,7 @@ nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
 {
   NwRcT rc;
   NwGtpv2cTunnelT *pTunnel, *pCollision;
+  NwGtpv2cPathT   *pPath, pathKey;
 
   NW_ENTER(thiz);
 
@@ -505,6 +531,15 @@ nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
   else
   {
     rc = NW_FAILURE;
+  }
+
+  pathKey.ipv4Address = ipv4Remote;
+  pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), &pathKey);
+  if(pPath){
+    pathKey.tunnelCount++;
+  }else{
+    pPath = nwGtpv2cPathNew(thiz, ipv4Remote);
+    pPath->tunnelCount++;
   }
 
   *phTunnel = (NwGtpv2cTunnelHandleT) pTunnel;
@@ -886,8 +921,57 @@ nwGtpv2cHandleEchoReq(NW_IN NwGtpv2cStackT *thiz,
   NwRcT                 rc;
   NwU32T                seqNum = 0;
   NwGtpv2cMsgHandleT    hMsg = 0;
+  NwGtpv2cErrorT        error;
+  NwU8T                 remoteRestartCounter;
+  NwGtpv2cPathT         *pPath, keyPath;
 
   seqNum = ntohl(*((NwU32T*)(msgBuf + (((*msgBuf) & 0x08) ? 8 : 4)))) >> 8;
+
+  rc = nwGtpv2cMsgFromBufferNew((NwGtpv2cStackHandleT)thiz, msgBuf, msgBufLen, &(hMsg));
+  NW_ASSERT(thiz->pGtpv2cMsgIeParseInfo[msgType]);
+  rc = nwGtpv2cMsgIeParse(thiz->pGtpv2cMsgIeParseInfo[msgType], hMsg, &error);
+  if(rc != NW_OK)
+  {
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Malformed Echo request message from "
+           NW_IPV4_ADDR". Ignoring.", NW_IPV4_ADDR_FORMAT(peerIp));
+    return NW_OK;
+  }
+
+  rc = nwGtpv2cMsgGetIeTlv(hMsg, NW_GTPV2C_IE_RECOVERY,
+                           NW_GTPV2C_IE_INSTANCE_ZERO,
+                           1, &remoteRestartCounter, NULL);
+  if(rc == NW_GTPV2C_IE_MISSING)
+  {
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Malformed Echo request message from "
+           NW_IPV4_ADDR". Ignoring.", NW_IPV4_ADDR_FORMAT(peerIp));
+    return NW_OK;
+  }
+
+  keyPath.ipv4Address = peerIp;
+  pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), &keyPath);
+  if(pPath)
+    if(remoteRestartCounter > pPath->restartCounter ||
+         (remoteRestartCounter<2 && pPath->restartCounter>254)) /*Overflow*/
+    {
+      /* Send Path reset to ULP*/
+      pPath->restartCounter = remoteRestartCounter;
+      NwGtpv2cUlpApiT ulpApi;
+
+      ulpApi.hMsg                              = 0;
+      ulpApi.apiType                           = NW_GTPV2C_ULP_API_PEER_RESTART_IND;
+      ulpApi.apiInfo.peerRestartInfo.peerIp    = peerIp;
+
+      rc = thiz->ulp.ulpReqCallback(thiz->ulp.hUlp, &ulpApi);
+    }
+    else if(remoteRestartCounter < pPath->restartCounter)
+    {
+        NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Incorrect restart counter from "NW_IPV4_ADDR
+               " (received %u < previous %u). Ignoring ",
+               NW_IPV4_ADDR_FORMAT(peerIp), remoteRestartCounter, pPath->restartCounter);
+    return NW_OK;
+    }
+
+  NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Test, restart %d, path %p", remoteRestartCounter, pPath);
 
   /* Send Echo Response */
 
@@ -900,9 +984,12 @@ nwGtpv2cHandleEchoReq(NW_IN NwGtpv2cStackT *thiz,
 
   NW_ASSERT(NW_OK == rc);
 
-  rc = nwGtpv2cMsgAddIeTV1(hMsg, NW_GTPV2C_IE_RECOVERY, 0, thiz->restartCounter);
+  rc = nwGtpv2cMsgAddIeTV1(hMsg, NW_GTPV2C_IE_RECOVERY, 0,
+                           thiz->restartCounter);
 
-  NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Sending NW_GTP_ECHO_RSP message to "NW_IPV4_ADDR":%u with seq %u", NW_IPV4_ADDR_FORMAT(peerIp), peerPort, (seqNum));
+  NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Sending NW_GTP_ECHO_RSP message to "
+         NW_IPV4_ADDR":%u with seq %u", NW_IPV4_ADDR_FORMAT(peerIp),
+         peerPort, (seqNum));
 
   rc = nwGtpv2cCreateAndSendMsg(thiz,
       (seqNum),
@@ -1079,9 +1166,11 @@ nwGtpv2cInitialize( NW_INOUT NwGtpv2cStackHandleT* hGtpcStackHandle)
     RB_INIT(&(thiz->outstandingTxSeqNumMap));
     RB_INIT(&(thiz->outstandingRxSeqNumMap));
     RB_INIT(&(thiz->activeTimerList));
+    RB_INIT(&(thiz->pathMap));
 
     thiz->hTmrMinHeap = (NwHandleT) nwGtpv2cTmrMinHeapNew(10000);
 
+    NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_ECHO_REQ);
     NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_ECHO_RSP);
     NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_CREATE_SESSION_REQ);
     NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_CREATE_SESSION_RSP);
