@@ -82,3 +82,11 @@ nwLteSaeGw_SOURCES =    \
 nwLteSaeGw_LDADD =  $(top_builddir)/nw-gtpv2c/src/libNwGtpv2c.a $(top_builddir)/nw-sdp/src/libNwSdp.a $(top_builddir)/nw-gtpv1u/src/libNwGtpv1u.a $(top_builddir)/nw-gre/src/libNwGre.a  $(top_builddir)/nw-ipv4/src/libNwIpv4.a $(top_builddir)/nw-event/src/libNwEvent.a  $(AM_LDFLAGS)
 
 ###############################################################################
+
+systemddir = /lib/systemd/system
+systemd_DATA = SGW.service
+
+confdir = /etc/cumucore
+conf_DATA = sgw.cfg.template
+
+EXTRA_DIST = $(systemd_DATA) $(conf_DATA)
