@@ -10,8 +10,14 @@
 **/Makefile
 **/Makefile.in
 autom4te.cache/
+r-lib
+config.guess
+config.sub
+libtool
+ltmain.sh
 compile
 depcomp
+ar-lib
 missing
 install-sh
 configure

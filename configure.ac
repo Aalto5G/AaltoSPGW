@@ -14,7 +14,10 @@ AC_CONFIG_SRCDIR([nw-sae-gw/NwSaeGwMain.c])
 # check for C++ preprocessor and compiler and the library compiler
 AC_PROG_CXXCPP
 AC_PROG_CXX
-AC_PROG_RANLIB
+AM_PROG_AR
+LT_INIT([disable-shared])
+
+AC_CONFIG_MACRO_DIRS([m4])
 
 # automake initialisation
 AM_INIT_AUTOMAKE([-Wall -Werror])
