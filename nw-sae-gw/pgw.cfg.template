@@ -1,0 +1,7 @@
+# Configuration file template for P-GW
+
+IPADDR_S5PGW="10.0.0.1"
+IPADDR_GTPU="10.0.0.2"
+SGI0B="eth0"
+IPADDR_IPUE_NETW="172.30.0.0"
+IPADDR_IPUE_MASK="255.255.255.0"

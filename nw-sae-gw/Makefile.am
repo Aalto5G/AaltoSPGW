@@ -84,9 +84,9 @@ nwLteSaeGw_LDADD =  $(top_builddir)/nw-gtpv2c/src/libNwGtpv2c.a $(top_builddir)/
 ###############################################################################
 
 systemddir = /lib/systemd/system
-systemd_DATA = SGW.service
+systemd_DATA = SGW.service PGW.service
 
 confdir = /etc/cumucore
-conf_DATA = sgw.cfg.template
+conf_DATA = sgw.cfg.template pgw.cfg.template
 
 EXTRA_DIST = $(systemd_DATA) $(conf_DATA)

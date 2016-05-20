@@ -4,7 +4,7 @@ Description=Serving Gateway (S-GW)
 [Service]
 Type=simple
 EnvironmentFile=/etc/cumucore/sgw.cfg
-ExecStart=/usr/local/bin/nwLteSaeGw --sgw-s11-ip ${IPADDR_S11SGW} --sgw-s5-ip ${IPADDR_S5SGW} --gtpu-ip ${IPADDR_GTPU}$
+ExecStart=/usr/bin/nwLteSaeGw --sgw-s11-ip ${IPADDR_S11SGW} --sgw-s5-ip ${IPADDR_S5SGW} --gtpu-ip ${IPADDR_GTPU}$
 Restart=on-failure
 
 [Install]
