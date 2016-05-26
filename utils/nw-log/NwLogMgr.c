@@ -154,22 +154,27 @@ NwRcT nwLogMgrLog(NwLogMgrT* thiz,
   struct timeval tv;
   struct tm *pTm;
 
-  gettimeofday( &tv, NULL );
-  pTm = localtime ( (const time_t*)&tv.tv_sec );
-  strftime ((char*) timeStr, 128, "%d/%m/%Y %T", pTm );
-  sprintf((char*)(timeStr + strlen((char*)timeStr)), ".%06u", (unsigned int)tv.tv_usec);
-#ifdef NW_LOG_TO_FILE
-  fprintf(thiz->fp, "[%06u] %s %s %s - %s <%s,%u>\n", logCount, timeStr, logModuleStr, gLogLevelStr[logLevel], logStr, fileNameStr, line);
-  if(logCount % 5000 == 0)
-  {
-    fclose(thiz->fp);
-    rc = nwLogMgrFileOpen(thiz);
-  }
-#else
-  printf("[%06u] %s %s %s - %s <%s,%u>\n", logCount, timeStr, logModuleStr, gLogLevelStr[logLevel], logStr, fileNameStr, line);
+/*   gettimeofday( &tv, NULL ); */
+/*   pTm = localtime ( (const time_t*)&tv.tv_sec ); */
+/*   strftime ((char*) timeStr, 128, "%d/%m/%Y %T", pTm ); */
+/*   sprintf((char*)(timeStr + strlen((char*)timeStr)), ".%06u", (unsigned int)tv.tv_usec); */
+/* #ifdef NW_LOG_TO_FILE */
+/*   fprintf(thiz->fp, "[%06u] %s %s %s - %s <%s,%u>\n", logCount, timeStr, logModuleStr, gLogLevelStr[logLevel], logStr, fileNameStr, line); */
+/*   if(logCount % 5000 == 0) */
+/*   { */
+/*     fclose(thiz->fp); */
+/*     rc = nwLogMgrFileOpen(thiz); */
+/*   } */
+/* #else */
+/*   printf("[%06u] %s %s %s - %s <%s,%u>\n", logCount, timeStr, logModuleStr, gLogLevelStr[logLevel], logStr, fileNameStr, line); */
+/*   rc = NW_OK; */
+/* #endif */
+/* #else */
+  printf("%s %s - %s\n",  logModuleStr, gLogLevelStr[logLevel], logStr);
+  fflush(stdout);
   rc = NW_OK;
-#endif
-  logCount++;
+/* #endif */
+  /* logCount++; */
   return rc;
 }
 
