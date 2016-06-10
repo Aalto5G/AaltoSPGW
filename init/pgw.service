@@ -1,0 +1,20 @@
+[Unit]
+Description=Packet Data Network Gateway (P-GW)
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/cumucore/pgw.cfg
+
+ExecStartPre=/bin/bash /etc/conf.d/iproute2/pgw.iproute2.start
+ExecStartPre=/sbin/iptables -t mangle -I POSTROUTING -s ${IPADDR_IPUE_CIDR} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${SGI_TCP_MSS}
+ExecStartPre=/sbin/iptables -t mangle -I POSTROUTING -d ${IPADDR_IPUE_CIDR} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${SGI_TCP_MSS}
+
+ExecStart=/usr/bin/nwLteSaeGw --pgw-s5-ip ${IPADDR_S5PGW} --gtpu-ip ${IPADDR_GTPU} --sgi-if sgi0s --ippool-subnet ${IPADDR_IPUE_NETW} --ippool-mask ${IPADDR_IPUE_MASK}
+Restart=on-failure
+
+ExecStopPost=/sbin/iptables -t mangle -D POSTROUTING -s ${IPADDR_IPUE_CIDR} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${SGI_TCP_MSS}
+ExecStopPost=/sbin/iptables -t mangle -D POSTROUTING -d ${IPADDR_IPUE_CIDR} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${SGI_TCP_MSS}
+ExecStopPost=/bin/bash /etc/conf.d/iproute2/pgw.iproute2.stop
+
+[Install]
+WantedBy=multi-user.target

@@ -84,9 +84,22 @@ nwLteSaeGw_LDADD =  $(top_builddir)/nw-gtpv2c/src/libNwGtpv2c.a $(top_builddir)/
 ###############################################################################
 
 systemddir = /lib/systemd/system
-systemd_DATA = SGW.service PGW.service
+systemd_DATA = ../init/sgw.service ../init/pgw.service
+
+systemdnetdir = /etc/systemd/network
+systemdnet_DATA = ../init/sgi0s.network ../init/sgi0.network ../init/sgi0.netdev
+
+iproutedir = /etc/conf.d/iproute2/
+iproute_DATA = ../init/pgw.iproute2.start ../init/pgw.iproute2.stop
 
 confdir = /etc/cumucore
-conf_DATA = sgw.cfg.template pgw.cfg.template
+conf_DATA = ../init/sgw.cfg.template ../init/pgw.cfg.template
 
-EXTRA_DIST = $(systemd_DATA) $(conf_DATA)
+EXTRA_DIST = $(systemd_DATA) $(systemdnet_DATA) $(iproute_DATA) $(conf_DATA)
+
+install-exec-hook:
+	sed -i -e '/rt_lte_ue/d' /etc/iproute2/rt_tables
+	echo 100 rt_lte_ue >> /etc/iproute2/rt_tables
+
+uninstall-local:
+	sed -i -e '/rt_lte_ue/d' /etc/iproute2/rt_tables

@@ -1,0 +1,5 @@
+# Configuration file template for S-GW
+
+IPADDR_GTPU="10.0.0.3"
+IPADDR_S5SGW="10.0.0.4"
+IPADDR_S11SGW="10.0.0.5"
