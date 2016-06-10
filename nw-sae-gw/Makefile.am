@@ -97,9 +97,8 @@ conf_DATA = ../init/sgw.cfg.template ../init/pgw.cfg.template
 
 EXTRA_DIST = $(systemd_DATA) $(systemdnet_DATA) $(iproute_DATA) $(conf_DATA)
 
-install-exec-hook:
-	sed -i -e '/rt_lte_ue/d' /etc/iproute2/rt_tables
-	echo 100 rt_lte_ue >> /etc/iproute2/rt_tables
+#install-exec-hook:
+#	echo 100 rt_lte_ue >> /etc/iproute2/rt_tables
 
-uninstall-local:
-	sed -i -e '/rt_lte_ue/d' /etc/iproute2/rt_tables
+#uninstall-local:
+#	sed -i -e '/rt_lte_ue/d' /etc/iproute2/rt_tables

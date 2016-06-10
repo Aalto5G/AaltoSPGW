@@ -5,4 +5,5 @@ ip rule del from ${IPADDR_IPUE_CIDR} table rt_lte_ue
 #route add $LTE_PDN_NETADDR dev $LTE_PDN_NAME table rt_lte_ue
 ip route del ${IPADDR_IPUE_CIDR} dev sgi0 table rt_lte_ue
 ip route del default via ${SGI_GW} table rt_lte_ue
+sed -i -e '/rt_lte_ue/d' /etc/iproute2/rt_tables
 exit 0

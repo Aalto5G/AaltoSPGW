@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo 100 rt_lte_ue >> /etc/iproute2/rt_tables
 ip link set dev sgi0 arp off
 ip link set dev sgi0s arp off
 ip link set dev sgi0 multicast off
