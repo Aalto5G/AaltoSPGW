@@ -1,9 +1,9 @@
 #!/bin/bash
 
-ip route del dev sgi0 ${IPADDR_IPUE_CIDR}
-ip rule del from ${IPADDR_IPUE_CIDR} table rt_lte_ue
+ip route del dev sgi0 ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK}
+ip rule del from ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} table rt_lte_ue
 #route add $LTE_PDN_NETADDR dev $LTE_PDN_NAME table rt_lte_ue
-ip route del ${IPADDR_IPUE_CIDR} dev sgi0 table rt_lte_ue
+ip route del ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} dev sgi0 table rt_lte_ue
 ip route del default via ${SGI_GW} table rt_lte_ue
 sed -i -e '/rt_lte_ue/d' /etc/iproute2/rt_tables
 exit 0

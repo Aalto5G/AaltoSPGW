@@ -5,9 +5,9 @@ ip link set dev sgi0 arp off
 ip link set dev sgi0s arp off
 ip link set dev sgi0 multicast off
 ip link set dev sgi0s multicast off
-ip route add dev sgi0 ${IPADDR_IPUE_CIDR}
-ip rule add from ${IPADDR_IPUE_CIDR} table rt_lte_ue
+ip route add dev sgi0 ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK}
+ip rule add from ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} table rt_lte_ue
 #route add $LTE_PDN_NETADDR dev $LTE_PDN_NAME table rt_lte_ue
-ip route add ${IPADDR_IPUE_CIDR} dev sgi0 table rt_lte_ue
+ip route add ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} dev sgi0 table rt_lte_ue
 ip route add default via ${SGI_GW} table rt_lte_ue
 exit 0
