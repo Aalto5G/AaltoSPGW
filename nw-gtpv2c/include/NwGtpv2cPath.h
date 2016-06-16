@@ -58,10 +58,21 @@ NwGtpv2cPathT*
 nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
                  NW_IN  NwU32T ipv4Remote);
 
-
+/**
+ * Destructor
+ */
 NwRcT
 nwGtpv2cPathDelete( NW_INOUT NwGtpv2cPathT **ppPath);
 
+/**
+ * Checks if the restart Counter has changed. If so, notifies the ULP
+ * and updates the local restart counter
+ *
+ * @param[out] pthiz : Pointer to pointer to Path object.
+ * @return NW_OK on success.
+ */
+NwRcT
+nwGtpv2cPathCheckRestartCounter(NW_IN NwGtpv2cPathT *pthiz, NW_IN NwU8T remoteRestartCounter);
 
 #ifdef __cplusplus
 }

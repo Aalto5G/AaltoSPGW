@@ -448,6 +448,7 @@ nwGtpv2cCreateAndSendMsg(NW_IN  NwGtpv2cStackT* thiz,
   return rc;
 }
 
+
 /**
   Send an Version Not Supported message
 
@@ -950,28 +951,10 @@ nwGtpv2cHandleEchoReq(NW_IN NwGtpv2cStackT *thiz,
   keyPath.ipv4Address = peerIp;
   pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), &keyPath);
   if(pPath)
-    if(remoteRestartCounter > pPath->restartCounter ||
-         (remoteRestartCounter<2 && pPath->restartCounter>254)) /*Overflow*/
-    {
-      /* Send Path reset to ULP*/
-      pPath->restartCounter = remoteRestartCounter;
-      NwGtpv2cUlpApiT ulpApi;
-
-      ulpApi.hMsg                              = 0;
-      ulpApi.apiType                           = NW_GTPV2C_ULP_API_PEER_RESTART_IND;
-      ulpApi.apiInfo.peerRestartInfo.peerIp    = peerIp;
-
-      rc = thiz->ulp.ulpReqCallback(thiz->ulp.hUlp, &ulpApi);
-    }
-    else if(remoteRestartCounter < pPath->restartCounter)
-    {
-        NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Incorrect restart counter from "NW_IPV4_ADDR
-               " (received %u < previous %u). Ignoring ",
-               NW_IPV4_ADDR_FORMAT(peerIp), remoteRestartCounter, pPath->restartCounter);
-    return NW_OK;
-    }
-
-  NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Test, restart %d, path %p", remoteRestartCounter, pPath);
+  {
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Test, restart %d, path %p", remoteRestartCounter, pPath);
+    nwGtpv2cPathCheckRestartCounter(pPath, remoteRestartCounter);
+  }
 
   /* Send Echo Response */
 
@@ -987,7 +970,7 @@ nwGtpv2cHandleEchoReq(NW_IN NwGtpv2cStackT *thiz,
   rc = nwGtpv2cMsgAddIeTV1(hMsg, NW_GTPV2C_IE_RECOVERY, 0,
                            thiz->restartCounter);
 
-  NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Sending NW_GTP_ECHO_RSP message to "
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending NW_GTP_ECHO_RSP message to "
          NW_IPV4_ADDR":%u with seq %u", NW_IPV4_ADDR_FORMAT(peerIp),
          peerPort, (seqNum));
 

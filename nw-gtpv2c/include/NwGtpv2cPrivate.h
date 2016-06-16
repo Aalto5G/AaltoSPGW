@@ -203,6 +203,8 @@ typedef struct NwGtpv2cPathS
   RB_ENTRY (NwGtpv2cPathS)      pathMapRbtNode;
   NwU32T                        tunnelCount;
   NwGtpv2cStackT*               pStack;
+  NwGtpv2cTunnelHandleT         hTunnel;                                /**< Handle to local tunnel context     */
+
   struct NwGtpv2cPathS*         next;
 } NwGtpv2cPathT;
 
