@@ -102,7 +102,7 @@ typedef  struct
 
 } NwMmeEpsBearerT;
 
-typedef NwPtrT NwDpeBearerHandleT;
+typedef NwHandleT NwDpeBearerHandleT;
 
 typedef struct NwMmeUe
 {
@@ -110,7 +110,7 @@ typedef struct NwMmeUe
   NwU8T                         msIsdn[8];
   NwU8T                         mei[8];
   NwU8T                         servingNetwork[3];
-  NwU32T                        hMmeUlp;
+  NwHandleT                     hMmeUlp;
   NwGtpv2cStackHandleT          hGtpcStack;
   NwGtpv2cTunnelHandleT         hGtpv2cTunnel;
   NwU32T                        pdnIpv4Addr;

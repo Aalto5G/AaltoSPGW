@@ -72,8 +72,8 @@ typedef struct
   NwU32T                        maxUeSessions;
   NwU32T                        sessionTimeout;
   NwU32T                        sessionCount;
-  NwU32T                        hStatsTimer;
-  NwU32T                        hRpsTimer;
+  NwHandleT                     hStatsTimer;
+  NwHandleT                     hRpsTimer;
   NwU32T                        mmeIpAddr;
   NwU32T                        sgwIpAddr;
   NwU32T                        pgwIpAddr;

@@ -170,7 +170,7 @@ NwRcT nwLogMgrLog(NwLogMgrT* thiz,
 /*   rc = NW_OK; */
 /* #endif */
 /* #else */
-  printf("%s %s - %s\n",  logModuleStr, gLogLevelStr[logLevel], logStr);
+  printf("%s %s - %s <%s,%u>\n", logModuleStr, gLogLevelStr[logLevel], logStr, fileNameStr, line);
   fflush(stdout);
   rc = NW_OK;
 /* #endif */

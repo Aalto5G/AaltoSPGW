@@ -143,34 +143,34 @@ NwRcT
 nwSaeGwUlpDeregisterCollocatedPgw(NwSaeGwUlpT* thiz, NwSaeGwUlpT* pCollocatedPgw);
 
 NwRcT
-nwSaeGwUlpRegisterSgwUeSession(NwU32T hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Addr, NwU32T *hPgw);
+nwSaeGwUlpRegisterSgwUeSession(NwHandleT hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Addr, NwU32T *hPgw);
 
 NwRcT
-nwSaeGwUlpRegisterPgwUeSession(NwU32T hPgw, NwSaeGwUeT *pUe);
+nwSaeGwUlpRegisterPgwUeSession(NwHandleT hPgw, NwSaeGwUeT *pUe);
 
 NwRcT
-nwSaeGwUlpSgwDeregisterUeSession(NwU32T hSaeGw, NwSaeGwUeT *pUe);
+nwSaeGwUlpSgwDeregisterUeSession(NwHandleT hSaeGw, NwSaeGwUeT *pUe);
 
 NwRcT
-nwSaeGwUlpPgwDeregisterUeSession(NwU32T hSaeGw, NwSaeGwUeT *pUe);
+nwSaeGwUlpPgwDeregisterUeSession(NwHandleT hSaeGw, NwSaeGwUeT *pUe);
 
 NwRcT
-nwSaeGwUlpAllocateTeidOrGreKeys(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
+nwSaeGwUlpAllocateTeidOrGreKeys(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
 
 NwRcT
-nwSaeGwUlpInstallUplinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
+nwSaeGwUlpInstallUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
 
 NwRcT
-nwSaeGwUlpRemoveUplinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
+nwSaeGwUlpRemoveUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
 
 NwRcT
-nwSaeGwUlpInstallDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
+nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
 
 NwRcT
-nwSaeGwUlpModifyDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
+nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
 
 NwRcT
-nwSaeGwUlpRemoveDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
+nwSaeGwUlpRemoveDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
 
 #ifdef __cplusplus
 }

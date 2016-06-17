@@ -64,7 +64,7 @@ typedef signed int              NwS32T;         /**< Signed 4 byte              
 typedef signed long long        NwS64T;         /**< Signed 8 byte                      */
 
 typedef uintptr_t               NwPtrT;         /**< Use this for generic pointers      */
-typedef unsigned int            NwHandleT;      /**< Use this for generic handles       */
+typedef uintptr_t               NwHandleT;      /**< Use this for generic handles       */
 
 typedef char                    NwBoolT;        /**< Use this for booleans              */
 

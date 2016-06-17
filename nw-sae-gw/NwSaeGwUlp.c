@@ -606,13 +606,13 @@ nwSaeGwUlpCreateUeSession(NwSaeGwUlpT* thiz, NwSaeGwUeT **ppUe)
   {
     if(thiz->saeGwType == NW_SAE_GW_TYPE_SGW)
     {
-      pUe->hSgw       = (NwU32T) thiz;
-      pUe->hPgw       = (NwU32T) NULL;
+      pUe->hSgw       = (NwHandleT) thiz;
+      pUe->hPgw       = (NwHandleT) NULL;
     }
     else
     {
-      pUe->hPgw       = (NwU32T) thiz;
-      pUe->hSgw       = (NwU32T) NULL;
+      pUe->hPgw       = (NwHandleT) thiz;
+      pUe->hSgw       = (NwHandleT) NULL;
     }
 
     pUe->state = NW_SAE_GW_UE_STATE_INIT;
@@ -1390,7 +1390,7 @@ nwSaeGwUlpDeregisterCollocatedPgw(NwSaeGwUlpT* thiz, NwSaeGwUlpT* pCollocatedPgw
 }
 
 NwRcT
-nwSaeGwUlpRegisterSgwUeSession(NwU32T hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Addr, NwU32T *hPgw)
+nwSaeGwUlpRegisterSgwUeSession(NwHandleT hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Addr, NwU32T *hPgw)
 {
   NwSaeGwUlpT *pPgwListIter;
   NwSaeGwUlpT *thiz = (NwSaeGwUlpT*) hSgw;
@@ -1426,7 +1426,7 @@ nwSaeGwUlpRegisterSgwUeSession(NwU32T hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Addr,
 }
 
 NwRcT
-nwSaeGwUlpRegisterPgwUeSession(NwU32T hPgw, NwSaeGwUeT *pUe)
+nwSaeGwUlpRegisterPgwUeSession(NwHandleT hPgw, NwSaeGwUeT *pUe)
 {
   NwSaeGwUlpT *thiz = (NwSaeGwUlpT*) hPgw;
   NwSaeGwUeT *pCollision;
@@ -1447,7 +1447,7 @@ nwSaeGwUlpRegisterPgwUeSession(NwU32T hPgw, NwSaeGwUeT *pUe)
 }
 
 NwRcT
-nwSaeGwUlpSgwDeregisterUeSession(NwU32T hSaeGw, NwSaeGwUeT *pUe)
+nwSaeGwUlpSgwDeregisterUeSession(NwHandleT hSaeGw, NwSaeGwUeT *pUe)
 {
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
   NwSaeGwUeT *pCollision;
@@ -1462,7 +1462,7 @@ nwSaeGwUlpSgwDeregisterUeSession(NwU32T hSaeGw, NwSaeGwUeT *pUe)
 }
 
 NwRcT
-nwSaeGwUlpPgwDeregisterUeSession(NwU32T hSaeGw, NwSaeGwUeT *pUe)
+nwSaeGwUlpPgwDeregisterUeSession(NwHandleT hSaeGw, NwSaeGwUeT *pUe)
 {
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
   NwSaeGwUeT *pCollision;
@@ -1477,7 +1477,7 @@ nwSaeGwUlpPgwDeregisterUeSession(NwU32T hSaeGw, NwSaeGwUeT *pUe)
 }
 
 NwRcT
-nwSaeGwUlpAllocateTeidOrGreKeys(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
+nwSaeGwUlpAllocateTeidOrGreKeys(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 {
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
 
@@ -1506,7 +1506,7 @@ nwSaeGwUlpAllocateTeidOrGreKeys(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 }
 
 NwRcT
-nwSaeGwUlpInstallUplinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
+nwSaeGwUlpInstallUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 {
   NwRcT                 rc;
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
@@ -1568,7 +1568,7 @@ nwSaeGwUlpInstallUplinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 }
 
 NwRcT
-nwSaeGwUlpRemoveUplinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
+nwSaeGwUlpRemoveUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 {
   NwRcT                 rc = NW_OK;
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
@@ -1600,7 +1600,7 @@ nwSaeGwUlpRemoveUplinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 }
 
 NwRcT
-nwSaeGwUlpInstallDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
+nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 {
   NwRcT                 rc;
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
@@ -1669,7 +1669,7 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 }
 
 NwRcT
-nwSaeGwUlpModifyDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
+nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 {
   NwRcT                 rc;
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
@@ -1735,7 +1735,7 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 }
 
 NwRcT
-nwSaeGwUlpRemoveDownlinkEpsBearer(NwU32T hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
+nwSaeGwUlpRemoveDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 {
   NwRcT                 rc = NW_OK;
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;

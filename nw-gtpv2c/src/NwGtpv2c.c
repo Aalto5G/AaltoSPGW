@@ -508,7 +508,9 @@ nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
 
   NW_ENTER(thiz);
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Creating local tunnel with teid '0x%x' and peer IP 0x%x", teid, ipv4Remote);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
+         "Creating local tunnel with teid '%#x' and peer IP "NW_IPV4_ADDR,
+         teid, NW_IPV4_ADDR_FORMAT(ipv4Remote));
 
   pTunnel = nwGtpv2cTunnelNew(thiz, teid, ipv4Remote, hUlpTunnel);
 
@@ -522,7 +524,10 @@ nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
       NW_ASSERT(NW_OK == rc);
 
       *phTunnel = (NwGtpv2cTunnelHandleT) 0;
-      NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Local tunnel creation failed for teid '0x%x' and peer IP "NW_IPV4_ADDR". Tunnel already exists!", teid, NW_IPV4_ADDR_FORMAT(ipv4Remote));
+      NW_LOG(thiz, NW_LOG_LEVEL_WARN,
+             "Local tunnel creation failed for teid '%#x' and peer IP "
+             NW_IPV4_ADDR". Tunnel already exists!",
+             teid, NW_IPV4_ADDR_FORMAT(ipv4Remote));
 
       NW_ASSERT(0);
       NW_LEAVE(thiz);
@@ -567,7 +572,9 @@ nwGtpv2cDeleteLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
   pTunnel = RB_REMOVE(NwGtpv2cTunnelMap, &(thiz->tunnelMap), (NwGtpv2cTunnelT*)hTunnel);
   NW_ASSERT(pTunnel == (NwGtpv2cTunnelT*)hTunnel);
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Deleting local tunnel with teid '0x%x' and peer IP 0x%x", pTunnel->teid, pTunnel->ipv4AddrRemote);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
+         "Deleting local tunnel with teid '%#x' and peer IP "NW_IPV4_ADDR,
+         pTunnel->teid, NW_IPV4_ADDR_FORMAT(pTunnel->ipv4AddrRemote));
 
   rc = nwGtpv2cTunnelDelete(thiz, pTunnel);
   NW_ASSERT(NW_OK == rc);
@@ -745,7 +752,8 @@ nwGtpv2cHandleUlpTriggeredRsp( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUlpApiT
   if(((NwGtpv2cMsgT*) pUlpRsp->hMsg)->seqNum == 0)
     ((NwGtpv2cMsgT*) pUlpRsp->hMsg)->seqNum = pReqTrxn->seqNum;
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending response message over seq '0x%x'", pReqTrxn->seqNum);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
+         "Sending response message over seq '%#x'", pReqTrxn->seqNum);
 
   rc = nwGtpv2cCreateAndSendMsg(thiz,
       pReqTrxn->seqNum,
@@ -785,7 +793,10 @@ nwGtpv2cHandleUlpCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUl
 
   NW_ENTER(thiz);
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Creating local tunnel with teid '0x%x' and peer IP 0x%x", pUlpReq->apiInfo.createLocalTunnelInfo.teidLocal, pUlpReq->apiInfo.createLocalTunnelInfo.peerIp);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
+         "Creating local tunnel with teid '%#x' and peer IP "NW_IPV4_ADDR,
+         pUlpReq->apiInfo.createLocalTunnelInfo.teidLocal,
+         NW_IPV4_ADDR_FORMAT(pUlpReq->apiInfo.createLocalTunnelInfo.peerIp));
 
   pTunnel = nwGtpv2cTunnelNew(thiz, pUlpReq->apiInfo.createLocalTunnelInfo.teidLocal,
                               pUlpReq->apiInfo.createLocalTunnelInfo.peerIp,
@@ -841,7 +852,7 @@ static NwRcT
 nwGtpv2cSendInitialReqIndToUlp( NW_IN NwGtpv2cStackT *thiz,
                                 NW_IN NwGtpv2cErrorT *pError,
                                 NW_IN NwGtpv2cTrxnT *pTrxn,
-                                NW_IN NwU32T  hUlpTunnel,
+                                NW_IN NwU32T  hUlpTunnel,  /*TEID*/
                                 NW_IN NwU32T  msgType,
                                 NW_IN NwU32T  peerIp,
                                 NW_IN NwU16T  peerPort,
@@ -879,8 +890,8 @@ nwGtpv2cSendInitialReqIndToUlp( NW_IN NwGtpv2cStackT *thiz,
 static NwRcT
 nwGtpv2cSendTriggeredRspIndToUlp( NW_IN NwGtpv2cStackT* thiz,
                                   NW_IN NwGtpv2cErrorT *pError,
-                                  NW_IN NwU32T  hUlpTrxn,
-                                  NW_IN NwU32T  hUlpTunnel,
+                                  NW_IN NwHandleT  hUlpTrxn,
+                                  NW_IN NwU32T  hUlpTunnel, /*TEID*/
                                   NW_IN NwU32T  msgType,
                                   NW_IN NwGtpv2cMsgHandleT hMsg)
 {
@@ -1020,7 +1031,10 @@ nwGtpv2cHandleInitialReq(NW_IN NwGtpv2cStackT *thiz,
 
     if(!pLocalTunnel)
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Request message received on non-existent teid 0x%x from peer 0x%x received! Discarding.", ntohl(teidLocal), htonl(peerIp));
+      NW_LOG(thiz, NW_LOG_LEVEL_WARN,
+             "Request message received on non-existent TEID %#x from peer "
+             NW_IPV4_ADDR" received! Discarding.",
+             ntohl(teidLocal), NW_IPV4_ADDR_FORMAT(peerIp));
       return NW_OK;
     }
     hUlpTunnel = pLocalTunnel->hUlpTunnel;
@@ -1043,7 +1057,10 @@ nwGtpv2cHandleInitialReq(NW_IN NwGtpv2cStackT *thiz,
     rc = nwGtpv2cMsgIeParse(thiz->pGtpv2cMsgIeParseInfo[msgType], hMsg, &error);
     if(rc != NW_OK)
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Malformed request message received on TEID %u from peer 0x%x. Notifying ULP.", ntohl(teidLocal), htonl(peerIp));
+      NW_LOG(thiz, NW_LOG_LEVEL_WARN,
+             "Malformed request message received on TEID %#x from peer "
+             NW_IPV4_ADDR" . Notifying ULP.",
+             ntohl(teidLocal), NW_IPV4_ADDR_FORMAT(peerIp));
     }
 
     rc  = nwGtpv2cSendInitialReqIndToUlp( thiz,
@@ -1086,8 +1103,8 @@ nwGtpv2cHandleTriggeredRsp(NW_IN NwGtpv2cStackT *thiz,
 
   if(pTrxn)
   {
-    NwU32T hUlpTrxn;
-    NwU32T hUlpTunnel;
+    NwHandleT hUlpTrxn;
+    NwU32T hUlpTunnel; /*TEID*/
 
     hUlpTrxn = pTrxn->hUlpTrxn;
     hUlpTunnel = (pTrxn->hTunnel ? ((NwGtpv2cTunnelT*)(pTrxn->hTunnel))->hUlpTunnel : 0);
@@ -1103,7 +1120,11 @@ nwGtpv2cHandleTriggeredRsp(NW_IN NwGtpv2cStackT *thiz,
     rc = nwGtpv2cMsgIeParse(thiz->pGtpv2cMsgIeParseInfo[msgType], hMsg, &error);
     if(rc != NW_OK)
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Malformed message received on TEID %u from peer 0x%x. Notifying ULP.", ntohl((*((NwU32T*)(msgBuf + 4)))), htonl(peerIp));
+      NW_LOG(thiz, NW_LOG_LEVEL_WARN,
+             "Malformed message received on TEID %#x from peer "NW_IPV4_ADDR
+             ". Notifying ULP.",
+             ntohl((*((NwU32T*)(msgBuf + 4)))),
+             NW_IPV4_ADDR_FORMAT(peerIp));
     }
 
     rc  = nwGtpv2cSendTriggeredRspIndToUlp( thiz,
@@ -1463,7 +1484,9 @@ nwGtpv2cProcessUlpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
 
     default:
       {
-        NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Received unhandled API 0x%x from ULP! Ignoring.", pUlpReq->apiType);
+        NW_LOG(thiz, NW_LOG_LEVEL_WARN,
+               "Received unhandled API %#x from ULP! Ignoring.",
+               pUlpReq->apiType);
         rc = NW_FAILURE;
       }
       break;
@@ -1506,7 +1529,11 @@ nwGtpv2cProcessTimeoutOld(void* arg)
   }
   else
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Received timeout event from ULP for non-existent timeoutInfo 0x%x and activeTimer 0x%x!", (NwU32T) timeoutInfo, (NwU32T) thiz->activeTimerInfo);
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN,
+           "Received timeout event from ULP for non-existent timeoutInfo %#p "
+           "and activeTimer %#p!",
+           (NwHandleT) timeoutInfo,
+           (NwHandleT) thiz->activeTimerInfo);
     return NW_OK;
   }
 
@@ -1573,7 +1600,11 @@ nwGtpv2cProcessTimeout(void* arg)
   }
   else
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Received timeout event from ULP for non-existent timeoutInfo 0x%x and activeTimer 0x%x!", (NwU32T) timeoutInfo, (NwU32T) thiz->activeTimerInfo);
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN,
+           "Received timeout event from ULP for non-existent timeoutInfo %#p "
+           "and activeTimer %#p!",
+           (NwHandleT) timeoutInfo,
+           (NwHandleT) thiz->activeTimerInfo);
     return NW_OK;
   }
 
@@ -1684,13 +1715,19 @@ nwGtpv2cStartTimer(NwGtpv2cStackT* thiz,
     {
       if(NW_GTPV2C_TIMER_CMP_P(&(thiz->activeTimerInfo->tvTimeout), &(timeoutInfo->tvTimeout), >))
       {
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer 0x%x for info 0x%x!", (NwU32T) thiz->activeTimerInfo->hTimer, (NwU32T) thiz->activeTimerInfo);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
+               "Stopping active timer %#p for info %#p!",
+               (NwHandleT) thiz->activeTimerInfo->hTimer,
+               (NwHandleT) thiz->activeTimerInfo);
         rc = thiz->tmrMgr.tmrStopCallback(thiz->tmrMgr.tmrMgrHandle, thiz->activeTimerInfo->hTimer);
         NW_ASSERT(NW_OK == rc);
       }
       else
       {
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Already Started timer 0x%x for info 0x%x!", (NwU32T) thiz->activeTimerInfo->hTimer, (NwU32T) thiz->activeTimerInfo);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
+               "Already Started timer %#p for info %#p!",
+               (NwHandleT) thiz->activeTimerInfo->hTimer,
+               (NwHandleT) thiz->activeTimerInfo);
         *phTimer = (NwGtpv2cTimerHandleT) timeoutInfo;
         NW_LEAVE(thiz);
         return NW_OK;
@@ -1698,7 +1735,8 @@ nwGtpv2cStartTimer(NwGtpv2cStackT* thiz,
     }
 
     rc = thiz->tmrMgr.tmrStartCallback(thiz->tmrMgr.tmrMgrHandle, timeoutSec, timeoutUsec, tmrType, (void*)timeoutInfo, &timeoutInfo->hTimer);
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer 0x%x for info 0x%x!", (NwU32T) timeoutInfo->hTimer, (NwU32T) timeoutInfo);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %#p for info %#p!",
+           (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
     NW_ASSERT(NW_OK == rc);
     thiz->activeTimerInfo = timeoutInfo;
 
@@ -1769,13 +1807,19 @@ nwGtpv2cStartTimerOld(NwGtpv2cStackT* thiz,
     {
       if(NW_GTPV2C_TIMER_CMP_P(&(thiz->activeTimerInfo->tvTimeout), &(timeoutInfo->tvTimeout), >))
       {
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer 0x%x for info 0x%x!", (NwU32T) thiz->activeTimerInfo->hTimer, (NwU32T) thiz->activeTimerInfo);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
+               "Stopping active timer %#p for info %#p!",
+               (NwHandleT) thiz->activeTimerInfo->hTimer,
+               (NwHandleT) thiz->activeTimerInfo);
         rc = thiz->tmrMgr.tmrStopCallback(thiz->tmrMgr.tmrMgrHandle, thiz->activeTimerInfo->hTimer);
         NW_ASSERT(NW_OK == rc);
       }
       else
       {
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Already Started timer 0x%x for info 0x%x!", (NwU32T) thiz->activeTimerInfo->hTimer, (NwU32T) thiz->activeTimerInfo);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
+               "Already Started timer %#p for info %#p!",
+               (NwHandleT) thiz->activeTimerInfo->hTimer,
+               (NwHandleT) thiz->activeTimerInfo);
         *phTimer = (NwGtpv2cTimerHandleT) timeoutInfo;
         NW_LEAVE(thiz);
         return NW_OK;
@@ -1783,7 +1827,8 @@ nwGtpv2cStartTimerOld(NwGtpv2cStackT* thiz,
     }
 
     rc = thiz->tmrMgr.tmrStartCallback(thiz->tmrMgr.tmrMgrHandle, timeoutSec, timeoutUsec, tmrType, (void*)timeoutInfo, &timeoutInfo->hTimer);
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer 0x%x for info 0x%x!", (NwU32T) timeoutInfo->hTimer, (NwU32T) timeoutInfo);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %#p for info %#p!",
+           (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
     NW_ASSERT(NW_OK == rc);
     thiz->activeTimerInfo = timeoutInfo;
 
@@ -1816,10 +1861,12 @@ nwGtpv2cStopTimer(NwGtpv2cStackT* thiz,
   timeoutInfo->next = gpGtpv2cTimeoutInfoPool;
   gpGtpv2cTimeoutInfoPool = timeoutInfo;
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer 0x%x for info 0x%x!", (NwU32T) timeoutInfo->hTimer, (NwU32T) timeoutInfo);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer %#p for info %#p!",
+         (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
   if(thiz->activeTimerInfo == timeoutInfo)
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer 0x%x for info 0x%x!", (NwU32T) timeoutInfo->hTimer, (NwU32T) timeoutInfo);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer %#p for info %#p!",
+           (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
     rc = thiz->tmrMgr.tmrStopCallback(thiz->tmrMgr.tmrMgrHandle, timeoutInfo->hTimer);
     thiz->activeTimerInfo = NULL;
     NW_ASSERT(NW_OK == rc);
@@ -1840,7 +1887,8 @@ nwGtpv2cStopTimer(NwGtpv2cStackT* thiz,
         rc = thiz->tmrMgr.tmrStartCallback(thiz->tmrMgr.tmrMgrHandle,  tv.tv_sec, tv.tv_usec, timeoutInfo->tmrType, (void*)timeoutInfo, &timeoutInfo->hTimer);
         NW_ASSERT(NW_OK == rc);
 
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer 0x%x for info 0x%x!", (NwU32T) timeoutInfo->hTimer, (NwU32T) timeoutInfo);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %#p for info %#p!",
+               (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
         thiz->activeTimerInfo = timeoutInfo;
       }
     }
@@ -1869,10 +1917,12 @@ nwGtpv2cStopTimerOld(NwGtpv2cStackT* thiz,
   timeoutInfo->next = gpGtpv2cTimeoutInfoPool;
   gpGtpv2cTimeoutInfoPool = timeoutInfo;
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer 0x%x for info 0x%x!", (NwU32T) timeoutInfo->hTimer, (NwU32T) timeoutInfo);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer %#p for info %#p!",
+         (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
   if(thiz->activeTimerInfo == timeoutInfo)
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer 0x%x for info 0x%x!", (NwU32T) timeoutInfo->hTimer, (NwU32T) timeoutInfo);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer %#p for info %#p!",
+           (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
     rc = thiz->tmrMgr.tmrStopCallback(thiz->tmrMgr.tmrMgrHandle, timeoutInfo->hTimer);
     thiz->activeTimerInfo = NULL;
     NW_ASSERT(NW_OK == rc);
@@ -1893,7 +1943,8 @@ nwGtpv2cStopTimerOld(NwGtpv2cStackT* thiz,
         rc = thiz->tmrMgr.tmrStartCallback(thiz->tmrMgr.tmrMgrHandle,  tv.tv_sec, tv.tv_usec, timeoutInfo->tmrType, (void*)timeoutInfo, &timeoutInfo->hTimer);
         NW_ASSERT(NW_OK == rc);
 
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer 0x%x for info 0x%x!", (NwU32T) timeoutInfo->hTimer, (NwU32T) timeoutInfo);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %#p for info %#p!",
+               (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
         thiz->activeTimerInfo = timeoutInfo;
       }
     }

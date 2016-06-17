@@ -150,7 +150,7 @@ nwMmeUlpCreateConn(NwMmeUlpT* thiz)
   {
     pMs = nwMmeUeNew(thiz->hGtpcStack);
 
-    pMs->hMmeUlp        = (NwU32T) thiz;
+    pMs->hMmeUlp        = (NwHandleT) thiz;
     pMs->pDpe           = thiz->pDpe;
     pMs->mmeIpv4Addr    = thiz->mmeIpAddr;
     pMs->sgwIpv4Addr    = thiz->sgwIpAddr;
