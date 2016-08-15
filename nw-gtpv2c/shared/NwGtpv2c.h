@@ -300,13 +300,13 @@ typedef struct
 typedef enum{
     peerRestarted = 0,
     peerDisconnected,
-}NwErrorCause;
+}NwCause;
 
 typedef struct
 {
   NW_IN    NwU32T                       peerIp;
-  NW_IN    NwErrorCause                 cause;
-} NwGtpv2cPeerErrorIndInfoT;
+  NW_IN    NwCause                      cause;
+} NwGtpv2cPeerChangeIndInfoT;
 
 /**
  * API information elements between ULP and Stack for
@@ -350,7 +350,7 @@ typedef struct
     NwGtpv2cTriggeredRspIndInfoT        triggeredRspIndInfo;
     NwGtpv2cTriggeredReqIndInfoT        triggeredReqIndInfo;
     NwGtpv2cRspFailureIndInfoT          rspFailureInfo;
-    NwGtpv2cPeerErrorIndInfoT           peerErrorInfo;
+    NwGtpv2cPeerChangeIndInfoT          peerChangeInfo;
     NwGtpv2cCreateLocalTunnelInfoT      createLocalTunnelInfo;
     NwGtpv2cDeleteLocalTunnelInfoT      deleteLocalTunnelInfo;
   } apiInfo;
