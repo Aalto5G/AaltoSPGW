@@ -182,10 +182,6 @@ static NwRcT
 nwGtpv2cCreateSessionRequestIeIndication(NwU8T ieType, NwU8T ieLength, NwU8T ieInstance, NwU8T* ieValue, void* arg)
 {
   NwRcT rc;
-  NwMmeUeT* thiz;
-  NW_UE_LOG(NW_LOG_LEVEL_DEBG, "Received IE Parse Indication for of type %u, length %u, instance %u!", ieType, ieLength, ieInstance);
-
-  thiz = arg;
   switch(ieType)
   {
     case NW_GTPV2C_IE_CAUSE:
@@ -197,6 +193,7 @@ nwGtpv2cCreateSessionRequestIeIndication(NwU8T ieType, NwU8T ieLength, NwU8T ieI
 
     case NW_GTPV2C_IE_IMSI:
       {
+        NwMmeUeT* thiz = (NwMmeUeT*)arg;
         memcpy(thiz->imsi, ieValue, 8);
       }
       break;

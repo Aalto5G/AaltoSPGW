@@ -105,6 +105,10 @@ nwGtpv2cTrxnStartDulpicateRequestWaitTimer(NwGtpv2cTrxnT* thiz);
 NwRcT
 nwGtpv2cTrxnStartPeerRspWaitTimer(NwGtpv2cTrxnT* thiz);
 
+
+NwRcT
+nwGtpv2cTrxnSendMsgRetransmission(NwGtpv2cTrxnT* thiz);
+
 #ifdef __cplusplus
 }
 #endif

@@ -32,6 +32,7 @@
  *----------------------------------------------------------------------------*/
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "NwTypes.h"
@@ -50,7 +51,7 @@
 extern "C" {
 #endif
 
-#define  NW_GTPV2C_KEEP_ALIVE_TMR 10
+#define  NW_GTPV2C_KEEP_ALIVE_TMR 20
 
 static NwGtpv2cPathT* gpGtpv2cPathPool = NULL;
 
@@ -58,157 +59,151 @@ static NwGtpv2cPathT* gpGtpv2cPathPool = NULL;
  *                   P R I V A T E      F U N C T I O N S                   *
  *--------------------------------------------------------------------------*/
 
-/*---------------------------------------------------------------------------
- * Send msg retransmission to peer via data request to UDP Entity
- *--------------------------------------------------------------------------*/
-
-/* static NwRcT */
-/* nwGtpv2cTrxnSendMsgRetransmission(NwGtpv2cTrxnT* thiz) */
-/* { */
-/*   NwRcT rc ; */
-
-/*   NW_ASSERT(thiz); */
-
-/*   NW_ASSERT(thiz->pMsg); */
-
-/*   rc = thiz->pStack->udp.udpDataReqCallback(thiz->pStack->udp.hUdp, */
-/*       thiz->pMsg->msgBuf, */
-/*       thiz->pMsg->msgLen, */
-/*       thiz->peerIp, */
-/*       thiz->peerPort); */
-
-/*   thiz->maxRetries--; */
-
-/*   return rc; */
-/* } */
-
-/* static NwRcT */
-/* nwGtpv2cTrxnPeerRspWaitTimeout(void* arg) */
-/* { */
-/*   NwRcT rc = NW_OK; */
-/*   NwGtpv2cTrxnT* thiz; */
-/*   NwGtpv2cStackT* pStack; */
-
-/*   thiz = ((NwGtpv2cTrxnT*)arg); */
-/*   pStack = thiz->pStack; */
-
-/*   NW_ASSERT(pStack); */
-
-/*   NW_LOG(pStack, NW_LOG_LEVEL_WARN, "T3 Response timer expired for transaction 0x%X", (NwU32T) thiz); */
-
-/*   thiz->hRspTmr = 0; */
-
-/*   if(thiz->maxRetries) */
-/*   { */
-/*     rc = nwGtpv2cTrxnSendMsgRetransmission(thiz); */
-/*     NW_ASSERT(NW_OK == rc); */
-
-/*     rc = nwGtpv2cStartTimer(thiz->pStack, thiz->t3Timer, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT, nwGtpv2cTrxnPeerRspWaitTimeout, thiz, &thiz->hRspTmr); */
-/*   } */
-/*   else */
-/*   { */
-/*     NwGtpv2cUlpApiT ulpApi; */
-
-/*     ulpApi.hMsg                              = 0; */
-/*     ulpApi.apiType                           = NW_GTPV2C_ULP_API_RSP_FAILURE_IND; */
-
-/*     ulpApi.apiInfo.rspFailureInfo.hUlpTrxn   = thiz->hUlpTrxn; */
-/*     ulpApi.apiInfo.rspFailureInfo.hUlpTunnel = ( (thiz->hTunnel) ? ((NwGtpv2cTunnelT*)(thiz->hTunnel))->hUlpTunnel : 0 ); */
-
-/*     NW_LOG(pStack, NW_LOG_LEVEL_ERRO, "N3 retries expired for transaction 0x%X", (NwU32T) thiz); */
-/*     RB_REMOVE(NwGtpv2cOutstandingTxSeqNumTrxnMap, &(pStack->outstandingTxSeqNumMap), thiz); */
-/*     rc = nwGtpv2cTrxnDelete(&thiz); */
-
-/*     rc = pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi); */
-/*   } */
-/*   return rc; */
-/* } */
-
-/* static NwRcT */
-/* nwGtpv2cTrxnDuplicateRequestWaitTimeout(void* arg) */
-/* { */
-/*   NwRcT rc = NW_OK; */
-/*   NwGtpv2cTrxnT* thiz; */
-/*   NwGtpv2cStackT* pStack; */
-
-/*   thiz = ((NwGtpv2cTrxnT*)arg); */
-
-/*   NW_ASSERT(thiz); */
-/*   pStack = thiz->pStack; */
-
-/*   NW_ASSERT(pStack); */
-
-/*   NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Duplicate request hold timer expired for transaction 0x%X", (NwU32T) thiz); */
-
-/*   thiz->hRspTmr = 0; */
-
-/*   RB_REMOVE(NwGtpv2cOutstandingRxSeqNumTrxnMap, &(pStack->outstandingRxSeqNumMap), thiz); */
-/*   rc = nwGtpv2cTrxnDelete(&thiz); */
-/*   NW_ASSERT(NW_OK == rc); */
-
-/*   return rc; */
-/* } */
-
-/* /\** */
-/*  * Start timer to wait for rsp of a req message */
-/*  * */
-/*  * @param[in] thiz : Pointer to transaction */
-/*  * @param[in] timeoutCallbackFunc : Timeout handler callback function. */
-/*  * @return NW_OK on success. */
-/*  *\/ */
-
-/* NwRcT */
-/* nwGtpv2cTrxnStartPeerRspWaitTimer(NwGtpv2cTrxnT* thiz) */
-/* { */
-/*   NwRcT rc; */
-/*   rc = nwGtpv2cStartTimer(thiz->pStack, thiz->t3Timer, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT, nwGtpv2cTrxnPeerRspWaitTimeout, thiz, &thiz->hRspTmr); */
-/*   return rc; */
-/* } */
-
-/* /\** */
-/*   Start timer to wait before pruginf a req tran for which response has been sent */
-
-/*   @param[in] thiz : Pointer to transaction */
-/*   @return NW_OK on success. */
-/*  *\/ */
-
-/* NwRcT */
-/* nwGtpv2cTrxnStartDulpicateRequestWaitTimer(NwGtpv2cTrxnT* thiz) */
-/* { */
-/*   NwRcT rc; */
-
-/*   rc = nwGtpv2cStartTimer(thiz->pStack, thiz->t3Timer * thiz->maxRetries, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT, nwGtpv2cTrxnDuplicateRequestWaitTimeout, thiz, &thiz->hRspTmr); */
-
-/*   return rc; */
-/* } */
-
-/* /\** */
-/*   Send timer stop request to TmrMgr Entity. */
-
-/*   @param[in] thiz : Pointer to transaction */
-/*   @return NW_OK on success. */
-/*  *\/ */
-
-/* static NwRcT */
-/* nwGtpv2cTrxnStopPeerRspTimer(NwGtpv2cTrxnT* thiz) */
-/* { */
-/*   NwRcT rc; */
-
-/*   NW_ASSERT(thiz->pStack->tmrMgr.tmrStopCallback != NULL); */
-
-/*   rc = nwGtpv2cStopTimer(thiz->pStack, thiz->hRspTmr); */
-/*   thiz->hRspTmr = 0; */
-
-/*   return rc; */
-/* } */
-
-
 /**
   Send Echo request periodically as a keep alive.
 
   @param[in] thiz : Pointer to path
   @return NW_OK on success.
  */
+
+
+static NwRcT
+nwGtpv2cPathSendPeerRestartToUlp(NwGtpv2cPathT* thiz)
+{
+  NwRcT                 rc;
+  NwGtpv2cUlpApiT ulpApi;
+  NwGtpv2cStackT* pStack;
+
+  pStack = thiz->pStack;
+  ulpApi.hMsg                              = 0;
+  ulpApi.apiType                           = NW_GTPV2C_ULP_API_PEER_CHANGE_IND;
+  ulpApi.apiInfo.peerErrorInfo.peerIp      = thiz->ipv4Address;
+  ulpApi.apiInfo.peerErrorInfo.cause       = peerRestarted;
+  NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO, "Peer restart detected sending indication to ULP");
+  rc = pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
+}
+
+
+static NwRcT
+nwGtpv2cPathSendPeerDisconnectedToUlp(NwGtpv2cPathT* thiz)
+{
+  NwRcT                 rc;
+  NwGtpv2cUlpApiT ulpApi;
+  NwGtpv2cStackT* pStack;
+
+  pStack = thiz->pStack;
+  ulpApi.hMsg                              = 0;
+  ulpApi.apiType                           = NW_GTPV2C_ULP_API_PEER_CHANGE_IND;
+  ulpApi.apiInfo.peerErrorInfo.peerIp      = thiz->ipv4Address;
+  ulpApi.apiInfo.peerErrorInfo.cause       = peerDisconnected;
+  NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO, "Peer disconected sending indication to ULP");
+  rc = pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
+}
+
+
+static NwRcT
+nwGtpv2cPathEchoRspWaitTimeout(void* arg)
+{
+  NwRcT rc = NW_OK;
+  NwGtpv2cPathT* thiz = ((NwGtpv2cPathT*)arg);
+  NwGtpv2cStackT* pStack = thiz->pStack;
+  NwGtpv2cTrxnT* pTrxn = thiz->pTrxn;
+
+  NW_ASSERT(pStack);
+
+  NW_LOG(pStack, NW_LOG_LEVEL_WARN, "T3 Response timer expired for transaction 0x%X", (NwU32T) pTrxn);
+
+  pTrxn->hRspTmr = 0;
+
+  if(pTrxn->maxRetries)
+  {
+    rc = nwGtpv2cTrxnSendMsgRetransmission(pTrxn);
+    NW_ASSERT(NW_OK == rc);
+
+    rc = nwGtpv2cStartTimer(pTrxn->pStack, pTrxn->t3Timer, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT, nwGtpv2cPathEchoRspWaitTimeout, thiz, &pTrxn->hRspTmr);
+  }
+  else
+  {
+    NW_LOG(pStack, NW_LOG_LEVEL_ERRO, "N3 retries expired for transaction 0x%X", (NwU32T) pTrxn);
+    nwGtpv2cPathSendPeerDisconnectedToUlp(thiz);
+
+    RB_REMOVE(NwGtpv2cOutstandingTxSeqNumTrxnMap, &(pStack->outstandingTxSeqNumMap), pTrxn);
+    rc = nwGtpv2cTrxnDelete(&pTrxn);
+    thiz->pTrxn = NULL;
+    NW_ASSERT(NW_OK == rc);
+
+    rc = nwGtpv2cPathDelete(&thiz);
+    NW_ASSERT(NW_OK == rc);
+  }
+  return rc;
+}
+
+NwRcT
+nwGtpv2cPathStartPeerRspWaitTimer(NwGtpv2cPathT* thiz)
+{
+  NwRcT rc;
+  NwGtpv2cTrxnT* pTrxn = thiz->pTrxn;
+  rc = nwGtpv2cStartTimer(pTrxn->pStack, pTrxn->t3Timer, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT, nwGtpv2cPathEchoRspWaitTimeout, thiz, &pTrxn->hRspTmr);
+  return rc;
+}
+
+
+static NwRcT
+nwGtpv2cPathHandleInitialReq( NW_IN  NwGtpv2cPathT* thiz, NW_IN NwGtpv2cUlpApiT *pUlpReq)
+{
+  NwRcT rc;
+  NwGtpv2cTrxnT *pTrxn;
+  NwGtpv2cStackT* pStack = thiz->pStack;
+
+  NW_ENTER(thiz);
+
+  /* Create New Transaction */
+  pTrxn = nwGtpv2cTrxnNew(pStack);
+  thiz->pTrxn = pTrxn;
+
+  if(!pTrxn)
+  {
+      rc = NW_FAILURE;
+      return;
+  }
+
+  NW_ASSERT(pUlpReq->apiInfo.initialReqInfo.hTunnel);
+
+  pTrxn->pMsg         = (NwGtpv2cMsgT*) pUlpReq->hMsg;
+  pTrxn->hTunnel      = pUlpReq->apiInfo.initialReqInfo.hTunnel;
+  pTrxn->hUlpTrxn     = pUlpReq->apiInfo.initialReqInfo.hUlpTrxn;
+  pTrxn->peerIp       = ((NwGtpv2cTunnelT*)(pTrxn->hTunnel))->ipv4AddrRemote;
+  pTrxn->peerPort     = NW_GTPV2C_UDP_PORT;
+
+  rc = nwGtpv2cCreateAndSendMsg(pStack,
+                                pTrxn->seqNum,
+                                pTrxn->peerIp,
+                                pTrxn->peerPort,
+                                pTrxn->pMsg);
+
+  if(NW_OK == rc)
+  {
+    /* Start guard timer */
+    rc = nwGtpv2cPathStartPeerRspWaitTimer(thiz);
+    NW_ASSERT(NW_OK == rc);
+
+    /* Insert into search tree */
+    pTrxn = RB_INSERT(NwGtpv2cOutstandingTxSeqNumTrxnMap, &(pStack->outstandingTxSeqNumMap), pTrxn);
+    NW_ASSERT(pTrxn == NULL);
+  }
+  else
+  {
+    rc = nwGtpv2cTrxnDelete(&pTrxn);
+    thiz->pTrxn = NULL;
+    NW_ASSERT(NW_OK == rc);
+  }
+
+  NW_LEAVE(thiz);
+
+  return rc;
+}
+
+
 static NwRcT
 nwGtpv2cPathPeriodicEchoReq(NwGtpv2cPathT* thiz)
 {
@@ -242,36 +237,16 @@ nwGtpv2cPathPeriodicEchoReq(NwGtpv2cPathT* thiz)
   /* NW_ASSERT(gettimeofday(&tv, NULL) == 0); */
   /* pPeer->sendTimeStamp = (tv.tv_sec * 1000000) + tv.tv_usec; */
 
-  rc = nwGtpv2cProcessUlpReq(pStack, &ulpReq);
+  rc = nwGtpv2cPathHandleInitialReq(thiz, &ulpReq);
   NW_ASSERT(NW_OK == rc);
 
 
   if(thiz->tunnelCount == 0)
   {
-    RB_REMOVE(NwGtpv2cPathMap, &(pStack->pathMap), thiz);
     rc = nwGtpv2cPathDelete(&thiz);
     NW_ASSERT(NW_OK == rc);
-  }else{
-      rc = nwGtpv2cStartTimer(thiz->pStack,  NW_GTPV2C_KEEP_ALIVE_TMR, 0,  NW_GTPV2C_TMR_TYPE_ONE_SHOT,
-                              nwGtpv2cPathPeriodicEchoReq, thiz,
-                              &thiz->hKeepAliveTmr);
   }
   return rc;
-}
-
-static NwRcT
-nwGtpv2cPathSendPeerResetToUlp(NwGtpv2cPathT* thiz)
-{
-  NwRcT                 rc;
-  NwGtpv2cUlpApiT ulpApi;
-  NwGtpv2cStackT* pStack;
-
-  pStack = thiz->pStack;
-  ulpApi.hMsg                              = 0;
-  ulpApi.apiType                           = NW_GTPV2C_ULP_API_PEER_RESTART_IND;
-  ulpApi.apiInfo.peerRestartInfo.peerIp    = thiz->ipv4Address;
-  NW_LOG(thiz->pStack, NW_LOG_LEVEL_WARN, "Restart to ULP");
-  rc = pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
 }
 
 /*--------------------------------------------------------------------------*
@@ -313,8 +288,8 @@ nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
     thiz->restartCounter   = 0;
     thiz->t3ResponseTimout = 2;
     thiz->n3RequestCount   = 2;
-
-    rc = nwGtpv2cStartTimer(thiz->pStack, NW_GTPV2C_KEEP_ALIVE_TMR, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
+    uint8_t t = NW_GTPV2C_KEEP_ALIVE_TMR + rand() % 6;
+    rc = nwGtpv2cStartTimer(thiz->pStack, t, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
                             nwGtpv2cPathPeriodicEchoReq, thiz,
                             &thiz->hKeepAliveTmr);
 
@@ -350,12 +325,14 @@ nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
 NwRcT
 nwGtpv2cPathDelete( NW_INOUT NwGtpv2cPathT **pthiz)
 {
+
   NwRcT rc = NW_OK;
   NwGtpv2cStackT* pStack;
   NwGtpv2cPathT *thiz = *pthiz;
   NwGtpv2cUlpApiT       ulpReq;
 
   pStack = thiz->pStack;
+  RB_REMOVE(NwGtpv2cPathMap, &(pStack->pathMap), thiz);
 
   if(thiz->hKeepAliveTmr)
   {
@@ -389,19 +366,86 @@ nwGtpv2cPathDelete( NW_INOUT NwGtpv2cPathT **pthiz)
 NwRcT
 nwGtpv2cPathCheckRestartCounter(NW_IN NwGtpv2cPathT *thiz, NW_IN NwU8T remoteRestartCounter)
 {
+  NwRcT rc = NW_OK;
   if(remoteRestartCounter > thiz->restartCounter ||
      (remoteRestartCounter<2 && thiz->restartCounter>254)) /*Overflow*/
   {
     /* Send Path reset to ULP*/
     thiz->restartCounter = remoteRestartCounter;
-    nwGtpv2cPathSendPeerResetToUlp(thiz);
+    nwGtpv2cPathSendPeerRestartToUlp(thiz);
   }
   else if(remoteRestartCounter < thiz->restartCounter)
   {
     NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Incorrect restart counter from "NW_IPV4_ADDR
            " (received %u < previous %u). Ignoring ",
            NW_IPV4_ADDR_FORMAT(thiz->ipv4Address), remoteRestartCounter, thiz->restartCounter);
+    rc = NW_FAILURE;
   }
+  return rc;
+}
+
+
+/**
+ *
+ *
+ * @param[out] pthiz : Pointer to pointer to Path object.
+ * @return NW_OK on success.
+ */
+NwRcT
+nwGtpv2cPathResetKeepAliveTimer(NW_IN NwGtpv2cPathT *thiz)
+{
+  NwRcT rc = NW_OK;
+
+
+  uint8_t t = NW_GTPV2C_KEEP_ALIVE_TMR + rand() % 6;
+
+  if(thiz->hKeepAliveTmr)
+  {
+    NW_ASSERT(thiz->pStack->tmrMgr.tmrStopCallback != NULL);
+
+    rc = nwGtpv2cStopTimer(thiz->pStack, thiz->hKeepAliveTmr);
+    thiz->hKeepAliveTmr = NULL;
+  }
+
+  rc = nwGtpv2cStartTimer(thiz->pStack, t, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
+                          nwGtpv2cPathPeriodicEchoReq, thiz,
+                          &thiz->hKeepAliveTmr);
+  return rc;
+}
+
+
+/**
+  Send GTPv2c Triggered Echo Response Indication to path
+
+  @param[in] hGtpcStackHandle : Stack handle
+  @return NW_OK on success.
+ */
+
+NwRcT
+nwGtpv2cPathTriggeredEchoRsp( NW_IN NwGtpv2cPathT* thiz,
+                              NW_IN NwGtpv2cErrorT *pError,
+                              NW_IN NwGtpv2cMsgHandleT hMsg)
+{
+  NwRcT rc = NW_OK;
+  NwU8T remoteRestartCounter = 0;
+
+  rc = nwGtpv2cMsgGetIeTlv(hMsg, NW_GTPV2C_IE_RECOVERY,
+                           NW_GTPV2C_IE_INSTANCE_ZERO,
+                           1, &remoteRestartCounter, NULL);
+  if(rc == NW_GTPV2C_IE_MISSING)
+  {
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Malformed Echo reply message from "
+           NW_IPV4_ADDR". Ignoring.", NW_IPV4_ADDR_FORMAT(thiz->ipv4Address));
+    return NW_OK;
+  }
+
+  nwGtpv2cPathCheckRestartCounter(thiz,remoteRestartCounter);
+
+  uint8_t t = NW_GTPV2C_KEEP_ALIVE_TMR + rand() % 6;
+  rc = nwGtpv2cStartTimer(thiz->pStack, t, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
+                          nwGtpv2cPathPeriodicEchoReq, thiz,
+                          &thiz->hKeepAliveTmr);
+  return rc;
 }
 
 #ifdef __cplusplus

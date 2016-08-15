@@ -81,6 +81,8 @@ extern "C" {
     }                                                                   \
   } while (0)
 
+ #define NW_GTPV2C_UDP_PORT                                              (2123)
+
 /*--------------------------------------------------------------------------*
  *  G T P V 2 C   S T A C K   O B J E C T   T Y P E    D E F I N I T I O N  *
  *--------------------------------------------------------------------------*/
@@ -206,6 +208,7 @@ typedef struct NwGtpv2cPathS
   NwGtpv2cTunnelHandleT         hTunnel;                                /**< Handle to local tunnel context     */
 
   struct NwGtpv2cPathS*         next;
+  NwGtpv2cTrxnT*                pTrxn;
 } NwGtpv2cPathT;
 
 
@@ -236,6 +239,23 @@ nwGtpv2cStartTimer(NwGtpv2cStackT* thiz,
 NwRcT
 nwGtpv2cStopTimer(NwGtpv2cStackT* thiz,
                   NwGtpv2cTimerHandleT hTimer);
+
+
+/**
+ * Send msg to peer via data request to UDP Entity
+ *
+ * @param[in] thiz : Pointer to stack.
+ * @param[in] peerIp : Peer Ip address.
+ * @param[in] peerPort : Peer Ip port.
+ * @param[in] pMsg : Message to be sent.
+ * @return NW_OK on success.
+ */
+NwRcT
+nwGtpv2cCreateAndSendMsg(NW_IN  NwGtpv2cStackT* thiz,
+                         NW_IN  NwU32T seqNum,
+                         NW_IN  NwU32T peerIp,
+                         NW_IN  NwU32T peerPort,
+                         NW_IN  NwGtpv2cMsgT *pMsg);
 
 #ifdef __cplusplus
 }

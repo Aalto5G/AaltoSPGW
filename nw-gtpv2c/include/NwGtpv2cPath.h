@@ -74,6 +74,30 @@ nwGtpv2cPathDelete( NW_INOUT NwGtpv2cPathT **ppPath);
 NwRcT
 nwGtpv2cPathCheckRestartCounter(NW_IN NwGtpv2cPathT *pthiz, NW_IN NwU8T remoteRestartCounter);
 
+
+/**
+ *
+ *
+ * @param[out] pthiz : Pointer to pointer to Path object.
+ * @return NW_OK on success.
+ */
+NwRcT
+nwGtpv2cPathResetKeepAliveTimer(NW_IN NwGtpv2cPathT *thiz);
+
+
+/**
+  Send GTPv2c Triggered Echo Response Indication to path
+
+  @param[in] thiz : Path handle
+  @return NW_OK on success.
+ */
+
+NwRcT
+nwGtpv2cPathTriggeredEchoRsp( NW_IN NwGtpv2cPathT* thiz,
+                              NW_IN NwGtpv2cErrorT *pError,
+                              NW_IN NwGtpv2cMsgHandleT hMsg);
+
+
 #ifdef __cplusplus
 }
 #endif

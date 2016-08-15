@@ -85,7 +85,6 @@
       nwGtpv2cMsgIeParseInfoNew((NwGtpv2cStackHandleT)__thiz, __msgType);\
     } while(0)
 
-#define NW_GTPV2C_UDP_PORT                                              (2123)
 
 #ifdef __cplusplus
 extern "C" {
@@ -401,7 +400,7 @@ RB_GENERATE(NwGtpv2cPathMap, NwGtpv2cPathS, pathMapRbtNode, nwGtpv2cComparePath)
  * @param[in] pMsg : Message to be sent.
  * @return NW_OK on success.
  */
-static NwRcT
+NwRcT
 nwGtpv2cCreateAndSendMsg(NW_IN  NwGtpv2cStackT* thiz,
                          NW_IN  NwU32T seqNum,
                          NW_IN  NwU32T peerIp,
@@ -514,29 +513,24 @@ nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
 
   pTunnel = nwGtpv2cTunnelNew(thiz, teid, ipv4Remote, hUlpTunnel);
 
-  if(pTunnel)
+  NW_ASSERT(pTunnel);
+
+  pCollision = RB_INSERT(NwGtpv2cTunnelMap, &(thiz->tunnelMap), pTunnel);
+
+  if(pCollision)
   {
-    pCollision = RB_INSERT(NwGtpv2cTunnelMap, &(thiz->tunnelMap), pTunnel);
+    rc = nwGtpv2cTunnelDelete(thiz, pTunnel);
+    NW_ASSERT(NW_OK == rc);
 
-    if(pCollision)
-    {
-      rc = nwGtpv2cTunnelDelete(thiz, pTunnel);
-      NW_ASSERT(NW_OK == rc);
+    *phTunnel = (NwGtpv2cTunnelHandleT) 0;
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN,
+           "Local tunnel creation failed for teid '%#x' and peer IP "
+           NW_IPV4_ADDR". Tunnel already exists!",
+           teid, NW_IPV4_ADDR_FORMAT(ipv4Remote));
 
-      *phTunnel = (NwGtpv2cTunnelHandleT) 0;
-      NW_LOG(thiz, NW_LOG_LEVEL_WARN,
-             "Local tunnel creation failed for teid '%#x' and peer IP "
-             NW_IPV4_ADDR". Tunnel already exists!",
-             teid, NW_IPV4_ADDR_FORMAT(ipv4Remote));
-
-      NW_ASSERT(0);
-      NW_LEAVE(thiz);
-      return NW_OK;
-    }
-  }
-  else
-  {
-    rc = NW_FAILURE;
+    NW_ASSERT(0);
+    NW_LEAVE(thiz);
+    return NW_OK;
   }
 
   pathKey.ipv4Address = ipv4Remote;
@@ -567,7 +561,16 @@ nwGtpv2cDeleteLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
   NwRcT rc;
   NwGtpv2cTunnelT *pTunnel = (NwGtpv2cTunnelT*) hTunnel ;
 
+  NwGtpv2cPathT   *pPath, pathKey;
+
   NW_ENTER(thiz);
+
+  pathKey.ipv4Address = pTunnel->ipv4AddrRemote;
+  pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), &pathKey);
+  if(pPath && pPath->tunnelCount>0)
+  {
+    pPath->tunnelCount--;
+  }
 
   pTunnel = RB_REMOVE(NwGtpv2cTunnelMap, &(thiz->tunnelMap), (NwGtpv2cTunnelT*)hTunnel);
   NW_ASSERT(pTunnel == (NwGtpv2cTunnelT*)hTunnel);
@@ -793,30 +796,11 @@ nwGtpv2cHandleUlpCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUl
 
   NW_ENTER(thiz);
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
-         "Creating local tunnel with teid '%#x' and peer IP "NW_IPV4_ADDR,
-         pUlpReq->apiInfo.createLocalTunnelInfo.teidLocal,
-         NW_IPV4_ADDR_FORMAT(pUlpReq->apiInfo.createLocalTunnelInfo.peerIp));
-
-  pTunnel = nwGtpv2cTunnelNew(thiz, pUlpReq->apiInfo.createLocalTunnelInfo.teidLocal,
-                              pUlpReq->apiInfo.createLocalTunnelInfo.peerIp,
-                              pUlpReq->apiInfo.triggeredRspInfo.hUlpTunnel);
-  NW_ASSERT(pTunnel);
-
-  pCollision = RB_INSERT(NwGtpv2cTunnelMap, &(thiz->tunnelMap), pTunnel);
-
-  if(pCollision)
-  {
-    rc = nwGtpv2cTunnelDelete(thiz, pTunnel);
-    NW_ASSERT(NW_OK == rc);
-
-    pUlpReq->apiInfo.createLocalTunnelInfo.hTunnel = (NwGtpv2cTunnelHandleT) 0;
-    NW_LEAVE(thiz);
-    return NW_FAILURE;
-  }
-
-  pUlpReq->apiInfo.createLocalTunnelInfo.hTunnel = (NwGtpv2cTunnelHandleT) pTunnel;
-  NW_LEAVE(thiz);
+  nwGtpv2cCreateLocalTunnel(thiz,
+                            pUlpReq->apiInfo.createLocalTunnelInfo.teidLocal,
+                            pUlpReq->apiInfo.createLocalTunnelInfo.peerIp,
+                            pUlpReq->apiInfo.triggeredRspInfo.hUlpTunnel,
+                            &(pUlpReq->apiInfo.createLocalTunnelInfo.hTunnel));
   return NW_OK;
 }
 
@@ -963,8 +947,10 @@ nwGtpv2cHandleEchoReq(NW_IN NwGtpv2cStackT *thiz,
   pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), &keyPath);
   if(pPath)
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Test, restart %d, path %p", remoteRestartCounter, pPath);
-    nwGtpv2cPathCheckRestartCounter(pPath, remoteRestartCounter);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Remote restart counter %d, path %p", remoteRestartCounter, pPath);
+    rc = nwGtpv2cPathCheckRestartCounter(pPath, remoteRestartCounter);
+    NW_ASSERT(rc == NW_OK);
+    nwGtpv2cPathResetKeepAliveTimer(pPath);
   }
 
   /* Send Echo Response */
@@ -1101,45 +1087,51 @@ nwGtpv2cHandleTriggeredRsp(NW_IN NwGtpv2cStackT *thiz,
 
   pTrxn = RB_FIND(NwGtpv2cOutstandingTxSeqNumTrxnMap, &(thiz->outstandingTxSeqNumMap), &keyTrxn);
 
-  if(pTrxn)
+  if(!pTrxn)
   {
-    NwHandleT hUlpTrxn;
-    NwU32T hUlpTunnel; /*TEID*/
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Response message without a matching outstanding request received! Discarding.");
+    return NW_OK;
+  }
 
-    hUlpTrxn = pTrxn->hUlpTrxn;
-    hUlpTunnel = (pTrxn->hTunnel ? ((NwGtpv2cTunnelT*)(pTrxn->hTunnel))->hUlpTunnel : 0);
+  NwHandleT hUlpTrxn;
+  NwU32T hUlpTunnel; /*TEID*/
 
-    RB_REMOVE(NwGtpv2cOutstandingTxSeqNumTrxnMap, &(thiz->outstandingTxSeqNumMap), pTrxn);
-    rc = nwGtpv2cTrxnDelete(&pTrxn);
-    NW_ASSERT(NW_OK == rc);
+  hUlpTrxn = pTrxn->hUlpTrxn;
+  hUlpTunnel = (pTrxn->hTunnel ? ((NwGtpv2cTunnelT*)(pTrxn->hTunnel))->hUlpTunnel : 0);
 
-    NW_ASSERT(msgBuf && msgBufLen);
-    rc = nwGtpv2cMsgFromBufferNew((NwGtpv2cStackHandleT)thiz, msgBuf, msgBufLen, &(hMsg));
+  RB_REMOVE(NwGtpv2cOutstandingTxSeqNumTrxnMap, &(thiz->outstandingTxSeqNumMap), pTrxn);
+  rc = nwGtpv2cTrxnDelete(&pTrxn);
+  NW_ASSERT(NW_OK == rc);
 
-    NW_ASSERT(thiz->pGtpv2cMsgIeParseInfo[msgType]);
-    rc = nwGtpv2cMsgIeParse(thiz->pGtpv2cMsgIeParseInfo[msgType], hMsg, &error);
-    if(rc != NW_OK)
-    {
-      NW_LOG(thiz, NW_LOG_LEVEL_WARN,
-             "Malformed message received on TEID %#x from peer "NW_IPV4_ADDR
-             ". Notifying ULP.",
-             ntohl((*((NwU32T*)(msgBuf + 4)))),
-             NW_IPV4_ADDR_FORMAT(peerIp));
-    }
+  NW_ASSERT(msgBuf && msgBufLen);
+  rc = nwGtpv2cMsgFromBufferNew((NwGtpv2cStackHandleT)thiz, msgBuf, msgBufLen, &(hMsg));
 
-    rc  = nwGtpv2cSendTriggeredRspIndToUlp( thiz,
-        &error,
-        hUlpTrxn,
-        hUlpTunnel,
-        msgType,
-        hMsg);
+  NW_ASSERT(thiz->pGtpv2cMsgIeParseInfo[msgType]);
+  rc = nwGtpv2cMsgIeParse(thiz->pGtpv2cMsgIeParseInfo[msgType], hMsg, &error);
+  if(rc != NW_OK)
+  {
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN,
+           "Malformed message received on TEID %#x from peer "NW_IPV4_ADDR
+           ". Notifying ULP.",
+           ntohl((*((NwU32T*)(msgBuf + 4)))),
+           NW_IPV4_ADDR_FORMAT(peerIp));
+  }
+
+  NwGtpv2cPathT         *pPath;
+  pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), hUlpTrxn);
+  if(pPath && msgType == NW_GTP_ECHO_RSP)
+  {
+      rc = nwGtpv2cPathTriggeredEchoRsp(pPath, &error, hMsg);
   }
   else
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Response message without a matching outstanding request received! Discarding.");
-    rc = NW_OK;
+    rc  = nwGtpv2cSendTriggeredRspIndToUlp( thiz,
+                                            &error,
+                                            hUlpTrxn,
+                                            hUlpTunnel,
+                                            msgType,
+                                            hMsg);
   }
-
   return rc;
 }
 
@@ -1160,6 +1152,8 @@ nwGtpv2cInitialize( NW_INOUT NwGtpv2cStackHandleT* hGtpcStackHandle)
   thiz = (NwGtpv2cStackT*) malloc( sizeof(NwGtpv2cStackT));
 
   memset(thiz, 0, sizeof(NwGtpv2cStackT));
+
+  srand(time(NULL));
 
   if(thiz)
   {
@@ -1865,8 +1859,6 @@ nwGtpv2cStopTimer(NwGtpv2cStackT* thiz,
          (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
   if(thiz->activeTimerInfo == timeoutInfo)
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer %#p for info %#p!",
-           (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
     rc = thiz->tmrMgr.tmrStopCallback(thiz->tmrMgr.tmrMgrHandle, timeoutInfo->hTimer);
     thiz->activeTimerInfo = NULL;
     NW_ASSERT(NW_OK == rc);

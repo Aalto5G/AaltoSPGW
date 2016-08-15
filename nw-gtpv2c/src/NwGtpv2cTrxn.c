@@ -56,30 +56,6 @@ static NwGtpv2cTrxnT* gpGtpv2cTrxnPool = NULL;
  *                   P R I V A T E      F U N C T I O N S                   *
  *--------------------------------------------------------------------------*/
 
-/*---------------------------------------------------------------------------
- * Send msg retransmission to peer via data request to UDP Entity
- *--------------------------------------------------------------------------*/
-
-static NwRcT
-nwGtpv2cTrxnSendMsgRetransmission(NwGtpv2cTrxnT* thiz)
-{
-  NwRcT rc ;
-
-  NW_ASSERT(thiz);
-
-  NW_ASSERT(thiz->pMsg);
-
-  rc = thiz->pStack->udp.udpDataReqCallback(thiz->pStack->udp.hUdp,
-      thiz->pMsg->msgBuf,
-      thiz->pMsg->msgLen,
-      thiz->peerIp,
-      thiz->peerPort);
-
-  thiz->maxRetries--;
-
-  return rc;
-}
-
 static NwRcT
 nwGtpv2cTrxnPeerRspWaitTimeout(void* arg)
 {
@@ -143,6 +119,31 @@ nwGtpv2cTrxnDuplicateRequestWaitTimeout(void* arg)
   RB_REMOVE(NwGtpv2cOutstandingRxSeqNumTrxnMap, &(pStack->outstandingRxSeqNumMap), thiz);
   rc = nwGtpv2cTrxnDelete(&thiz);
   NW_ASSERT(NW_OK == rc);
+
+  return rc;
+}
+
+
+/*---------------------------------------------------------------------------
+ * Send msg retransmission to peer via data request to UDP Entity
+ *--------------------------------------------------------------------------*/
+
+NwRcT
+nwGtpv2cTrxnSendMsgRetransmission(NwGtpv2cTrxnT* thiz)
+{
+  NwRcT rc ;
+
+  NW_ASSERT(thiz);
+
+  NW_ASSERT(thiz->pMsg);
+
+  rc = thiz->pStack->udp.udpDataReqCallback(thiz->pStack->udp.hUdp,
+      thiz->pMsg->msgBuf,
+      thiz->pMsg->msgLen,
+      thiz->peerIp,
+      thiz->peerPort);
+
+  thiz->maxRetries--;
 
   return rc;
 }
