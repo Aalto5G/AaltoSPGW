@@ -77,8 +77,8 @@ nwGtpv2cPathSendPeerRestartToUlp(NwGtpv2cPathT* thiz)
   pStack = thiz->pStack;
   ulpApi.hMsg                              = 0;
   ulpApi.apiType                           = NW_GTPV2C_ULP_API_PEER_CHANGE_IND;
-  ulpApi.apiInfo.peerChangeInfo.peerIp      = thiz->ipv4Address;
-  ulpApi.apiInfo.peerChangeInfo.cause       = peerRestarted;
+  ulpApi.apiInfo.peerChangeInfo.peerIp     = ntohl(thiz->ipv4Address);
+  ulpApi.apiInfo.peerChangeInfo.cause      = peerRestarted;
   NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO, "Peer restart detected sending indication to ULP");
   rc = pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
 }
@@ -94,8 +94,8 @@ nwGtpv2cPathSendPeerDisconnectedToUlp(NwGtpv2cPathT* thiz)
   pStack = thiz->pStack;
   ulpApi.hMsg                              = 0;
   ulpApi.apiType                           = NW_GTPV2C_ULP_API_PEER_CHANGE_IND;
-  ulpApi.apiInfo.peerChangeInfo.peerIp      = thiz->ipv4Address;
-  ulpApi.apiInfo.peerChangeInfo.cause       = peerDisconnected;
+  ulpApi.apiInfo.peerChangeInfo.peerIp     = ntohl(thiz->ipv4Address);
+  ulpApi.apiInfo.peerChangeInfo.cause      = peerDisconnected;
   NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO, "Peer disconected sending indication to ULP");
   rc = pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
 }
@@ -216,6 +216,8 @@ nwGtpv2cPathPeriodicEchoReq(NwGtpv2cPathT* thiz)
 
   /* nwGtpv2cSendEchoReq(thiz->pStack, thiz->ipv4Address, 0); */
 
+  thiz->hKeepAliveTmr = NULL;
+
   ulpReq.apiType = NW_GTPV2C_ULP_API_INITIAL_REQ;
 
   ulpReq.apiInfo.initialReqInfo.hTunnel         = thiz->hTunnel;
@@ -281,35 +283,33 @@ nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
     NW_GTPV2C_MALLOC(pStack, sizeof(NwGtpv2cPathT), thiz, NwGtpv2cPathT*);
   }
 
-  if (thiz)
+  if (!thiz)
   {
-    thiz->pStack           = pStack;
-    thiz->ipv4Address      = ipv4Remote;
-    thiz->restartCounter   = 0;
-    thiz->t3ResponseTimout = 2;
-    thiz->n3RequestCount   = 2;
-    uint8_t t = NW_GTPV2C_KEEP_ALIVE_TMR + rand() % 6;
-    rc = nwGtpv2cStartTimer(thiz->pStack, t, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
-                            nwGtpv2cPathPeriodicEchoReq, thiz,
-                            &thiz->hKeepAliveTmr);
-
-    RB_INSERT(NwGtpv2cPathMap, &(pStack->pathMap), thiz);
-
-    ulpReq.apiType = NW_GTPV2C_ULP_CREATE_LOCAL_TUNNEL;
-
-    ulpReq.apiInfo.createLocalTunnelInfo.hTunnel         = 0;
-    ulpReq.apiInfo.createLocalTunnelInfo.hUlpTunnel      = (NwGtpv2cUlpTrxnHandleT)&pStack->ulp;
-    ulpReq.apiInfo.createLocalTunnelInfo.teidLocal       = (NwGtpv2cUlpTrxnHandleT)0;
-    ulpReq.apiInfo.createLocalTunnelInfo.peerIp          = ipv4Remote;
-
-    rc = nwGtpv2cProcessUlpReq(thiz->pStack, &ulpReq);
-    NW_ASSERT(NW_OK == rc);
-    thiz->hTunnel = ulpReq.apiInfo.createLocalTunnelInfo.hTunnel;
+    NW_LOG(pStack, NW_LOG_LEVEL_ERRO, "Error allocating memory for Path ");
+    return NULL;
   }
-  else
-  {
-    rc = NW_FAILURE;
-  }
+  thiz->pStack           = pStack;
+  thiz->ipv4Address      = ipv4Remote;
+  thiz->restartCounter   = 0;
+  thiz->t3ResponseTimout = 2;
+  thiz->n3RequestCount   = 2;
+  uint8_t t = NW_GTPV2C_KEEP_ALIVE_TMR + rand() % 6;
+  rc = nwGtpv2cStartTimer(thiz->pStack, t, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
+                          nwGtpv2cPathPeriodicEchoReq, thiz,
+                          &thiz->hKeepAliveTmr);
+
+  RB_INSERT(NwGtpv2cPathMap, &(pStack->pathMap), thiz);
+
+  ulpReq.apiType = NW_GTPV2C_ULP_CREATE_LOCAL_TUNNEL;
+
+  ulpReq.apiInfo.createLocalTunnelInfo.hTunnel         = 0;
+  ulpReq.apiInfo.createLocalTunnelInfo.hUlpTunnel      = (NwGtpv2cUlpTrxnHandleT)&pStack->ulp;
+  ulpReq.apiInfo.createLocalTunnelInfo.teidLocal       = (NwGtpv2cUlpTrxnHandleT)0;
+  ulpReq.apiInfo.createLocalTunnelInfo.peerIp          = ipv4Remote;
+
+  rc = nwGtpv2cProcessUlpReq(thiz->pStack, &ulpReq);
+  NW_ASSERT(NW_OK == rc);
+  thiz->hTunnel = ulpReq.apiInfo.createLocalTunnelInfo.hTunnel;
 
   NW_LOG(pStack, NW_LOG_LEVEL_INFO, "Created Path "NW_IPV4_ADDR,
          NW_IPV4_ADDR_FORMAT(thiz->ipv4Address));

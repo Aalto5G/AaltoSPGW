@@ -536,7 +536,7 @@ nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
   pathKey.ipv4Address = ipv4Remote;
   pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), &pathKey);
   if(pPath){
-    pathKey.tunnelCount++;
+    pPath->tunnelCount++;
   }else{
     pPath = nwGtpv2cPathNew(thiz, ipv4Remote);
     pPath->tunnelCount++;
@@ -1586,6 +1586,7 @@ nwGtpv2cProcessTimeout(void* arg)
   {
     thiz->activeTimerInfo = NULL;
     rc = nwGtpv2cTmrMinHeapRemove(thiz->hTmrMinHeap, timeoutInfo->timerMinHeapIndex);
+    NW_ASSERT(NW_OK == rc);
     timeoutInfo->next = gpGtpv2cTimeoutInfoPool;
     gpGtpv2cTimeoutInfoPool = timeoutInfo;
 
@@ -1612,6 +1613,7 @@ nwGtpv2cProcessTimeout(void* arg)
       break;
 
     rc = nwGtpv2cTmrMinHeapRemove(thiz->hTmrMinHeap, timeoutInfo->timerMinHeapIndex);
+    NW_ASSERT(NW_OK == rc);
     timeoutInfo->next = gpGtpv2cTimeoutInfoPool;
     gpGtpv2cTimeoutInfoPool = timeoutInfo;
 
@@ -1852,6 +1854,7 @@ nwGtpv2cStopTimer(NwGtpv2cStackT* thiz,
   timeoutInfo = (NwGtpv2cTimeoutInfoT*) hTimer;
 
   rc = nwGtpv2cTmrMinHeapRemove(thiz->hTmrMinHeap, timeoutInfo->timerMinHeapIndex);
+  NW_ASSERT(NW_OK == rc);
   timeoutInfo->next = gpGtpv2cTimeoutInfoPool;
   gpGtpv2cTimeoutInfoPool = timeoutInfo;
 
