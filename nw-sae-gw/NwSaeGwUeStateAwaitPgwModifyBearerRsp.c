@@ -570,6 +570,19 @@ nwSaeGwUeHandlePgwModifyBearerRspNack(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv
   return rc;
 }
 
+static NwRcT
+nwSaeGwUeHandlePgwLLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
+{
+  NwRcT                 rc;
+  NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
+
+  /* rc = nwSaeGwUeSgwSendCreateSessionResponseToMme(thiz, pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn, NW_GTPV2C_CAUSE_REMOTE_PEER_NOT_RESPONDING, 5, 0); */
+  /* TODO */
+  thiz->state = NW_SAE_GW_UE_STATE_END;
+
+  return rc;
+}
+
 NwSaeUeStateT*
 nwSaeGwStateAwaitPgwModifyBearerRspNew()
 {
@@ -584,6 +597,11 @@ nwSaeGwStateAwaitPgwModifyBearerRspNew()
   rc = nwSaeGwStateSetEventHandler(thiz,
       NW_SAE_GW_UE_EVENT_NACK,
       nwSaeGwUeHandlePgwModifyBearerRspNack);
+  NW_ASSERT(NW_OK == rc);
+
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_LOW_LAYER_ERROR,
+      nwSaeGwUeHandlePgwLLE);
   NW_ASSERT(NW_OK == rc);
 
   return thiz;

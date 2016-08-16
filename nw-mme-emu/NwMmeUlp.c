@@ -286,6 +286,16 @@ nwMmeUlpStackReqCallback (NwGtpv2cUlpHandleT hUlp,
       }
 
       break;
+    case NW_GTPV2C_ULP_API_PEER_CHANGE_IND:
+      {
+        eventInfo.event   = NW_MME_UE_EVENT_NACK;
+        eventInfo.arg     = pUlpApi;
+        NW_MME_LOG(NW_LOG_LEVEL_DEBG, "Received  NW_GTPV2C_ULP_API_PEER_CHANGE_IND from GTPv2c stack ");
+        // = nwMmeUeFsmRun((NwMmeUeT*)pUlpApi->apiInfo.peerChangeInfo.hUlpTrxn, &eventInfo);
+        /* TODO Remove peer sessions */
+      }
+
+      break;
 
     default:
       NW_MME_LOG(NW_LOG_LEVEL_WARN, "Received undefined api type %x from GTPv2c stack!", pUlpApi->apiType);

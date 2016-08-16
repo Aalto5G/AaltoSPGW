@@ -191,6 +191,16 @@ nwSaeGwUeHandlePgwS5DeleteSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
   return rc;
 }
 
+static NwRcT
+nwSaeGwUeHandlePgwS5LLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
+{
+  NwRcT                 rc;
+  NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
+  /* TODO */
+  thiz->state = NW_SAE_GW_UE_STATE_END;
+  return rc;
+}
+
 NwSaeUeStateT*
 nwSaeGwStatePgwSessionCreatedNew()
 {
@@ -200,6 +210,11 @@ nwSaeGwStatePgwSessionCreatedNew()
   rc = nwSaeGwStateSetEventHandler(thiz,
       NW_SAE_GW_UE_EVENT_PGW_GTPC_S5_DELETE_SESSION_REQ,
       nwSaeGwUeHandlePgwS5DeleteSessionRequest);
+  NW_ASSERT(NW_OK == rc);
+
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_LOW_LAYER_ERROR,
+      nwSaeGwUeHandlePgwS5LLE);
   NW_ASSERT(NW_OK == rc);
 
   /* TODO : Add handlers for other events */

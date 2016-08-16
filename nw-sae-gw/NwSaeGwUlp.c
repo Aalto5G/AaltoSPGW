@@ -653,6 +653,75 @@ nwSaeGwUlpFreeIpv4Address(NwSaeGwUlpT* thiz, NwU32T ipv4Addr)
 }
 
 static NwRcT
+nwSaeGwUlpSgwDeregisterAllUeSessionFromPeer(NwHandleT hSaeGw, NwGtpv2cUlpApiT *pUlpApi)
+{
+  NwRcT                         rc = NW_OK;
+  NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
+  NwSaeGwUeT *pUe = NULL, *nxt = NULL;
+  NwUeStateT                    ueState;
+  NwSaeGwUeEventInfoT           eventInfo;
+  NwU32T peerAddr = pUlpApi->apiInfo.peerChangeInfo.peerIp;
+
+  NW_ASSERT( thiz-> saeGwType == NW_SAE_GW_TYPE_SGW);
+
+  eventInfo.event =  NW_SAE_GW_UE_EVENT_LOW_LAYER_ERROR;
+  eventInfo.arg   = pUlpApi;
+
+  for (pUe = RB_MIN(NwUeSgwSessionRbtT, &thiz->ueSgwSessionRbt); pUe != NULL; pUe =	nxt) {
+    nxt = RB_NEXT(NwUeSgwSessionRbtT, &thiz->ueSgwSessionRbt, pUe);
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,
+                  "Checking if UE (IMSI %llx) should be removed, peer %u, node peer %u",
+                  NW_NTOHLL(((*(NwU64T*)pUe->imsi))),
+                  pUe->s11cTunnel.fteidMme.ipv4Addr,
+                  peerAddr);
+    if(pUe->s11cTunnel.fteidMme.ipv4Addr == peerAddr)
+    {
+      /* TODO Tell PGW*/
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,
+                    "UE (IMSI %llx) should be removed, MME down/restarted",
+                    NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+
+      rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
+    }
+    else if(pUe->s5s8cTunnel.fteidPgw.ipv4Addr == peerAddr)
+    {
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,
+                    "UE (IMSI %llx) should be removed, PGW down/restarted",
+                    NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+
+      rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
+    }
+  }
+  return NW_OK;
+}
+
+
+static NwRcT
+nwSaeGwUlpPgwDeregisterAllUeSessionFromPeer(NwHandleT hSaeGw, NwGtpv2cUlpApiT *pUlpApi)
+{
+  NwRcT                         rc = NW_OK;
+  NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
+  NwSaeGwUeT *pUe, *nxt;
+  NwUeStateT                    ueState;
+  NwSaeGwUeEventInfoT           eventInfo;
+  NwU32T peerAddr = pUlpApi->apiInfo.peerChangeInfo.peerIp;
+
+  NW_ASSERT( thiz-> saeGwType == NW_SAE_GW_TYPE_PGW);
+
+  eventInfo.event =  NW_SAE_GW_UE_EVENT_LOW_LAYER_ERROR;
+  eventInfo.arg   = pUlpApi;
+
+  for (pUe = RB_MIN(NwUePgwSessionRbtT, &thiz->uePgwSessionRbt); pUe != NULL; pUe =	nxt) {
+    nxt = RB_NEXT(NwUePgwSessionRbtT, &thiz->uePgwSessionRbt, pUe);
+    if(pUe->s5s8cTunnel.fteidSgw.ipv4Addr == peerAddr)
+    {
+        rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
+    }
+  }
+  return NW_OK;
+}
+
+static NwRcT
 nwSaeGwUlpSgwS11GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
                        NwGtpv2cUlpApiT *pUlpApi)
 {
@@ -770,6 +839,15 @@ nwSaeGwUlpSgwS11GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
             rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
           }
         }
+      }
+      break;
+
+    case NW_GTPV2C_ULP_API_PEER_CHANGE_IND:
+      {
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,
+                      "Received NW_GTPV2C_ULP_API_PEER_CHANGE_IND from S11 GTPv2c stack!");
+        /* TODO remove all sessions related to this peer */
+        nwSaeGwUlpSgwDeregisterAllUeSessionFromPeer(thiz, pUlpApi);
       }
       break;
 
@@ -898,6 +976,15 @@ nwSaeGwUlpSgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
       }
       break;
 
+    case NW_GTPV2C_ULP_API_PEER_CHANGE_IND:
+      {
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,
+                      "Received NW_GTPV2C_ULP_API_PEER_CHANGE_IND from S5/S8 GTPv2c stack!");
+        /* TODO remove all sessions related to this peer */
+        nwSaeGwUlpSgwDeregisterAllUeSessionFromPeer(thiz, pUlpApi);
+      }
+      break;
+
     default:
       {
         NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN, "Received undefined api type %x from SGW S5 GTPv2c stack!", pUlpApi->apiType);
@@ -1020,6 +1107,15 @@ nwSaeGwUlpPgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
             rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
           }
         }
+      }
+      break;
+
+    case NW_GTPV2C_ULP_API_PEER_CHANGE_IND:
+      {
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,
+                      "Received NW_GTPV2C_ULP_API_PEER_CHANGE_IND from S5/S8 GTPv2c stack!");
+        /* TODO remove all sessions related to this peer */
+        nwSaeGwUlpPgwDeregisterAllUeSessionFromPeer(thiz, pUlpApi);
       }
       break;
 

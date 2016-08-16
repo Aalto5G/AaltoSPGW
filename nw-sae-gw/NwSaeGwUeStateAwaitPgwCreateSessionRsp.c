@@ -568,6 +568,15 @@ nwSaeGwUeHandlePgwCreateSessionResponseNack(NwSaeGwUeT* thiz, NwSaeGwUeEventInfo
   return rc;
 }
 
+static NwRcT
+nwSaeGwUeHandlePgwLLError(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
+{
+  NwRcT                 rc = NW_OK;
+  NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
+
+  return rc;
+}
+
 NwSaeUeStateT*
 nwSaeGwStateAwaitPgwCreateSessionRspNew()
 {
@@ -582,6 +591,11 @@ nwSaeGwStateAwaitPgwCreateSessionRspNew()
   rc = nwSaeGwStateSetEventHandler(thiz,
       NW_SAE_GW_UE_EVENT_NACK,
       nwSaeGwUeHandlePgwCreateSessionResponseNack);
+  NW_ASSERT(NW_OK == rc);
+
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_LOW_LAYER_ERROR,
+      nwSaeGwUeHandlePgwLLError);
   NW_ASSERT(NW_OK == rc);
 
   return thiz;

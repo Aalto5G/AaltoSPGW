@@ -724,6 +724,25 @@ nwSaeGwUeHandleSgwS11ReleaseAccessBearersRequest(NwSaeGwUeT* thiz, NwSaeGwUeEven
   return rc;
 }
 
+static NwRcT
+nwSaeGwUeHandleSgwS11LLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
+{
+  NwRcT                 rc;
+  NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
+
+  /* Remove downlink data flows on Data Plane*/
+  rc = nwSaeGwUlpRemoveDownlinkEpsBearer(thiz->hSgw, thiz, 5);
+  NW_ASSERT( NW_OK == rc );
+
+  /* Remove uplink data flows on Data Plane*/
+  rc = nwSaeGwUlpRemoveUplinkEpsBearer(thiz->hSgw, thiz, 5);
+  NW_ASSERT( NW_OK == rc );
+
+  thiz->state = NW_SAE_GW_UE_STATE_WT_PGW_DELETE_SESSION_RSP;
+
+  return rc;
+}
+
 NwSaeUeStateT*
 nwSaeGwStateSgwSessionEstablishedNew()
 {
@@ -743,6 +762,11 @@ nwSaeGwStateSgwSessionEstablishedNew()
   rc = nwSaeGwStateSetEventHandler(thiz,
       NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_RELEASE_ACCESS_BEARERS_REQ,
       nwSaeGwUeHandleSgwS11ReleaseAccessBearersRequest);
+  NW_ASSERT(NW_OK == rc);
+
+  rc = nwSaeGwStateSetEventHandler(thiz,
+      NW_SAE_GW_UE_EVENT_LOW_LAYER_ERROR,
+      nwSaeGwUeHandleSgwS11LLE);
   NW_ASSERT(NW_OK == rc);
 
   return thiz;
