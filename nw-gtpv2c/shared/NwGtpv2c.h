@@ -559,16 +559,67 @@ nwGtpv2cSetLogLevel( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                      NW_IN NwU32T logLevel);
 
 /**
- Set restart counter.
-
- @param[in] hGtpcStackHandle : Stack handle
- @param[in] restartCounter : Restart Counter.
- @return NW_OK on success.
+ * Set restart counter.
+ *
+ * @param[in] hGtpcStackHandle : Stack handle
+ * @param[in] restartCounter : Restart Counter.
+ * @return NW_OK on success.
  */
 
 NwRcT
 nwGtpv2cSetRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                            NW_IN NwU8T restartCounter);
+/**
+ * Get restart counter.
+ *
+ * @param[in] hGtpcStackHandle : Stack handle
+ * @param[out] restartCounter : Restart Counter.
+ * @return NW_OK on success.
+ */
+
+NwRcT
+nwGtpv2cGetRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
+                           NW_OUT NwU8T *restartCounter);
+
+/**
+ * Set peer restart counter.
+ *
+ * It creates peer state if it is not available
+ * @param[in] hGtpcStackHandle : Stack handle
+ * @param[in] peerAddr : Peer IP address
+ * @param[in] restartCounter : Restart Counter.
+ * @return NW_OK on success.
+ */
+
+NwRcT
+nwGtpv2cSetPeerRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
+                               NW_IN NwU32T peerAddr,
+                               NW_IN NwU8T restartCounter);
+
+/**
+ * Checks if the stack has state of that peer IP address.
+ *
+ * @param[in] hGtpcStackHandle : Stack handle
+ * @param[in] peerAddr : Peer IP address
+ * @return NW_TRUE if the stack has state of that peer.
+ */
+
+NwBoolT
+nwGtpv2cIsPeer( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
+                               NW_IN NwU32T peerAddr);
+/**
+ * Check peer restart counter.
+ *
+ * @param[in] hGtpcStackHandle : Stack handle
+ * @param[in] peerAddr : Peer IP address
+ * @param[in] restartCounter : Restart Counter.
+ * @return NW_OK on success.
+ */
+
+NwRcT
+nwGtpv2cCheckPeerRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
+                                 NW_IN NwU32T peerAddr,
+                                 NW_IN NwU8T restartCounter);
 
 /**
  Process Data Request from UDP entity.

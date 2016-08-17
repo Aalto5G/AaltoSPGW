@@ -60,6 +60,11 @@ typedef struct
     NwU16T                        length;
   } indication;
 
+  struct {
+    NwBoolT                       isPresent;
+    NwU8T                         value;
+  } restart;
+
   NwSaeGwEpsBearerT             epsBearerTobeCreated;
   NwSaeGwEpsBearerT             epsBearerTobeRemoved;
 } NwSaeGwUeSgwCreateSessionRequestT;
@@ -71,6 +76,11 @@ typedef struct
     NwU8T                         value[8];
     NwU16T                        length;
   } indication;
+
+  struct {
+    NwBoolT                       isPresent;
+    NwU8T                         value;
+  } restart;
 
   NwSaeGwEpsBearerT             epsBearerTobeCreated;
   NwSaeGwEpsBearerT             epsBearerTobeRemoved;
@@ -250,6 +260,7 @@ nwSaeGwUeSgwSendCreateSessionRequestToPgw(NwSaeGwUeT* thiz, NwGtpv2cUlpTrxnHandl
 {
   NwRcT rc;
   NwGtpv2cUlpApiT       ulpReq;
+  NwU8T restart = 0;
 
   rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackSgwS5,
       NW_TRUE,                                          /* TIED present*/
@@ -336,6 +347,17 @@ nwSaeGwUeSgwSendCreateSessionRequestToPgw(NwSaeGwUeT* thiz, NwGtpv2cUlpTrxnHandl
   NW_ASSERT( NW_OK == rc );
 
   /* End - Encoding of grouped IE "bearer context created" */
+
+  if(NW_FALSE == nwGtpv2cIsPeer(thiz->hGtpv2cStackSgwS5, htonl(thiz->s5s8cTunnel.fteidPgw.ipv4Addr))){
+      NW_UE_LOG(NW_LOG_LEVEL_INFO, "***** Create Session Request sent to PGW "
+                NW_IPV4_ADDR" with recovery",
+                NW_IPV4_ADDR_FORMAT(htonl(thiz->s5s8cTunnel.fteidPgw.ipv4Addr)));
+    rc = nwGtpv2cGetRestartCounter(thiz->hGtpv2cStackSgwS5, &restart);
+    NW_ASSERT( NW_OK == rc );
+
+    rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_RECOVERY, 0, restart);
+    NW_ASSERT( NW_OK == rc );
+  }
 
   /* Send Create Session Request to PGW */
 
@@ -431,6 +453,7 @@ nwSaeGwUePgwSendCreateSessionResponseToSgw(NwSaeGwUeT* thiz,
 {
   NwRcT rc;
   NwGtpv2cUlpApiT       ulpReq;
+  NwU8T restart = 0;
 
   /*
    * Send Message Request to Gtpv2c Stack Instance
@@ -496,6 +519,14 @@ nwSaeGwUePgwSendCreateSessionResponseToSgw(NwSaeGwUeT* thiz,
 
     /* End - Encoding of grouped IE "bearer context created" */
 
+    if(pCreateSessReq->restart.isPresent){
+      rc = nwGtpv2cGetRestartCounter(thiz->hGtpv2cStackPgwS5, &restart);
+      NW_ASSERT( NW_OK == rc );
+
+      rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_RECOVERY, 0, restart);
+      NW_ASSERT( NW_OK == rc );
+    }
+
     ulpReq.apiType                              |= NW_GTPV2C_ULP_API_FLAG_CREATE_LOCAL_TUNNEL;
     rc = nwGtpv2cProcessUlpReq(thiz->hGtpv2cStackPgwS5, &ulpReq);
     NW_ASSERT( NW_OK == rc );
@@ -521,6 +552,7 @@ nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz,
 {
   NwRcT rc;
   NwGtpv2cUlpApiT       ulpReq;
+  NwU8T  restart = 0;
 
   /*
    * Send Message Request to Gtpv2c Stack Instance
@@ -597,6 +629,14 @@ nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz,
 
     rc = nwGtpv2cMsgGroupedIeEnd((ulpReq.hMsg));
     NW_ASSERT( NW_OK == rc );
+
+    if(pCreateSessReq->restart.isPresent){
+      rc = nwGtpv2cGetRestartCounter(thiz->hGtpv2cStackSgwS11, &restart);
+      NW_ASSERT( NW_OK == rc );
+
+      rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_RECOVERY, 0, restart);
+      NW_ASSERT( NW_OK == rc );
+    }
 
     ulpReq.apiType                              |= NW_GTPV2C_ULP_API_FLAG_CREATE_LOCAL_TUNNEL;
 
@@ -742,8 +782,11 @@ nwSaeGwUePgwParseCreateSessionRequest(NwSaeGwUeT* thiz,
 
   /* Optional TLVs */
 
-    rc = nwGtpv2cMsgGetIeTlv(hReqMsg, NW_GTPV2C_IE_INDICATION, NW_GTPV2C_IE_INSTANCE_ZERO, 8, &pCreateSessReq->indication.value, &pCreateSessReq->indication.length);
-    pCreateSessReq->indication.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
+  rc = nwGtpv2cMsgGetIeTlv(hReqMsg, NW_GTPV2C_IE_INDICATION, NW_GTPV2C_IE_INSTANCE_ZERO, 8, &pCreateSessReq->indication.value, &pCreateSessReq->indication.length);
+  pCreateSessReq->indication.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
+
+  rc = nwGtpv2cMsgGetIeTV1(hReqMsg, NW_GTPV2C_IE_RECOVERY, NW_GTPV2C_IE_INSTANCE_ZERO, &pCreateSessReq->restart.value);
+  pCreateSessReq->restart.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
 
   return NW_OK;
 }
@@ -903,16 +946,20 @@ nwSaeGwUeSgwParseCreateSessionRequest(NwSaeGwUeT* thiz,
   rc = nwGtpv2cMsgGetIeTV2(hReqMsg, NW_GTPV2C_IE_INDICATION, NW_GTPV2C_IE_INSTANCE_ZERO, &pCreateSessReq->indication.value);
   pCreateSessReq->indication.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
 
+  rc = nwGtpv2cMsgGetIeTV1(hReqMsg, NW_GTPV2C_IE_RECOVERY, NW_GTPV2C_IE_INSTANCE_ZERO, &pCreateSessReq->restart.value);
+  pCreateSessReq->restart.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
+
   return NW_OK;
 }
 
 static NwRcT
 nwSaeGwUeHandlePgwS5CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
-  NwRcT                 rc;
+  NwRcT                 rc, rpath;
   NwGtpv2cErrorT        error;
   NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
   NwSaeGwUePgwCreateSessionRequestT createSessReq;
+  NwU8T                 oldRestart = 0;
 
   NW_UE_LOG(NW_LOG_LEVEL_INFO, "Create Session Request received from peer!");
   /* Check if error has been detected already. */
@@ -963,6 +1010,13 @@ nwSaeGwUeHandlePgwS5CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
     thiz->state = NW_SAE_GW_UE_STATE_END;
     return NW_OK;
   }
+
+  if(createSessReq.restart.isPresent)
+  {
+    rpath = nwGtpv2cCheckPeerRestartCounter(thiz->hGtpv2cStackPgwS5,
+                                            thiz->s5s8cTunnel.fteidSgw.ipv4Addr,
+                                            createSessReq.restart.value);
+  }
   rc = nwSaeGwUlpRegisterPgwUeSession(thiz->hPgw, thiz);
 
   if(NW_OK == rc)
@@ -1002,6 +1056,13 @@ nwSaeGwUeHandlePgwS5CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
     thiz->state = NW_SAE_GW_UE_STATE_END;
   }
 
+  if(createSessReq.restart.isPresent && rpath == NW_FAILURE){
+    rc = nwGtpv2cSetPeerRestartCounter(thiz->hGtpv2cStackPgwS5,
+                                       htonl(thiz->s5s8cTunnel.fteidSgw.ipv4Addr),
+                                       createSessReq.restart.value);
+    NW_ASSERT(rc == NW_OK);
+  }
+
   rc = nwSaeGwUePgwSendCreateSessionResponseToSgw(thiz,
       pUlpApi->apiInfo.initialReqIndInfo.hTrxn,
       &error,
@@ -1013,7 +1074,7 @@ nwSaeGwUeHandlePgwS5CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
 static NwRcT
 nwSaeGwUeHandleSgwS11CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
-  NwRcT                 rc;
+  NwRcT                 rc, rpath;
   NwU32T                hPgw;
   NwGtpv2cErrorT        error;
   NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
@@ -1077,6 +1138,14 @@ nwSaeGwUeHandleSgwS11CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
     return NW_OK;
   }
 
+  if(createSessReq.restart.isPresent)
+  {
+    thiz->isFirstS11Session = NW_TRUE;
+    rpath = nwGtpv2cCheckPeerRestartCounter(thiz->hGtpv2cStackSgwS11,
+                                            thiz->s11cTunnel.fteidMme.ipv4Addr,
+                                            createSessReq.restart.value);
+  }
+
   if(createSessReq.epsBearerTobeCreated.ebi < 4 || (thiz->epsBearer[createSessReq.epsBearerTobeCreated.ebi].isValid != NW_FALSE))
   {
     error.cause = NW_GTPV2C_CAUSE_REQUEST_REJECTED;
@@ -1109,6 +1178,13 @@ nwSaeGwUeHandleSgwS11CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
         &error,
         &createSessReq);
     return NW_OK;
+  }
+
+  if(createSessReq.restart.isPresent && rpath == NW_FAILURE){
+    rc = nwGtpv2cSetPeerRestartCounter(thiz->hGtpv2cStackSgwS11,
+                                       htonl(thiz->s11cTunnel.fteidMme.ipv4Addr),
+                                       createSessReq.restart.value);
+    NW_ASSERT(rc == NW_OK);
   }
 
   if((createSessReq.indication.isPresent) &&

@@ -116,6 +116,7 @@ nwSaeGwUeNew(NwGtpv2cStackHandleT hGtpv2cStackSgwS11,
 
   thiz->state                   = NW_SAE_GW_UE_STATE_INIT;
   thiz->s11Down                 = NW_FALSE;
+  thiz->isFirstS11Session       = NW_FALSE;
   thiz->hGtpv2cStackSgwS11      = hGtpv2cStackSgwS11;
   thiz->hGtpv2cStackSgwS5       = hGtpv2cStackSgwS5;
   thiz->hGtpv2cStackPgwS5       = hGtpv2cStackPgwS5;

@@ -212,6 +212,7 @@ nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz,
 {
   NwRcT rc;
   NwGtpv2cUlpApiT       ulpReq;
+  NwU8T restart = 0;
 
   /*
    * Send Message Request to Gtpv2c Stack Instance
@@ -295,6 +296,14 @@ nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz,
     NW_ASSERT( NW_OK == rc );
 
     /* End - Encoding of grouped IE "bearer context created" */
+
+    if(thiz->isFirstS11Session){
+      rc = nwGtpv2cGetRestartCounter(thiz->hGtpv2cStackSgwS11, &restart);
+      NW_ASSERT( NW_OK == rc );
+
+      rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_RECOVERY, 0, restart);
+      NW_ASSERT( NW_OK == rc );
+    }
   }
   else
   {

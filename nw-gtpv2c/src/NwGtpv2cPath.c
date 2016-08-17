@@ -112,6 +112,10 @@ nwGtpv2cPathEchoRspWaitTimeout(void* arg)
   NW_ASSERT(pStack);
 
   NW_LOG(pStack, NW_LOG_LEVEL_WARN, "T3 Response timer expired for transaction 0x%X", (NwU32T) pTrxn);
+  if(!pTrxn){
+      NW_LOG(pStack, NW_LOG_LEVEL_ERRO, "Invalid transaction. Ignoring");
+      return rc;
+  }
 
   pTrxn->hRspTmr = 0;
 
@@ -242,12 +246,6 @@ nwGtpv2cPathPeriodicEchoReq(NwGtpv2cPathT* thiz)
   rc = nwGtpv2cPathHandleInitialReq(thiz, &ulpReq);
   NW_ASSERT(NW_OK == rc);
 
-
-  if(thiz->tunnelCount == 0)
-  {
-    rc = nwGtpv2cPathDelete(&thiz);
-    NW_ASSERT(NW_OK == rc);
-  }
   return rc;
 }
 

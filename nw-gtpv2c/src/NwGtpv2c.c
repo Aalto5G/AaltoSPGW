@@ -4,7 +4,7 @@
  *    G P R S   T u n n e l i n g    P r o t o c o l   v 2 c    S t a c k     *
  *                                                                            *
  *                                                                            *
- * Copyright (c) 2010-2011 Amit Chawre                                        *
+ * Copyright (c) 2010-2011 Vicent Ferrer Guasch                               *
  * All rights reserved.                                                       *
  *                                                                            *
  * Redistribution and use in source and binary forms, with or without         *
@@ -1200,8 +1200,16 @@ NwRcT
 nwGtpv2cFinalize( NW_IN  NwGtpv2cStackHandleT hGtpcStackHandle)
 {
   NwGtpv2cStackT* thiz = (NwGtpv2cStackT*)hGtpcStackHandle;
+  NwGtpv2cPathT *pPath, *nxt;
+
   if(!hGtpcStackHandle)
     return NW_FAILURE;
+
+  for(pPath = RB_MIN(NwGtpv2cPathMap, &thiz->pathMap); pPath != NULL; pPath = nxt)
+  {
+      nxt = RB_NEXT(NwGtpv2cPathMap, &thiz->pathMap, pPath);
+      nwGtpv2cPathDelete(&pPath);
+  }
 
   nwGtpv2cTmrMinHeapDelete(thiz->hTmrMinHeap);
 
@@ -1321,6 +1329,86 @@ nwGtpv2cSetRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
   thiz->restartCounter = restartCounter;
   return NW_OK;
 }
+
+/**
+ Get restart counter.
+ */
+
+NwRcT
+nwGtpv2cGetRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
+                           NW_OUT NwU8T *restartCounter)
+{
+  NwGtpv2cStackT* thiz = (NwGtpv2cStackT*) hGtpcStackHandle;
+  if(!thiz) return NW_FAILURE;
+  *restartCounter = thiz->restartCounter;
+  return NW_OK;
+}
+
+
+/**
+ Set restart counter.
+ */
+
+NwRcT
+nwGtpv2cSetPeerRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
+                               NW_IN NwU32T peerAddr,
+                               NW_IN NwU8T restartCounter)
+{
+  NwGtpv2cPathT   *pPath, pathKey;
+  NwGtpv2cStackT* thiz = (NwGtpv2cStackT*) hGtpcStackHandle;
+
+  pathKey.ipv4Address = peerAddr;
+  pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), &pathKey);
+  if(!pPath)
+    pPath = nwGtpv2cPathNew(thiz, peerAddr);
+
+  pPath->restartCounter = restartCounter;
+  return NW_OK;
+}
+
+/**
+ Checks if the stack has state of that peer IP address.
+ */
+
+NwBoolT
+nwGtpv2cIsPeer( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
+                NW_IN NwU32T peerAddr){
+  NwGtpv2cPathT   *pPath, pathKey;
+  NwGtpv2cStackT* thiz = (NwGtpv2cStackT*) hGtpcStackHandle;
+
+  pathKey.ipv4Address = peerAddr;
+  pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), &pathKey);
+  if(pPath)
+      return NW_TRUE;
+  return NW_FALSE;
+}
+
+/**
+ Check peer restart counter.
+ */
+
+NwRcT
+nwGtpv2cCheckPeerRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
+                                 NW_IN NwU32T peerAddr,
+                                 NW_IN NwU8T restartCounter)
+{
+  NwRcT                 rc;
+  NwGtpv2cPathT   *pPath, pathKey;
+  NwGtpv2cStackT* thiz = (NwGtpv2cStackT*) hGtpcStackHandle;
+
+  pathKey.ipv4Address = peerAddr;
+  pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), &pathKey);
+  if(!pPath)
+  {
+    return NW_FAILURE;
+  }
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Remote restart counter %d, path %p", restartCounter, pPath);
+  rc = nwGtpv2cPathCheckRestartCounter(pPath, restartCounter);
+  NW_ASSERT(rc == NW_OK);
+
+  return NW_OK;
+}
+
 
 /**
  * Process Request from Udp Layer
