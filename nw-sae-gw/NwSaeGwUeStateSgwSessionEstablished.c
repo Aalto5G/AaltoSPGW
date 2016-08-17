@@ -738,6 +738,7 @@ nwSaeGwUeHandleSgwS11LLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
   rc = nwSaeGwUlpRemoveUplinkEpsBearer(thiz->hSgw, thiz, 5);
   NW_ASSERT( NW_OK == rc );
 
+  thiz->s11Down = NW_TRUE;
   thiz->state = NW_SAE_GW_UE_STATE_WT_PGW_DELETE_SESSION_RSP;
 
   return rc;

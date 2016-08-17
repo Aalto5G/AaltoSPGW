@@ -164,6 +164,9 @@ typedef struct NwSaeGwUe
   NwHandleT                     hPgw;
   NwUeStateT                    state;
 
+  /* This variable is used in the case of Low layer failure */
+  NwBoolT                       s11Down;
+
   NwGtpv2cStackHandleT          hGtpv2cStackSgwS11;
   NwGtpv2cStackHandleT          hGtpv2cStackSgwS5;
   NwGtpv2cStackHandleT          hGtpv2cStackPgwS5;

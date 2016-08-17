@@ -104,7 +104,10 @@ nwSaeGwUeHandleSgwS5DeleteSessionResponse(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
   rc = nwSaeGwUlpSgwDeregisterUeSession(thiz->hSgw, thiz);
   NW_ASSERT(NW_OK == rc);
 
-  rc = nwSaeGwUeSgwSendDeleteSessionResponseToMme(thiz, pUlpApi->apiInfo.triggeredRspIndInfo.hUlpTrxn, &(pUlpApi->apiInfo.initialReqIndInfo.error), NULL);
+  if(!thiz->s11Down)
+  {
+    rc = nwSaeGwUeSgwSendDeleteSessionResponseToMme(thiz, pUlpApi->apiInfo.triggeredRspIndInfo.hUlpTrxn, &(pUlpApi->apiInfo.initialReqIndInfo.error), NULL);
+  }
   thiz->state = NW_SAE_GW_UE_STATE_END;
 
   return rc;
