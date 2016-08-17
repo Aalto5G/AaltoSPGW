@@ -196,7 +196,18 @@ nwSaeGwUeHandlePgwS5LLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT                 rc;
   NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
-  /* TODO */
+
+  /* Remove downlink data flows on Data Plane*/
+  rc = nwSaeGwUlpRemoveDownlinkEpsBearer(thiz->hPgw, thiz, 5);
+  NW_ASSERT( NW_OK == rc );
+
+  /* Remove uplink data flows on Data Plane*/
+  rc = nwSaeGwUlpRemoveUplinkEpsBearer(thiz->hPgw, thiz, 5);
+  NW_ASSERT( NW_OK == rc );
+
+  rc = nwSaeGwUlpPgwDeregisterUeSession(thiz->hPgw, thiz);
+  NW_ASSERT(NW_OK == rc);
+
   thiz->state = NW_SAE_GW_UE_STATE_END;
   return rc;
 }

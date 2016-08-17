@@ -211,7 +211,7 @@ nwGtpv2cPathPeriodicEchoReq(NwGtpv2cPathT* thiz)
   NwGtpv2cUlpApiT ulpReq;
   NwGtpv2cStackT* pStack = thiz->pStack;
 
-  NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO, "Test Periodic echo to "NW_IPV4_ADDR,
+  NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO, "Periodic echo to "NW_IPV4_ADDR,
          NW_IPV4_ADDR_FORMAT(thiz->ipv4Address));
 
   /* nwGtpv2cSendEchoReq(thiz->pStack, thiz->ipv4Address, 0); */
