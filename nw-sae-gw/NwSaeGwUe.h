@@ -228,6 +228,9 @@ NwRcT
 nwSaeGwUeDelete(NwSaeGwUeT*);
 
 NwRcT
+nwSaeGwUeDestroyUeSessionTransport(NwSaeGwUeT *);
+
+NwRcT
 nwSaeGwDecodePaa(NwSaeGwUeT* thiz, NwGtpv2cMsgHandleT hReqMsg, NwSaeGwPaaT *pPaa);
 
 NwRcT

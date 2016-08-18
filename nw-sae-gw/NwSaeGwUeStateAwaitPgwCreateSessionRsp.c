@@ -58,6 +58,12 @@ typedef struct
   NwGtpv2cErrorT                error;
   NwSaeGwEpsBearerT             epsBearerCreated;
   NwSaeGwEpsBearerT             epsBearerRemoved;
+
+  struct {
+    NwBoolT                       isPresent;
+    NwU8T                         value;
+  } restart;
+
 } NwSaeGwUePgwCreateSessionResponseT;
 
 static NwRcT
@@ -510,13 +516,17 @@ nwSaeGwUeSgwParseCreateSessionResponse(NwSaeGwUeT* thiz,
     return rc;
   }
 
+  /* Optional TLVs */
+  rc = nwGtpv2cMsgGetIeTV1(hReqMsg, NW_GTPV2C_IE_RECOVERY, NW_GTPV2C_IE_INSTANCE_ZERO, &pCreateSessReq->restart.value);
+  pCreateSessReq->restart.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
+
   return NW_OK;
 }
 
 static NwRcT
 nwSaeGwUeHandlePgwCreateSessionResponse(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
-  NwRcT rc;
+  NwRcT rc, rpath;
   NwGtpv2cErrorT        error;
   NwSaeGwUePgwCreateSessionResponseT createSessRsp;
 
@@ -557,11 +567,25 @@ nwSaeGwUeHandlePgwCreateSessionResponse(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* p
     return NW_OK;
   }
 
+  if(createSessRsp.restart.isPresent)
+  {
+    thiz->isFirstS11Session = NW_TRUE;
+    rpath = nwGtpv2cCheckPeerRestartCounter(thiz->hGtpv2cStackSgwS5,
+                                            thiz->s5s8cTunnel.fteidPgw.ipv4Addr,
+                                            createSessRsp.restart.value);
+  }
   thiz->epsBearer[createSessRsp.epsBearerCreated.ebi].s5s8uTunnel.fteidPgw = createSessRsp.epsBearerCreated.s5s8u.fteidPgw;
 
   /* Install uplink data flows on Data Plane*/
   rc = nwSaeGwUlpInstallUplinkEpsBearer(thiz->hSgw, thiz, createSessRsp.epsBearerCreated.ebi);
   NW_ASSERT( NW_OK == rc );
+
+  if(createSessRsp.restart.isPresent && rpath == NW_FAILURE){
+    rc = nwGtpv2cSetPeerRestartCounter(thiz->hGtpv2cStackSgwS5,
+                                       htonl(thiz->s5s8cTunnel.fteidPgw.ipv4Addr),
+                                       createSessRsp.restart.value);
+    NW_ASSERT(rc == NW_OK);
+  }
 
   return nwSaeGwUeSgwSendCreateSessionResponseToMme(thiz, pUlpApi->apiInfo.triggeredRspIndInfo.hUlpTrxn, NW_GTPV2C_CAUSE_REQUEST_ACCEPTED, 5, 0);
 }

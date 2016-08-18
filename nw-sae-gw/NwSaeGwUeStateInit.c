@@ -1019,40 +1019,30 @@ nwSaeGwUeHandlePgwS5CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
   }
   rc = nwSaeGwUlpRegisterPgwUeSession(thiz->hPgw, thiz);
 
-  if(NW_OK == rc)
+  /* Mark the EBI as valid */
+  if(createSessReq.epsBearerTobeCreated.ebi > 4 && (thiz->epsBearer[createSessReq.epsBearerTobeCreated.ebi].isValid == NW_FALSE))
   {
-    /* Mark the EBI as valid */
-    if(createSessReq.epsBearerTobeCreated.ebi > 4 && (thiz->epsBearer[createSessReq.epsBearerTobeCreated.ebi].isValid == NW_FALSE))
-    {
-      thiz->epsBearer[createSessReq.epsBearerTobeCreated.ebi].isValid = NW_TRUE;
+    thiz->epsBearer[createSessReq.epsBearerTobeCreated.ebi].isValid = NW_TRUE;
 
-      thiz->epsBearer[createSessReq.epsBearerTobeCreated.ebi].s5s8uTunnel.fteidSgw = createSessReq.epsBearerTobeCreated.s5s8u.fteidSgw;
+    thiz->epsBearer[createSessReq.epsBearerTobeCreated.ebi].s5s8uTunnel.fteidSgw = createSessReq.epsBearerTobeCreated.s5s8u.fteidSgw;
 
-      /* Install uplink data flows on Data Plane*/
-      rc = nwSaeGwUlpInstallUplinkEpsBearer(thiz->hPgw, thiz, createSessReq.epsBearerTobeCreated.ebi);
-      NW_ASSERT( NW_OK == rc );
+    /* Install uplink data flows on Data Plane*/
+    rc = nwSaeGwUlpInstallUplinkEpsBearer(thiz->hPgw, thiz, createSessReq.epsBearerTobeCreated.ebi);
+    NW_ASSERT( NW_OK == rc );
 
-      /* Install downlink data flows on Data Plane*/
-      rc = nwSaeGwUlpInstallDownlinkEpsBearer(thiz->hPgw, thiz, createSessReq.epsBearerTobeCreated.ebi);
-      NW_ASSERT( NW_OK == rc );
+    /* Install downlink data flows on Data Plane*/
+    rc = nwSaeGwUlpInstallDownlinkEpsBearer(thiz->hPgw, thiz, createSessReq.epsBearerTobeCreated.ebi);
+    NW_ASSERT( NW_OK == rc );
 
-      error.cause = NW_GTPV2C_CAUSE_REQUEST_ACCEPTED;
-      thiz->state = NW_SAE_GW_UE_STATE_PGW_SESSION_CREATED;
-    }
-    else
-    {
-      error.cause = NW_GTPV2C_CAUSE_REQUEST_REJECTED;
-      NW_ASSERT( NW_OK == rc );
-
-      NW_UE_LOG(NW_LOG_LEVEL_ERRO, "Failed to register PGW UE Session! Invlaid EBI.");
-      thiz->state = NW_SAE_GW_UE_STATE_END;
-    }
+    error.cause = NW_GTPV2C_CAUSE_REQUEST_ACCEPTED;
+    thiz->state = NW_SAE_GW_UE_STATE_PGW_SESSION_CREATED;
   }
   else
   {
     error.cause = NW_GTPV2C_CAUSE_REQUEST_REJECTED;
-    /* TODO : Send Create Session Response with Failure */;
-    NW_UE_LOG(NW_LOG_LEVEL_ERRO, "Failed to register PGW UE Session!");
+    NW_ASSERT( NW_OK == rc );
+
+    NW_UE_LOG(NW_LOG_LEVEL_ERRO, "Failed to register PGW UE Session! Invalid EBI.");
     thiz->state = NW_SAE_GW_UE_STATE_END;
   }
 
@@ -1168,17 +1158,6 @@ nwSaeGwUeHandleSgwS11CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
   rc = nwSaeGwUlpAllocateTeidOrGreKeys(thiz->hSgw, thiz, createSessReq.epsBearerTobeCreated.ebi);
 
   rc = nwSaeGwUlpRegisterSgwUeSession(thiz->hSgw, thiz, (thiz->s5s8cTunnel.fteidPgw.ipv4Addr), &hPgw);
-  if(NW_OK != rc)
-  {
-    error.cause = NW_GTPV2C_CAUSE_REQUEST_REJECTED;
-    thiz->state = NW_SAE_GW_UE_STATE_END;
-    /* Send Create Session Response to MME */;
-    rc = nwSaeGwUeSgwSendCreateSessionResponseToMme(thiz,
-        pUlpApi->apiInfo.initialReqIndInfo.hTrxn,
-        &error,
-        &createSessReq);
-    return NW_OK;
-  }
 
   if(createSessReq.restart.isPresent && rpath == NW_FAILURE){
     rc = nwGtpv2cSetPeerRestartCounter(thiz->hGtpv2cStackSgwS11,
@@ -1204,19 +1183,7 @@ nwSaeGwUeHandleSgwS11CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
   {
     if(hPgw)
     {
-      if(NW_OK != nwSaeGwUlpRegisterPgwUeSession(hPgw, thiz))
-      {
-        rc = nwSaeGwUlpSgwDeregisterUeSession(thiz->hSgw, thiz);
-        error.cause = NW_GTPV2C_CAUSE_REQUEST_REJECTED;
-        thiz->state = NW_SAE_GW_UE_STATE_END;
-        /* Send Create Session Response to MME */;
-        rc = nwSaeGwUeSgwSendCreateSessionResponseToMme(thiz,
-            pUlpApi->apiInfo.initialReqIndInfo.hTrxn,
-            &error,
-            &createSessReq);
-        return NW_OK;
-      }
-
+      nwSaeGwUlpRegisterPgwUeSession(hPgw, thiz);
       thiz->hPgw                                    = hPgw;
       thiz->s5s8cTunnel.fteidPgw.teidOrGreKey       = (NwU32T) thiz;
       thiz->state                                   = NW_SAE_GW_UE_STATE_SAE_SESSION_CREATED;

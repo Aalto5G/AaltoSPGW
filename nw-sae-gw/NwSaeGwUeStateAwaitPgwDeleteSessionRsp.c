@@ -123,7 +123,10 @@ nwSaeGwUeHandleSgwS5DeleteSessionResponseNack(NwSaeGwUeT* thiz, NwSaeGwUeEventIn
   rc = nwSaeGwUlpSgwDeregisterUeSession(thiz->hSgw, thiz);
   NW_ASSERT(NW_OK == rc);
 
-  rc = nwSaeGwUeSgwSendDeleteSessionResponseToMme(thiz, pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn, &error, NULL);
+  if(!thiz->s11Down)
+  {
+    rc = nwSaeGwUeSgwSendDeleteSessionResponseToMme(thiz, pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn, &error, NULL);
+  }
   thiz->state = NW_SAE_GW_UE_STATE_END;
 
   return rc;
@@ -166,17 +169,33 @@ nwSaeGwStateAwaitPgwDeleteSessionEntryAction(NwSaeGwUeT* thiz, NwSaeGwUeEventInf
 }
 
 static NwRcT
-nwSaeGwUeHandleSgwS5LLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
+nwSaeGwUeHandleSgwLLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT rc;
   NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
   NwGtpv2cErrorT        error;
 
-  /* TODO*/
-  rc = nwSaeGwUlpSgwDeregisterUeSession(thiz->hSgw, thiz);
-  NW_ASSERT(NW_OK == rc);
+  NwU32T peer = pUlpApi->apiInfo.peerChangeInfo.peerIp;
 
-  thiz->state = NW_SAE_GW_UE_STATE_END;
+  if(peer = thiz->s5s8cTunnel.fteidPgw.ipv4Addr)
+  {
+    /* S5/S8 stack failure*/
+    nwSaeGwUeHandleSgwS5DeleteSessionResponseNack(thiz, pEv);
+    NW_UE_LOG(NW_LOG_LEVEL_ERRO, "P-GW disconnected or restarted");
+  }
+  else if(peer = thiz->s11cTunnel.fteidMme.ipv4Addr)
+  {
+    /* S11 stack failure*/
+    rc = nwSaeGwUlpSgwDeregisterUeSession(thiz->hSgw, thiz);
+    NW_ASSERT(NW_OK == rc);
+
+    thiz->s11Down = NW_TRUE;
+    thiz->state = NW_SAE_GW_UE_STATE_WT_PGW_DELETE_SESSION_RSP;
+  }
+  else
+  {
+      NW_ASSERT(0);
+  }
 
   return rc;
 }
@@ -198,12 +217,12 @@ nwSaeGwStateAwaitPgwDeleteSessionRspNew()
 
   rc = nwSaeGwStateSetEventHandler(thiz,
       NW_SAE_GW_UE_EVENT_NACK,
-      NULL /*nwSaeGwUeHandleSgwS5DeleteSessionResponseNack*/);
+      nwSaeGwUeHandleSgwS5DeleteSessionResponseNack);
   NW_ASSERT(NW_OK == rc);
 
   rc = nwSaeGwStateSetEventHandler(thiz,
       NW_SAE_GW_UE_EVENT_LOW_LAYER_ERROR,
-      nwSaeGwUeHandleSgwS5LLE);
+      nwSaeGwUeHandleSgwLLE);
   NW_ASSERT(NW_OK == rc);
 
   return thiz;

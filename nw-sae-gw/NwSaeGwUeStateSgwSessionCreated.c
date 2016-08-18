@@ -211,7 +211,34 @@ nwSaeGwUeHandleSgwLLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
   NwRcT                 rc;
   NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
   /* TODO */
-  thiz->state = NW_SAE_GW_UE_STATE_END;
+
+  NwU32T peer = pUlpApi->apiInfo.peerChangeInfo.peerIp;
+
+  /* Remove downlink data flows on Data Plane*/
+  rc = nwSaeGwUlpRemoveDownlinkEpsBearer(thiz->hSgw, thiz, 5);
+  NW_ASSERT( NW_OK == rc );
+
+  /* Remove uplink data flows on Data Plane*/
+  rc = nwSaeGwUlpRemoveUplinkEpsBearer(thiz->hSgw, thiz, 5);
+  NW_ASSERT( NW_OK == rc );
+
+  if(peer = thiz->s5s8cTunnel.fteidPgw.ipv4Addr)
+  {
+    /* S5/S8 stack failure*/
+    thiz->state = NW_SAE_GW_UE_STATE_END;
+    NW_UE_LOG(NW_LOG_LEVEL_ERRO, "P-GW disconnected or restarted");
+  }
+  else if(peer = thiz->s11cTunnel.fteidMme.ipv4Addr)
+  {
+    /* S11 stack failure*/
+    thiz->s11Down = NW_TRUE;
+    thiz->state = NW_SAE_GW_UE_STATE_WT_PGW_DELETE_SESSION_RSP;
+  }
+  else
+  {
+      NW_ASSERT(0);
+  }
+
   return rc;
 }
 

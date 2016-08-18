@@ -171,6 +171,35 @@ nwSaeGwUeDelete(NwSaeGwUeT* thiz)
   return rc;
 }
 
+
+NwRcT
+nwSaeGwUeDestroyUeSessionTransport(NwSaeGwUeT * thiz)
+{
+  NwRcT rc = NW_OK;
+
+  if(thiz->hSgw)
+  {
+    /* Remove downlink data flows on Data Plane*/
+    rc = nwSaeGwUlpRemoveDownlinkEpsBearer(thiz->hSgw, thiz, 5);
+    NW_ASSERT( NW_OK == rc );
+
+    /* Remove uplink data flows on Data Plane*/
+    rc = nwSaeGwUlpRemoveUplinkEpsBearer(thiz->hSgw, thiz, 5);
+    NW_ASSERT( NW_OK == rc );
+  }
+  if(thiz->hPgw)
+  {
+    /* Remove downlink data flows on Data Plane*/
+    rc = nwSaeGwUlpRemoveDownlinkEpsBearer(thiz->hPgw, thiz, 5);
+    NW_ASSERT( NW_OK == rc );
+
+    /* Remove uplink data flows on Data Plane*/
+    rc = nwSaeGwUlpRemoveUplinkEpsBearer(thiz->hPgw, thiz, 5);
+    NW_ASSERT( NW_OK == rc );
+  }
+  return rc;
+}
+
 NwRcT
 nwSaeGwDecodePaa(NwSaeGwUeT* thiz, NwGtpv2cMsgHandleT hReqMsg, NwSaeGwPaaT *pPaa)
 {

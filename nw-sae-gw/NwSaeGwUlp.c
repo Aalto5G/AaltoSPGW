@@ -1498,9 +1498,13 @@ nwSaeGwUlpRegisterSgwUeSession(NwHandleT hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Ad
   pCollision = RB_INSERT(NwUeSgwSessionRbtT, &thiz->ueSgwSessionRbt, pUe);
   if(pCollision)
   {
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_ERRO, "UE with IMSI %llx registration failed as UE is already registered.", NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
-    *hPgw = (NwU32T) 0;
-    return NW_FAILURE;
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                  "UE with IMSI %llx was already registered. Rewriting",
+                  NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+    nwSaeGwUeDestroyUeSessionTransport(pCollision);
+    nwSaeGwUlpDestroyUeSession(thiz, &pCollision);
+    pCollision = RB_INSERT(NwUeSgwSessionRbtT, &thiz->ueSgwSessionRbt, pUe);
+    NW_ASSERT(pCollision == NULL);
   }
 
   TAILQ_FOREACH(pPgwListIter, &thiz->collocatedPgwList, collocatedPgwListNode)
@@ -1530,8 +1534,13 @@ nwSaeGwUlpRegisterPgwUeSession(NwHandleT hPgw, NwSaeGwUeT *pUe)
   pCollision = RB_INSERT(NwUePgwSessionRbtT, &thiz->uePgwSessionRbt, pUe);
   if(pCollision)
   {
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_ERRO, "UE with IMSI %llx registration failed as UE is already registered.", NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
-    return NW_FAILURE;
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                  "UE with IMSI %llx was already registered. Rewriting",
+                  NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+    nwSaeGwUeDestroyUeSessionTransport(pCollision);
+    nwSaeGwUlpDestroyUeSession(thiz, &pCollision);
+    pCollision = RB_INSERT(NwUePgwSessionRbtT, &thiz->uePgwSessionRbt, pUe);
+    NW_ASSERT(pCollision == NULL);
   }
 
   pUe->paa.pdnType                      = 0x01; /* PDN Type IPv4 */
