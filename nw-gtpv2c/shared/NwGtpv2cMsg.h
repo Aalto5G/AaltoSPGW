@@ -120,6 +120,8 @@ extern "C" {
 #define NW_GTP_DOWNLINK_DATA_NOTIFICATION                       (176)
 #define NW_GTP_DOWNLINK_DATA_NOTIFICATION_ACK                   (177)
 #define NW_GTP_RESERVED                                         (178)
+#define NW_GTP_PGW_RESTART_NOTIFICATION                         (179)
+#define NW_GTP_PGW_RESTART_NOTIFICATION_ACK                     (180)
 #define NW_GTP_UPDATE_PDN_CONNECTION_SET_REQ                    (200)
 #define NW_GTP_UPDATE_PDN_CONNECTION_SET_RSP                    (201)
 #define NW_GTP_MBMS_SESSION_START_REQ                           (231)

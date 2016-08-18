@@ -983,6 +983,51 @@ nwGtpv2cHandleEchoReq(NW_IN NwGtpv2cStackT *thiz,
   return rc;
 }
 
+static NwRcT
+nwGtpv2cContextNotFound(NW_IN NwGtpv2cStackT *thiz,
+                        NW_IN NwGtpv2cMsgHandleT hMsg,
+                        NW_IN NwU16T peerPort,
+                        NW_IN NwU32T peerIp)
+{
+  NwRcT                         rc = NW_OK;
+  NwGtpv2cMsgHandleT hRsp;
+  NwU32T type = nwGtpv2cMsgGetMsgType(hMsg);
+  switch (type)
+  {
+    case NW_GTP_DELETE_SESSION_REQ:
+      rc = nwGtpv2cMsgNew( (NwGtpv2cStackHandleT)thiz,
+                           NW_TRUE,
+                           NW_GTP_DELETE_SESSION_RSP,
+                           nwGtpv2cMsgGetTeid(hMsg),
+                           nwGtpv2cMsgGetSeqNumber(hMsg),
+                           &hRsp);
+
+      NW_ASSERT(NW_OK == rc);
+      break;
+    default:
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Request ignored msg type %u", type);
+      return NW_OK;
+      break;
+  }
+
+  rc = nwGtpv2cMsgAddIeCause(hRsp, 0, 64 /*Context not found*/,
+                             NW_GTPV2C_CAUSE_BIT_CS, 0, 0);
+  NW_ASSERT( NW_OK == rc );
+
+  if(!nwGtpv2cIsPeer(thiz, peerIp))
+  {
+      rc = nwGtpv2cMsgAddIeTV1(hRsp, NW_GTPV2C_IE_RECOVERY, 0,
+                               thiz->restartCounter);
+      NW_ASSERT( NW_OK == rc );
+  }
+
+  rc = nwGtpv2cCreateAndSendMsg(thiz,
+                                nwGtpv2cMsgGetSeqNumber(hMsg),
+                                peerIp,
+                                peerPort,
+                                &hRsp);
+}
+
 /**
   Handle Initial Request from Peer Entity.
 
@@ -1017,10 +1062,17 @@ nwGtpv2cHandleInitialReq(NW_IN NwGtpv2cStackT *thiz,
 
     if(!pLocalTunnel)
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_WARN,
+      NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
              "Request message received on non-existent TEID %#x from peer "
-             NW_IPV4_ADDR" received! Discarding.",
+             NW_IPV4_ADDR" received!",
              ntohl(teidLocal), NW_IPV4_ADDR_FORMAT(peerIp));
+
+      rc = nwGtpv2cMsgFromBufferNew((NwGtpv2cStackHandleT)thiz, msgBuf, msgBufLen, &(hMsg));
+      NW_ASSERT(thiz->pGtpv2cMsgIeParseInfo[msgType]);
+
+      rc = nwGtpv2cMsgIeParse(thiz->pGtpv2cMsgIeParseInfo[msgType], hMsg, &error);
+      nwGtpv2cContextNotFound(thiz, &hMsg, peerPort, peerIp);
+
       return NW_OK;
     }
     hUlpTunnel = pLocalTunnel->hUlpTunnel;
