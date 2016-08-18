@@ -100,6 +100,9 @@ nwGtpv2cPathSendPeerDisconnectedToUlp(NwGtpv2cPathT* thiz)
   rc = pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
 }
 
+/* Forward declaration */
+static NwRcT
+nwGtpv2cPathStartPeerRspWaitTimer(NwGtpv2cPathT* thiz);
 
 static NwRcT
 nwGtpv2cPathEchoRspWaitTimeout(void* arg)
@@ -124,7 +127,7 @@ nwGtpv2cPathEchoRspWaitTimeout(void* arg)
     rc = nwGtpv2cTrxnSendMsgRetransmission(pTrxn);
     NW_ASSERT(NW_OK == rc);
 
-    rc = nwGtpv2cStartTimer(pTrxn->pStack, pTrxn->t3Timer, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT, nwGtpv2cPathEchoRspWaitTimeout, thiz, &pTrxn->hRspTmr);
+    rc = nwGtpv2cPathStartPeerRspWaitTimer(thiz);
   }
   else
   {
@@ -142,7 +145,7 @@ nwGtpv2cPathEchoRspWaitTimeout(void* arg)
   return rc;
 }
 
-NwRcT
+static NwRcT
 nwGtpv2cPathStartPeerRspWaitTimer(NwGtpv2cPathT* thiz)
 {
   NwRcT rc;
@@ -368,13 +371,16 @@ nwGtpv2cPathCheckRestartCounter(NW_IN NwGtpv2cPathT *thiz, NW_IN NwU8T remoteRes
   if(remoteRestartCounter > thiz->restartCounter ||
      (remoteRestartCounter<2 && thiz->restartCounter>254)) /*Overflow*/
   {
+    NW_LOG(thiz->pStack, NW_LOG_LEVEL_DEBG, "Remote counter from "NW_IPV4_ADDR
+           " (received %u > previous %u). Node restarted ",
+           NW_IPV4_ADDR_FORMAT(thiz->ipv4Address), remoteRestartCounter, thiz->restartCounter);
     /* Send Path reset to ULP*/
     thiz->restartCounter = remoteRestartCounter;
     nwGtpv2cPathSendPeerRestartToUlp(thiz);
   }
   else if(remoteRestartCounter < thiz->restartCounter)
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Incorrect restart counter from "NW_IPV4_ADDR
+    NW_LOG(thiz->pStack, NW_LOG_LEVEL_ERRO, "Incorrect restart counter from "NW_IPV4_ADDR
            " (received %u < previous %u). Ignoring ",
            NW_IPV4_ADDR_FORMAT(thiz->ipv4Address), remoteRestartCounter, thiz->restartCounter);
     rc = NW_FAILURE;
@@ -439,10 +445,7 @@ nwGtpv2cPathTriggeredEchoRsp( NW_IN NwGtpv2cPathT* thiz,
 
   nwGtpv2cPathCheckRestartCounter(thiz,remoteRestartCounter);
 
-  uint8_t t = NW_GTPV2C_KEEP_ALIVE_TMR + rand() % 6;
-  rc = nwGtpv2cStartTimer(thiz->pStack, t, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
-                          nwGtpv2cPathPeriodicEchoReq, thiz,
-                          &thiz->hKeepAliveTmr);
+  nwGtpv2cPathResetKeepAliveTimer(thiz);
   return rc;
 }
 
