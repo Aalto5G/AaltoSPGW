@@ -280,13 +280,16 @@ nwSaeGwUeSgwSendCreateSessionRequestToPgw(NwSaeGwUeT* thiz, NwGtpv2cUlpTrxnHandl
   rc = nwGtpv2cMsgAddIe((ulpReq.hMsg), NW_GTPV2C_IE_MEI, 8, 0, thiz->mei);
   NW_ASSERT( NW_OK == rc );
 
-  rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_RAT_TYPE, 0, thiz->ratType);
-  NW_ASSERT( NW_OK == rc );
-
   rc = nwGtpv2cMsgAddIe((ulpReq.hMsg), NW_GTPV2C_IE_SERVING_NETWORK, 3, 0, thiz->servingNetwork);
   NW_ASSERT( NW_OK == rc );
 
+  rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_RAT_TYPE, 0, thiz->ratType);
+  NW_ASSERT( NW_OK == rc );
+
   rc = nwGtpv2cMsgAddIeFteid((ulpReq.hMsg), NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IFTYPE_S5S8_SGW_GTPC, (NwU32T)thiz, thiz->s5s8cTunnel.fteidSgw.ipv4Addr, NULL);
+  NW_ASSERT( NW_OK == rc );
+
+  rc = nwGtpv2cMsgAddIe((ulpReq.hMsg), NW_GTPV2C_IE_APN, thiz->apn.l, NW_GTPV2C_IE_INSTANCE_ZERO, thiz->apn.v);
   NW_ASSERT( NW_OK == rc );
 
   rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_SELECTION_MODE, 0, 0x02);
@@ -298,11 +301,20 @@ nwSaeGwUeSgwSendCreateSessionRequestToPgw(NwSaeGwUeT* thiz, NwGtpv2cUlpTrxnHandl
   rc = nwGtpv2cMsgAddIe((ulpReq.hMsg), NW_GTPV2C_IE_PAA, sizeof(thiz->paa), 0, (NwU8T*)&thiz->paa);
   NW_ASSERT( NW_OK == rc );
 
-  rc = nwGtpv2cMsgAddIe((ulpReq.hMsg), NW_GTPV2C_IE_APN, thiz->apn.l, NW_GTPV2C_IE_INSTANCE_ZERO, thiz->apn.v);
-  NW_ASSERT( NW_OK == rc );
-
   rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_APN_RESTRICTION, 0, thiz->apnRes);
   NW_ASSERT( NW_OK == rc );
+
+  if(thiz->pco.isPresent)
+  {
+    rc = nwGtpv2cMsgAddIe((ulpReq.hMsg), NW_GTPV2C_IE_PCO,
+                          thiz->pco.length,
+                          NW_GTPV2C_IE_INSTANCE_ZERO,
+                          thiz->pco.value);
+    NW_ASSERT( NW_OK == rc );
+    thiz->pco.isPresent = NW_FALSE;
+    bzero(thiz->pco.value, thiz->pco.length);
+    thiz->pco.length = 0;
+  }
 
   rc = nwGtpv2cMsgGroupedIeStart((ulpReq.hMsg), NW_GTPV2C_IE_BEARER_CONTEXT, 0);
   NW_ASSERT( NW_OK == rc );
@@ -788,6 +800,12 @@ nwSaeGwUePgwParseCreateSessionRequest(NwSaeGwUeT* thiz,
   rc = nwGtpv2cMsgGetIeTV1(hReqMsg, NW_GTPV2C_IE_RECOVERY, NW_GTPV2C_IE_INSTANCE_ZERO, &pCreateSessReq->restart.value);
   pCreateSessReq->restart.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
 
+  rc = nwGtpv2cMsgGetIeTlv(hReqMsg, NW_GTPV2C_IE_PCO, NW_GTPV2C_IE_INSTANCE_ZERO,
+                           NW_SAE_GW_MAX_PCO_LEN,
+                           &thiz->pco.value,
+                           &thiz->pco.length);
+  thiz->pco.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
+
   return NW_OK;
 }
 
@@ -948,6 +966,12 @@ nwSaeGwUeSgwParseCreateSessionRequest(NwSaeGwUeT* thiz,
 
   rc = nwGtpv2cMsgGetIeTV1(hReqMsg, NW_GTPV2C_IE_RECOVERY, NW_GTPV2C_IE_INSTANCE_ZERO, &pCreateSessReq->restart.value);
   pCreateSessReq->restart.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
+
+  rc = nwGtpv2cMsgGetIeTlv(hReqMsg, NW_GTPV2C_IE_PCO, NW_GTPV2C_IE_INSTANCE_ZERO,
+                           NW_SAE_GW_MAX_PCO_LEN,
+                           &thiz->pco.value,
+                           &thiz->pco.length);
+  thiz->pco.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
 
   return NW_OK;
 }

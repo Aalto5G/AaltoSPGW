@@ -154,6 +154,12 @@ typedef struct NwSaeGwUe
     NwU8T       v[256];
     NwU16T      l;
   }                             apn;
+#define NW_SAE_GW_MAX_PCO_LEN   (253)
+  struct{
+    NwBoolT                     isPresent;
+    NwU8T                       value[NW_SAE_GW_MAX_PCO_LEN];
+    NwU16T                      length;
+  }                             pco;
 
   NwU8T                         apnRes;
 
