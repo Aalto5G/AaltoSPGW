@@ -1040,7 +1040,7 @@ nwGtpv2cContextNotFound(NW_IN NwGtpv2cStackT *thiz,
   /*     RspMsgType = NW_GTP_PGW_DOWNLINK_TRIGGERING_ACK; */
   /*     break; */
     default:
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Request ignored msg type %u", type);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Request ignored");
       return NW_OK;
       break;
   }
