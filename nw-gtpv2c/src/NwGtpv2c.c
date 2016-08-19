@@ -990,27 +990,69 @@ nwGtpv2cContextNotFound(NW_IN NwGtpv2cStackT *thiz,
                         NW_IN NwU32T peerIp)
 {
   NwRcT                         rc = NW_OK;
-  NwGtpv2cMsgHandleT hRsp;
-  NwU32T type = nwGtpv2cMsgGetMsgType(hMsg);
-  switch (type)
-  {
-    case NW_GTP_DELETE_SESSION_REQ:
-      rc = nwGtpv2cMsgNew( (NwGtpv2cStackHandleT)thiz,
-                           NW_TRUE,
-                           NW_GTP_DELETE_SESSION_RSP,
-                           nwGtpv2cMsgGetTeid(hMsg),
-                           nwGtpv2cMsgGetSeqNumber(hMsg),
-                           &hRsp);
+  NwGtpv2cMsgHandleT hRsp = 0;
+  NwU32T RspMsgType;
 
+  switch (nwGtpv2cMsgGetMsgType(hMsg))
+  {
+    case NW_GTP_CREATE_BEARER_REQ:
       NW_ASSERT(NW_OK == rc);
+      RspMsgType = NW_GTP_CREATE_BEARER_RSP;
       break;
+    case NW_GTP_MODIFY_BEARER_REQ:
+      NW_ASSERT(NW_OK == rc);
+      RspMsgType = NW_GTP_MODIFY_BEARER_RSP;
+      break;
+    case NW_GTP_DELETE_SESSION_REQ:
+      NW_ASSERT(NW_OK == rc);
+      RspMsgType = NW_GTP_DELETE_SESSION_RSP;
+      break;
+    case NW_GTP_DELETE_BEARER_REQ:
+      NW_ASSERT(NW_OK == rc);
+      RspMsgType = NW_GTP_DELETE_BEARER_RSP;
+      break;
+    case NW_GTP_DOWNLINK_DATA_NOTIFICATION:
+      NW_ASSERT(NW_OK == rc);
+      RspMsgType = NW_GTP_DOWNLINK_DATA_NOTIFICATION_ACK;
+      break;
+    case NW_GTP_DELETE_INDIRECT_DATA_FORWARDING_TUNNEL_REQ:
+      NW_ASSERT(NW_OK == rc);
+      RspMsgType = NW_GTP_DELETE_INDIRECT_DATA_FORWARDING_TUNNEL_RSP;
+      break;
+    case NW_GTP_UPDATE_BEARER_REQ:
+        NW_ASSERT(NW_OK == rc);
+        RspMsgType = NW_GTP_UPDATE_BEARER_RSP;
+        break;
+    case NW_GTP_CREATE_INDIRECT_DATA_FORWARDING_TUNNEL_REQ:
+      NW_ASSERT(NW_OK == rc);
+      RspMsgType = NW_GTP_CREATE_INDIRECT_DATA_FORWARDING_TUNNEL_RSP;
+      break;
+    case NW_GTP_RELEASE_ACCESS_BEARERS_REQ:
+      NW_ASSERT(NW_OK == rc);
+      RspMsgType = NW_GTP_RELEASE_ACCESS_BEARERS_RSP;
+      break;
+    case NW_GTP_MODIFY_ACCESS_BEARERS_REQ:
+      NW_ASSERT(NW_OK == rc);
+      RspMsgType = NW_GTP_MODIFY_ACCESS_BEARERS_RSP;
+      break;
+  /* case NW_GTP_PGW_DOWNLINK_TRIGGERING_NTF: */
+  /*     NW_ASSERT(NW_OK == rc); */
+  /*     RspMsgType = NW_GTP_PGW_DOWNLINK_TRIGGERING_ACK; */
+  /*     break; */
     default:
         NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Request ignored msg type %u", type);
       return NW_OK;
       break;
   }
 
-  rc = nwGtpv2cMsgAddIeCause(hRsp, 0, 64 /*Context not found*/,
+  rc = nwGtpv2cMsgNew( (NwGtpv2cStackHandleT)thiz,
+                       NW_TRUE,
+                       RspMsgType,
+                       0,
+                       nwGtpv2cMsgGetSeqNumber(hMsg),
+                       &(hRsp));
+
+  rc = nwGtpv2cMsgAddIeCause(hRsp, 0, NW_GTPV2C_CAUSE_CONTEXT_NOT_FOUND,
                              NW_GTPV2C_CAUSE_BIT_CS, 0, 0);
   NW_ASSERT( NW_OK == rc );
 
@@ -1025,7 +1067,7 @@ nwGtpv2cContextNotFound(NW_IN NwGtpv2cStackT *thiz,
                                 nwGtpv2cMsgGetSeqNumber(hMsg),
                                 peerIp,
                                 peerPort,
-                                &hRsp);
+                                hRsp);
 }
 
 /**
@@ -1071,7 +1113,7 @@ nwGtpv2cHandleInitialReq(NW_IN NwGtpv2cStackT *thiz,
       NW_ASSERT(thiz->pGtpv2cMsgIeParseInfo[msgType]);
 
       rc = nwGtpv2cMsgIeParse(thiz->pGtpv2cMsgIeParseInfo[msgType], hMsg, &error);
-      nwGtpv2cContextNotFound(thiz, &hMsg, peerPort, peerIp);
+      nwGtpv2cContextNotFound(thiz, hMsg, peerPort, peerIp);
 
       return NW_OK;
     }

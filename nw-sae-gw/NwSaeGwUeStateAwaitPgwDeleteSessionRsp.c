@@ -108,6 +108,13 @@ nwSaeGwUeHandleSgwS5DeleteSessionResponse(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
   {
     rc = nwSaeGwUeSgwSendDeleteSessionResponseToMme(thiz, pUlpApi->apiInfo.triggeredRspIndInfo.hUlpTrxn, &(pUlpApi->apiInfo.initialReqIndInfo.error), NULL);
   }
+
+  if(pUlpApi->apiInfo.triggeredRspIndInfo.error.cause == NW_GTPV2C_CAUSE_CONTEXT_NOT_FOUND)
+  {
+    NW_UE_LOG(NW_LOG_LEVEL_WARN,
+              "P-GW replied Delete Session with cause \"Context not found\"");
+  }
+
   thiz->state = NW_SAE_GW_UE_STATE_END;
 
   return rc;
