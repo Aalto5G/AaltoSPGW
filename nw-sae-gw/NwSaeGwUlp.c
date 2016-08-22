@@ -1486,7 +1486,7 @@ nwSaeGwUlpDeregisterCollocatedPgw(NwSaeGwUlpT* thiz, NwSaeGwUlpT* pCollocatedPgw
 }
 
 NwRcT
-nwSaeGwUlpRegisterSgwUeSession(NwHandleT hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Addr, NwU32T *hPgw)
+nwSaeGwUlpRegisterSgwUeSession(NwHandleT hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Addr, NwHandleT *hPgw)
 {
   NwSaeGwUlpT *pPgwListIter;
   NwSaeGwUlpT *thiz = (NwSaeGwUlpT*) hSgw;
@@ -1519,7 +1519,7 @@ nwSaeGwUlpRegisterSgwUeSession(NwHandleT hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Ad
   pUe->s11cTunnel.fteidSgw.ipv4Addr    = thiz->sgw.s11c.ipv4Addr;
   pUe->s5s8cTunnel.fteidSgw.ipv4Addr   = thiz->sgw.s5c.ipv4Addr;
 
-  *hPgw = (NwU32T) pPgwListIter;
+  *hPgw = (NwHandleT) pPgwListIter;
 
   pUe->sessionType |= NW_SAE_GW_UE_SESSION_TYPE_SGW;
   return NW_OK;

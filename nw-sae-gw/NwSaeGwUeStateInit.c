@@ -1089,7 +1089,7 @@ static NwRcT
 nwSaeGwUeHandleSgwS11CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT                 rc, rpath;
-  NwU32T                hPgw;
+  NwHandleT             hPgw;
   NwGtpv2cErrorT        error;
   NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
   NwSaeGwUeSgwCreateSessionRequestT createSessReq;

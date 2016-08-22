@@ -143,7 +143,7 @@ NwRcT
 nwSaeGwUlpDeregisterCollocatedPgw(NwSaeGwUlpT* thiz, NwSaeGwUlpT* pCollocatedPgw);
 
 NwRcT
-nwSaeGwUlpRegisterSgwUeSession(NwHandleT hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Addr, NwU32T *hPgw);
+nwSaeGwUlpRegisterSgwUeSession(NwHandleT hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Addr, NwHandleT *hPgw);
 
 NwRcT
 nwSaeGwUlpRegisterPgwUeSession(NwHandleT hPgw, NwSaeGwUeT *pUe);
