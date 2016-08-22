@@ -506,6 +506,11 @@ nwSaeGwUePgwSendCreateSessionResponseToSgw(NwSaeGwUeT* thiz,
         NULL);
     NW_ASSERT( NW_OK == rc );
 
+    if(thiz->pco.isPresent)
+    {
+      rc = nwGtpv2cMsgAddIe((ulpReq.hMsg), NW_GTPV2C_IE_PCO, thiz->pco.length, 0, thiz->pco.value);
+      NW_ASSERT( NW_OK == rc );
+    }
 
     /* Start - Encoding of grouped IE "bearer context created" */
 
@@ -1077,6 +1082,11 @@ nwSaeGwUeHandlePgwS5CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
     NW_ASSERT(rc == NW_OK);
   }
 
+  if(thiz->pco.isPresent)
+  {
+    rc = nwSaeGwUlpPgwSetPCO(thiz->hPgw, thiz);
+    NW_ASSERT( NW_OK == rc );
+  }
   rc = nwSaeGwUePgwSendCreateSessionResponseToSgw(thiz,
       pUlpApi->apiInfo.initialReqIndInfo.hTrxn,
       &error,
@@ -1221,6 +1231,12 @@ nwSaeGwUeHandleSgwS11CreateSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
       NW_ASSERT( NW_OK == rc );
 
       error.cause                                   = NW_GTPV2C_CAUSE_REQUEST_ACCEPTED;
+
+      if(thiz->pco.isPresent)
+      {
+        rc = nwSaeGwUlpPgwSetPCO(hPgw, thiz);
+        NW_ASSERT( NW_OK == rc );
+      }
 
       /* Send Create Session Response to MME */;
       rc = nwSaeGwUeSgwSendCreateSessionResponseToMme(thiz,

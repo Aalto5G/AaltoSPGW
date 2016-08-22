@@ -270,6 +270,11 @@ nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz,
     rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_APN_RESTRICTION, 0, 0);
     NW_ASSERT( NW_OK == rc );
 
+    if(thiz->pco.isPresent)
+    {
+      rc = nwGtpv2cMsgAddIe((ulpReq.hMsg), NW_GTPV2C_IE_PCO, thiz->pco.length, 0, thiz->pco.value);
+      NW_ASSERT( NW_OK == rc );
+    }
 
     /* Start - Encoding of grouped IE "bearer context created" */
 
@@ -519,6 +524,12 @@ nwSaeGwUeSgwParseCreateSessionResponse(NwSaeGwUeT* thiz,
   /* Optional TLVs */
   rc = nwGtpv2cMsgGetIeTV1(hReqMsg, NW_GTPV2C_IE_RECOVERY, NW_GTPV2C_IE_INSTANCE_ZERO, &pCreateSessReq->restart.value);
   pCreateSessReq->restart.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
+
+  rc = nwGtpv2cMsgGetIeTlv(hReqMsg, NW_GTPV2C_IE_PCO, NW_GTPV2C_IE_INSTANCE_ZERO,
+                           NW_SAE_GW_MAX_PCO_LEN,
+                           &thiz->pco.value,
+                           &thiz->pco.length);
+  thiz->pco.isPresent = (rc == NW_OK ? NW_TRUE : NW_FALSE);
 
   return NW_OK;
 }

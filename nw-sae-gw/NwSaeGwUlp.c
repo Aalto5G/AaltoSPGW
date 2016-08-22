@@ -1874,6 +1874,72 @@ nwSaeGwUlpRemoveDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   return rc;
 }
 
+
+NwRcT
+nwSaeGwUlpPgwSetPCO(NwHandleT hPgw, NwSaeGwUeT *pUe)
+{
+  NwSaeGwUlpT *thiz = (NwSaeGwUlpT*) hPgw;
+  NwU8T                       query[NW_SAE_GW_MAX_PCO_LEN], *pco_rsp_p, *pco_p;
+  NwU16T                      qlength, pco_len=0, pco_id;
+
+  const NwU8T ipcp[] = {
+    0x80, 0x21, 0x10, 0x03, 0x01, 0x00, 0x10,
+    0x81, 0x06, 0, 0, 0, 0,
+    0x83, 0x06, 0, 0, 0, 0};
+  const NwU8T pco_dns[] = {
+    0x00, 0x0d, 0x04, 0, 0, 0, 0};
+  const NwU8T pco_mtu[] = {
+    0x00, 0x10, 0x02, 0x05, 0xa0};
+
+  const NwU8T dns[] = {
+      0x08,0x08,0x08,0x08};
+
+  if(!pUe->pco.isPresent)
+  {
+    return NW_OK;
+  }
+
+  qlength = pUe->pco.length;
+  bzero(query, NW_SAE_GW_MAX_PCO_LEN);
+  memcpy(query, pUe->pco.value, qlength);
+  bzero(pUe->pco.value, NW_SAE_GW_MAX_PCO_LEN);
+
+  pco_p = query+1;
+  pco_rsp_p = pUe->pco.value;
+  *pco_rsp_p = 0x80;
+  pco_rsp_p++;
+  pco_len++;
+  NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN, "qlength (%u) >= pco_p-(pUe->pco.value+1) %u", qlength, pco_p-(pUe->pco.value+1));
+  while(qlength >= pco_p-(query+1)){
+    pco_id = (*pco_p <<8)|(*(pco_p+1));
+    pco_p += *(pco_p+2)+3;
+    switch(pco_id){
+      case 0x8021: /* IP Control Protocol */
+        memcpy(pco_rsp_p, ipcp, 19);
+        memcpy(pco_rsp_p+9, &(dns), 4);
+        memcpy(pco_rsp_p+15, &(dns), 4);
+        pco_rsp_p +=19;
+        pco_len+=19;
+        break;
+      case 0x000d: /* DNS Server IPv4 Address */
+        memcpy(pco_rsp_p, pco_dns, 7);
+        memcpy(pco_rsp_p+3, &(dns), 4);
+        pco_rsp_p +=7;
+        pco_len+=7;
+        break;
+      case 0x0010: /* IPv4 Link MTU */
+        memcpy(pco_rsp_p, pco_mtu, 5);
+        pco_rsp_p +=5;
+        pco_len+=5;
+        break;
+      default: /* Not Recognized Ignoring*/
+        break;
+      }
+    pUe->pco.length = pco_len;
+  }
+  return NW_OK;
+}
+
 #ifdef __cplusplus
 }
 #endif

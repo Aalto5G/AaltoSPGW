@@ -335,6 +335,14 @@ nwMmeUeSendCreateSessionRequestToPeer(NwMmeUeT* thiz)
   rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_APN_RESTRICTION, 0, 0);
   NW_ASSERT( NW_OK == rc );
 
+  NwU8T pco[] = {0x80,
+                 0x80, 0x21, 0x0a, 0x01, 0x01, 0x00, 0x0a, 0x81, 0x06, 0x00, 0x00, 0x00, 0x00,
+                 0x80, 0x21, 0x0a, 0x01, 0x02, 0x00, 0x0a, 0x83, 0x06, 0x00, 0x00, 0x00, 0x00,
+                 0x00, 0x10, 0x02, 0x00, 0x00};
+  NwU8T len = 0x20;
+  rc = nwGtpv2cMsgAddIe((ulpReq.hMsg), NW_GTPV2C_IE_PCO, len, 0, pco);
+  NW_ASSERT( NW_OK == rc );
+
   rc = nwGtpv2cMsgGroupedIeStart((ulpReq.hMsg), NW_GTPV2C_IE_BEARER_CONTEXT, 0);
   NW_ASSERT( NW_OK == rc );
 
