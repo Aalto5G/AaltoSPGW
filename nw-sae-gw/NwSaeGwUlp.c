@@ -1399,6 +1399,10 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
   }
   else if(thiz->saeGwType == NW_SAE_GW_TYPE_PGW)
   {
+    strncpy(thiz->ue_dns1, pCfg->ue_dns1, INET6_ADDRSTRLEN);
+    strncpy(thiz->ue_dns2, pCfg->ue_dns2, INET6_ADDRSTRLEN);
+    thiz->mtu = pCfg->mtu;
+
     /* Create PGW-S5 Gtpv2c Service Access Point*/
 
     rc = nwSaeGwUlpCreateGtpv2cStackInstance(thiz, &thiz->pgw.s5c.hGtpv2cStack);
@@ -1880,7 +1884,7 @@ nwSaeGwUlpPgwSetPCO(NwHandleT hPgw, NwSaeGwUeT *pUe)
 {
   NwSaeGwUlpT *thiz = (NwSaeGwUlpT*) hPgw;
   NwU8T                       query[NW_SAE_GW_MAX_PCO_LEN], *pco_rsp_p, *pco_p;
-  NwU16T                      qlength, pco_len=0, pco_id;
+  NwU16T                      qlength, pco_len=0, pco_id, mtu=0;
 
   const NwU8T ipcp[] = {
     0x80, 0x21, 0x10, 0x03, 0x01, 0x00, 0x10,
@@ -1889,7 +1893,7 @@ nwSaeGwUlpPgwSetPCO(NwHandleT hPgw, NwSaeGwUeT *pUe)
   const NwU8T pco_dns[] = {
     0x00, 0x0d, 0x04, 0, 0, 0, 0};
   const NwU8T pco_mtu[] = {
-    0x00, 0x10, 0x02, 0x05, 0xa0};
+    0x00, 0x10, 0x02, 0x00, 0x00};
 
   const NwU8T dns[] = {
       0x08,0x08,0x08,0x08};
@@ -1916,19 +1920,21 @@ nwSaeGwUlpPgwSetPCO(NwHandleT hPgw, NwSaeGwUeT *pUe)
     switch(pco_id){
       case 0x8021: /* IP Control Protocol */
         memcpy(pco_rsp_p, ipcp, 19);
-        memcpy(pco_rsp_p+9, &(dns), 4);
-        memcpy(pco_rsp_p+15, &(dns), 4);
+        inet_pton(AF_INET, thiz->ue_dns1, pco_rsp_p+9);
+        inet_pton(AF_INET, thiz->ue_dns2, pco_rsp_p+15);
         pco_rsp_p +=19;
         pco_len+=19;
         break;
       case 0x000d: /* DNS Server IPv4 Address */
         memcpy(pco_rsp_p, pco_dns, 7);
-        memcpy(pco_rsp_p+3, &(dns), 4);
+        inet_ntop(AF_INET, pco_rsp_p+3, thiz->ue_dns1, INET_ADDRSTRLEN);
         pco_rsp_p +=7;
         pco_len+=7;
         break;
       case 0x0010: /* IPv4 Link MTU */
         memcpy(pco_rsp_p, pco_mtu, 5);
+        mtu = htons(thiz->mtu);
+        memcpy(pco_rsp_p+3, &mtu, 2);
         pco_rsp_p +=5;
         pco_len+=5;
         break;

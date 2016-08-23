@@ -81,6 +81,9 @@ typedef struct
   NwU32T                        ippoolSubnet;
   NwU32T                        ippoolMask;
   NwSaeGwDpeT                   *pDpe;
+  NwU8T                         ue_dns1[INET6_ADDRSTRLEN];
+  NwU8T                         ue_dns2[INET6_ADDRSTRLEN];
+  NwU16T                        mtu;
 } NwSaeGwUlpConfigT;
 
 typedef struct
@@ -96,6 +99,9 @@ typedef struct NwSaeGwUlp
   NwU32T                        saeGwType;
   NwU32T                        maxUeSessions;
   NwU8T                         apn[1024];
+  NwU8T                         ue_dns1[INET6_ADDRSTRLEN];
+  NwU8T                         ue_dns2[INET6_ADDRSTRLEN];
+  NwU16T                        mtu;
   NwIpv4PoolMgrHandleT          hIpv4Pool;
   NwU32T                        ippoolSubnet;
   NwU32T                        ippoolMask;

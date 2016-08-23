@@ -76,6 +76,9 @@ typedef struct
   NwU32T                        ippoolMask;
   NwU32T                        numOfUe;
   NwGtpv2cIfT                   udp;
+  NwU8T                         ue_dns1[INET6_ADDRSTRLEN];
+  NwU8T                         ue_dns2[INET6_ADDRSTRLEN];
+  NwU16T                        mtu;
 
   struct {
     NwU32T                      s11cIpv4Addr;
@@ -116,6 +119,9 @@ nwSaeGwCmdLineHelp()
   printf("\n| --sgi-if     | -si   | OPTIONAL    | Network interface name for the SGi.    |");
   printf("\n| --max-ue     | -mu   | OPTIONAL    | Maximum number of UEs to support.      |");
   printf("\n| --combined-gw | -cgw | OPTIONAL    | Combine SGW and PGW funtions.          |");
+  printf("\n| --ue-dns1   | -dns1  | OPTIONAL    | Primary DNS on the PDN.                |");
+  printf("\n| --ue-dns2   | -dns2  | OPTIONAL    | Secondary DNS on the PDN.              |");
+  printf("\n| --pdn-mtu   | -mtu   | OPTIONAL    | MTU on the PDN.                        |");
   printf("\n+----------------------+-------------+----------------------------------------+");
   printf("\n\nExample Usage: \n$ nwLteSaeGw --sgw-s11-ip 10.124.25.153 --sgw-s5-ip 192.168.0.1 --pgw-s5-ip 192.168.139.5 --gtpu-ip 10.124.25.153 --sgi-if eth0 --ippool-subnet 10.66.10.0 --ippool-mask 255.255.255.0 -cgw");
   printf("\n");
@@ -136,6 +142,9 @@ nwSaeGwParseCmdLineOpts(NwSaeGwT*  thiz, int argc, char* argv[])
   thiz->numOfUe         = 1000;
   thiz->ippoolSubnet    = ntohl(inet_addr("192.168.128.0"));
   thiz->ippoolMask      = ntohl(inet_addr("255.255.255.0"));
+  strcpy(thiz->ue_dns1, "8.8.8.8");
+  strcpy(thiz->ue_dns2, "8.8.4.4");
+  thiz->mtu             = 1440;
   strcpy((char*)thiz->dataPlane.sgiNwIfName, "");
 
   i++;
@@ -237,7 +246,38 @@ nwSaeGwParseCmdLineOpts(NwSaeGwT*  thiz, int argc, char* argv[])
     else if((strcmp("--combined-gw", argv[i]) == 0)
         || (strcmp(argv[i], "-cgw") == 0))
     {
+      i++;
       thiz->isCombinedGw = NW_TRUE;
+    }
+    else if((strcmp("--ue-dns1", argv[i]) == 0)
+        || (strcmp(argv[i], "-dns1") == 0))
+    {
+      i++;
+      if(i >= argc)
+        return NW_FAILURE;
+
+      strcpy(thiz->ue_dns1, argv[i]);
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Primary DNS IP %s", argv[i]);
+    }
+    else if((strcmp("--ue-dns2", argv[i]) == 0)
+            || (strcmp(argv[i], "-dns2") == 0))
+    {
+      i++;
+      if(i >= argc)
+        return NW_FAILURE;
+
+      strcpy(thiz->ue_dns2, argv[i]);
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Secondary DNS IP %s", argv[i]);
+    }
+    else if((strcmp("--pdn-mtu", argv[i]) == 0)
+            || (strcmp(argv[i], "-mtu") == 0))
+    {
+      i++;
+      if(i >= argc)
+        return NW_FAILURE;
+
+      thiz->mtu = atoi(argv[i]);
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "PDN MTU %s", argv[i]);
     }
     else if((strcmp("--help", argv[i]) == 0)
         || (strcmp(argv[i], "-h") == 0))
@@ -307,8 +347,11 @@ nwSaeGwInitialize(NwSaeGwT* thiz)
     cfg.ippoolMask      = thiz->ippoolMask;
     cfg.s5cIpv4AddrPgw  = thiz->pgwUlp.s5cIpv4Addr;
     cfg.pDpe            = thiz->dataPlane.pDpe;
+    cfg.mtu             = thiz->mtu;
 
     strncpy((char*)cfg.apn, (const char*)thiz->apn, 1023);
+    strncpy((char*)cfg.ue_dns1, (const char*)thiz->ue_dns1, INET6_ADDRSTRLEN);
+    strncpy((char*)cfg.ue_dns2, (const char*)thiz->ue_dns2, INET6_ADDRSTRLEN);
 
     pGw = nwSaeGwUlpNew();
     rc = nwSaeGwUlpInitialize(pGw, NW_SAE_GW_TYPE_PGW, &cfg);
@@ -355,6 +398,26 @@ int main(int argc, char* argv[])
   memset(&saeGw, 0, sizeof(NwSaeGwT));
 
   /*---------------------------------------------------------------------------
+   *  Initialize event library
+   *--------------------------------------------------------------------------*/
+
+  NW_EVT_INIT();
+
+  /*---------------------------------------------------------------------------
+   *  Initialize Memory Manager
+   *--------------------------------------------------------------------------*/
+
+  rc = nwMemInitialize();
+  NW_ASSERT(NW_OK == rc);
+
+  /*---------------------------------------------------------------------------
+   *  Initialize LogMgr
+   *--------------------------------------------------------------------------*/
+
+  rc = nwLogMgrInit(nwLogMgrGetInstance(), (NwU8T*)"NW-SAEGW", getpid());
+  NW_ASSERT(NW_OK == rc);
+
+  /*---------------------------------------------------------------------------
    *  Parse Commandline Arguments
    *--------------------------------------------------------------------------*/
 
@@ -362,7 +425,7 @@ int main(int argc, char* argv[])
   if(rc != NW_OK)
   {
     printf("\nUsage error. Please refer help.\n\n");
-    exit(0);
+    goto exit;
   }
 
   printf("\n");
@@ -397,28 +460,6 @@ int main(int argc, char* argv[])
   printf(" * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.          *\n");
   printf(" *----------------------------------------------------------------------------*\n\n");
 
-
-
-  /*---------------------------------------------------------------------------
-   *  Initialize event library
-   *--------------------------------------------------------------------------*/
-
-  NW_EVT_INIT();
-
-  /*---------------------------------------------------------------------------
-   *  Initialize Memory Manager
-   *--------------------------------------------------------------------------*/
-
-  rc = nwMemInitialize();
-  NW_ASSERT(NW_OK == rc);
-
-  /*---------------------------------------------------------------------------
-   *  Initialize LogMgr
-   *--------------------------------------------------------------------------*/
-
-  rc = nwLogMgrInit(nwLogMgrGetInstance(), (NwU8T*)"NW-SAEGW", getpid());
-  NW_ASSERT(NW_OK == rc);
-
   /*---------------------------------------------------------------------------
    * Initialize SAE GW
    *--------------------------------------------------------------------------*/
@@ -438,6 +479,7 @@ int main(int argc, char* argv[])
    * Finalize SAE GW
    *--------------------------------------------------------------------------*/
 
+  exit:
   rc =  nwSaeGwFinalize(&saeGw);
   NW_ASSERT(NW_OK == rc);
 
