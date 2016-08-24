@@ -1,7 +1,9 @@
-# Configuration file template for P-GW
+# Configuration file template for S/P-GW
 
-IPADDR_S5PGW="10.0.0.1"
-IPADDR_GTPU="10.0.0.2"
+IPADDR_S11SGW="10.0.0.1"
+IPADDR_S5SGW="10.0.0.2"
+IPADDR_S5PGW="10.0.0.3"
+IPADDR_GTPU="10.0.0.4"
 IPADDR_IPUE_NETW="172.30.0.0"
 IPADDR_IPUE_MASK="255.255.255.0"
 SGI_TCP_MSS="1400"
