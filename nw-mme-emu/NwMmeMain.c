@@ -148,7 +148,7 @@ nwMmeCmdLineHelp()
   printf("\n| --num-of-ue | -nu         | OPTIONAL      | Number of UEs to simulate.            |");
   printf("\n| --session-timeout | -st   | OPTIONAL      | UE session timeout in seconds.        |");
   printf("\n| --reg-per-sec| -rps       | OPTIONAL      | Session registrations per second.     |");
-  printf("\n| --tun-if  | -si           | OPTIONAL      | Network interface name for tunnel-if. |");
+  printf("\n| --tun-if  | -ti           | OPTIONAL      | Network interface name for tunnel-if. |");
   printf("\n+---------------------------+---------------+---------------------------------------+");
   printf("\n\nExample Usage: \n$ nwLteMmeEmu --mme-ip 10.0.0.1 --sgw-ip 10.0.0.2 --pgw-ip 10.0.0.3 --gtpu-ip 10.0.0.1 --tun-if eth1 -nu 50000 -st 120 -rps 100\n");
   printf("\n");
@@ -215,7 +215,7 @@ nwMmeParseCmdLineOpts(NwMmeT*  thiz, int argc, char* argv[])
       thiz->dataPlane.gtpuIpv4Addr = ntohl(inet_addr(argv[i]));
     }
     else if((strcmp("--tun-if", argv[i]) == 0)
-        || (strcmp(argv[i], "-si") == 0))
+        || (strcmp(argv[i], "-ti") == 0))
     {
       i++;
       if(i >= argc)
