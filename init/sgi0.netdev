@@ -1,8 +1,3 @@
 [NetDev]
 Name=sgi0
-Kind=veth
-MACAddress=00:00:06:01:02:03
-
-[Peer]
-Name=sgi0s
-MACAddress=00:00:06:aa:bb:cc
+Kind=tun

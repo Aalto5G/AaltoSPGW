@@ -3,5 +3,4 @@ Name=sgi0
 
 [Network]
 Name=sgi0
-Address=1.1.1.1/32
 IPForward=ipv4

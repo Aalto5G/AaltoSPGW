@@ -9,7 +9,7 @@ ExecStartPre=/bin/bash /etc/conf.d/iproute2/pgw.iproute2.start
 ExecStartPre=/sbin/iptables -t mangle -I POSTROUTING -s ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${SGI_TCP_MSS}
 ExecStartPre=/sbin/iptables -t mangle -I POSTROUTING -d ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${SGI_TCP_MSS}
 
-ExecStart=/usr/bin/nwLteSaeGw --pgw-s5-ip ${IPADDR_S5PGW} --gtpu-ip ${IPADDR_GTPU} --sgi-if sgi0s --ippool-subnet ${IPADDR_IPUE_NETW} --ippool-mask ${IPADDR_IPUE_MASK} --ue-dns1 ${PDN_DNS1} --ue-dns2 ${PDN_DNS2} --pdn-mtu ${PDN_MTU}
+ExecStart=/usr/bin/nwLteSaeGw --pgw-s5-ip ${IPADDR_S5PGW} --gtpu-ip ${IPADDR_GTPU} --sgi-if sgi0 --ippool-subnet ${IPADDR_IPUE_NETW} --ippool-mask ${IPADDR_IPUE_MASK} --ue-dns1 ${PDN_DNS1} --ue-dns2 ${PDN_DNS2} --pdn-mtu ${PDN_MTU}
 Restart=on-failure
 
 ExecStopPost=/sbin/iptables -t mangle -D POSTROUTING -s ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${SGI_TCP_MSS}
