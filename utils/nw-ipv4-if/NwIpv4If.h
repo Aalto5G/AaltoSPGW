@@ -48,14 +48,11 @@
 
 typedef struct
 {
-  NwU32T        hRecvSocketIpv4;
-  NwU32T        hRecvSocketArp;
-  NwU32T        hSendSocket;
+  NwU32T        hSocket;
   NwU32T        ifindex;
   NwU8T         hwAddr[6];
   NwU32T        ipAddr;
   NwEventT      evIpv4;
-  NwEventT      evArp;
   NwSdpHandleT  hSdp;
 } NwIpv4IfT;
 
@@ -63,33 +60,22 @@ typedef struct
 extern "C" {
 #endif
 
-NwRcT nwIpv4IfInitialize(NwIpv4IfT* thiz, NwU8T* device, NwSdpHandleT hSdp, NwU8T* pHwAddr);
+NwRcT nwIpv4IfInitialize(NwIpv4IfT* thiz, NwU8T* device, NwSdpHandleT hSdp);
 
 NwRcT nwIpv4IfDestroy(NwIpv4IfT* thiz);
 
 NwRcT nwIpv4IfGetSelectionObjectIpv4(NwIpv4IfT* thiz, NwU32T *pSelObj);
 
-NwRcT nwIpv4IfGetSelectionObjectArp(NwIpv4IfT* thiz, NwU32T *pSelObj);
-
 void NW_EVT_CALLBACK(nwIpv4IfDataIndicationCallback);
-
-void NW_EVT_CALLBACK(nwIpv4IfArpDataIndicationCallback);
 
 NwRcT
 nwIpv4IfIpv4DataReq(NwSdpHandleT hSdp,
              NwU8T* dataBuf,
              NwU32T dataSize);
 
-NwRcT nwIpv4IfArpDataReq(NwSdpHandleT       hThiz,
-                     NwU16T             opCode,
-                     NwU8T              *pTargetMac,
-                     NwU8T              *pTargetIpAddr,
-                     NwU8T              *pSenderIpAddr);
-
-
 #ifdef __cplusplus
 }
 #endif
 
 
-#endif
+#endif /* __NW_IP_IF_H__ */

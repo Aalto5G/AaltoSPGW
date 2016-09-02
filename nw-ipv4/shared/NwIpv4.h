@@ -272,18 +272,10 @@ typedef struct
 typedef struct
 {
   NwIpv4LlpHandleT              hLlp;
-  NwU8T                         llpHwAddr[6]; /* Ethernet Address */
   NwIpv4RcT (*llpDataReqCallback) (
       NW_IN     NwIpv4LlpHandleT llpHandle,
       NW_IN     NwU8T*           dataBuf,
       NW_IN     NwU32T           dataSize);
-  NwIpv4RcT (*llpArpDataReqCallback) (
-      NW_IN     NwIpv4LlpHandleT llpHandle,
-      NW_IN     NwU16T           opCode,
-      NW_IN     NwU8T            *pTargetMac,
-      NW_IN     NwU8T            *pTargetIpAddr,
-      NW_IN     NwU8T            *pSenderIpAddr);
-
 } NwIpv4LlpEntityT;
 
 /**

@@ -55,7 +55,6 @@ typedef struct {
   NwGtpv1uIfT   gtpuIf;
   NwEventT      evGtpuIf;
   NwEventT      evIpv4;
-  NwEventT      evArp;
   NwSdpServiceHandleT hGtpu;
   NwSdpServiceHandleT hIpv4;
 } NwSaeGwDpeT;

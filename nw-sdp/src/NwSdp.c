@@ -954,20 +954,11 @@ nwSdpCreateGreService1( NW_IN NwSdpHandleT hSdp,
 NwSdpRcT
 nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
                         NW_IN NwU32T            mode,
-                        NW_IN NwU8T             *pHwAddr,
                         NW_IN NwU32T            hIpv4TlInterface,
                         NW_IN NwSdpRcT          (*pIpv4TlDataReqCb)( NwU32T udpHandle,
                                                         NwU8T* dataBuf,
                                                         NwU32T dataSize),
-                        NW_IN NwSdpRcT          (*pIpv4TlArpDataReqCb) (
-                                                        NwU32T          udpHandle,
-                                                        NwU16T           opCode,
-                                                        NwU8T            *pTargetMac,
-                                                        NwU8T            *pTargetIpAddr,
-                                                        NwU8T            *pSenderIpAddr),
-
-
-                       NW_IN NwSdpServiceHandleT* phSdpService)
+                        NW_IN NwSdpServiceHandleT* phSdpService)
 {
   NwSdpRcT rc = NW_SDP_OK;
   NwSdpT* thiz;
@@ -1050,10 +1041,8 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
    * Set LLP Entity
    *--------------------------------------------------------------------------*/
 
-  memcpy(ipv4Llp.llpHwAddr, pHwAddr, 6);
   ipv4Llp.hLlp = (NwIpv4LlpHandleT) hIpv4TlInterface;
   ipv4Llp.llpDataReqCallback    = pIpv4TlDataReqCb;
-  ipv4Llp.llpArpDataReqCallback = pIpv4TlArpDataReqCb;
 
   rc = nwIpv4SetLlpEntity(thiz->hIpv4Stack, &ipv4Llp);
   NW_ASSERT( rc == NW_SDP_OK );

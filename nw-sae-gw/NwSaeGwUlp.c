@@ -1913,7 +1913,6 @@ nwSaeGwUlpPgwSetPCO(NwHandleT hPgw, NwSaeGwUeT *pUe)
   *pco_rsp_p = 0x80;
   pco_rsp_p++;
   pco_len++;
-  NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN, "qlength (%u) >= pco_p-(pUe->pco.value+1) %u", qlength, pco_p-(pUe->pco.value+1));
   while(qlength >= pco_p-(query+1)){
     pco_id = (*pco_p <<8)|(*(pco_p+1));
     pco_p += *(pco_p+2)+3;

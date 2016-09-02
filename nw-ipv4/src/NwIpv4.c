@@ -52,18 +52,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-typedef struct NwArpHdr
-{
-  NwU16T hwType;
-  NwU16T protoType;
-  NwU8T  hwAddrLen;
-  NwU8T  protoAddrLen;
-  NwU16T opCode;
-  NwU8T  senderMac[6];
-  NwU8T  senderIpAddr[4];
-  NwU8T  targetMac[6];
-  NwU8T  targetIpAddr[4];
-} NwArpHdrT;
 
 /*--------------------------------------------------------------------------*
  *                    P R I V A T E    F U N C T I O N S                    *
@@ -217,17 +205,6 @@ NwIpv4CreateTunnelEndPoint( NW_IN  NwIpv4StackT* thiz,
     {
       NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel end-point '0x%x' creation successful for ipv4Addr "NW_IPV4_ADDR, pTunnelEndPoint, NW_IPV4_ADDR_FORMAT(ipv4Addr));
 
-      /* Send GARP Request */
-      NwU8T bcastMac[6] = { 0xFF, 0xFF, 0xFF , 0xFF, 0xFF, 0xFF };
-      if(thiz->llp.llpArpDataReqCallback)
-      {
-        rc = thiz->llp.llpArpDataReqCallback(thiz->llp.hLlp,
-            ARPOP_REQUEST,
-            bcastMac,
-            (NwU8T*)&ipv4Addr,
-            (NwU8T*)&ipv4Addr);
-      }
-
       *phStackSession = (NwIpv4StackSessionHandleT) pTunnelEndPoint;
     }
   }
@@ -319,7 +296,7 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
 
   NW_ENTER(thiz);
 
-  if(*(NwU16T*)(pdu + 12) == htons(ETH_P_IP))
+  if(((*(NwU8T*)pdu&0xf0)>>4) == 4)
   {
 
     typedef struct NwIpv4Hdr
@@ -332,12 +309,11 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
       NwU32T dstAddr;
     } NwIpv4HdrT;
 
-    NwIpv4HdrT *pHdr = (NwIpv4HdrT*) (pdu + 14);
-    gPduLen -= 14;
+    NwIpv4HdrT *pHdr = (NwIpv4HdrT*) pdu;
 
     NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received IP-PDU : ");
     NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Version              - %u", (pHdr->ch[0] & 0xf0) >> 4);
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Header Length        - %u", pHdr->ch[0] & 0x0f);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Header Length        - %u", (pHdr->ch[0] & 0x0f)*4);
     NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Protocol             - %u", pHdr->protocol);
     NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Source IP            - %d.%d.%d.%d",
         (pHdr->srcAddr & 0x000000FF),
@@ -349,7 +325,7 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
         (pHdr->dstAddr & 0x0000FF00) >> 8,
         (pHdr->dstAddr & 0x00FF0000) >> 16,
         (pHdr->dstAddr & 0xFF000000) >> 24);
-
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Packet Length        - %u", pHdr->ch[2]<<8 | pHdr->ch[3]);
 
     tunnelEndPointKey.ipv4Addr = (thiz->mode == NW_IPv4_MODE_DOWNLINK ? pHdr->dstAddr : pHdr->srcAddr);
     pTunnelEndPoint = RB_FIND(NwIpv4TunnelEndPointIdentifierMap, &(thiz->ipv4AddrMap), &tunnelEndPointKey);
@@ -363,56 +339,14 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
     }
     else
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Received IP PDU over non-existent tunnel end-point " NW_IPV4_ADDR " from " NW_IPV4_ADDR, NW_IPV4_ADDR_FORMAT(tunnelEndPointKey.ipv4Addr), NW_IPV4_ADDR_FORMAT(pHdr->srcAddr));
-    }
-  }
-  else if(*(NwU16T*)(pdu + 12) == htons(ETH_P_ARP))
-  {
-
-    NwArpHdrT *pHdr = (NwArpHdrT*) (pdu + 14);
-    gPduLen -= 14;
-
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"Received ARP request:");
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "HW Address Type            - %u", ntohs(pHdr->hwType));
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Protocol Address Type      - %u", ntohs(pHdr->protoType));
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "HW Address Length          - %u", pHdr->hwAddrLen);
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Protocol Address Length    - %u", pHdr->protoAddrLen);
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Op Code                    - %u", ntohs(pHdr->opCode));
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sender IP Address          - %d.%d.%d.%d",
-        (pHdr->senderIpAddr[0]),
-        (pHdr->senderIpAddr[1]) ,
-        (pHdr->senderIpAddr[2]) ,
-        (pHdr->senderIpAddr[3]));
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Target IP                  - %d.%d.%d.%d",
-        (pHdr->targetIpAddr[0]),
-        (pHdr->targetIpAddr[1]),
-        (pHdr->targetIpAddr[2]),
-        (pHdr->targetIpAddr[3]));
-
-    memcpy(&(tunnelEndPointKey.ipv4Addr), pHdr->targetIpAddr, sizeof(NwU32T));
-    pTunnelEndPoint = RB_FIND(NwIpv4TunnelEndPointIdentifierMap, &(thiz->ipv4AddrMap), &tunnelEndPointKey);
-    if(pTunnelEndPoint)
-    {
-      rc = thiz->llp.llpArpDataReqCallback(thiz->llp.hLlp,
-          ARPOP_REPLY,
-          pHdr->senderMac,
-          pHdr->senderIpAddr,
-          pHdr->targetIpAddr);
-
-      NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"Sending ARP reponse!");
-    }
-    else
-    {
-      NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"Tunnel Endpoint not found for %d.%d.%d.%d, ignoring ARP request",
-             (pHdr->targetIpAddr[0]),
-             (pHdr->targetIpAddr[1]),
-             (pHdr->targetIpAddr[2]),
-             (pHdr->targetIpAddr[3]));
+      NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Received IP PDU over non-existent tunnel end-point "
+             NW_IPV4_ADDR " from " NW_IPV4_ADDR, NW_IPV4_ADDR_FORMAT(tunnelEndPointKey.ipv4Addr),
+             NW_IPV4_ADDR_FORMAT(pHdr->srcAddr));
     }
   }
   else
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_ERRO,"Unhandle Layer 3 Protocol Type 0x%x!", *(NwU16T*)(pdu + 12));
+    NW_LOG(thiz, NW_LOG_LEVEL_ERRO,"Unhandle Layer 3 Protocol Type 0x%x!", (*(NwU8T*)pdu&0xf0)>>4);
   }
 
   NW_LEAVE(thiz);

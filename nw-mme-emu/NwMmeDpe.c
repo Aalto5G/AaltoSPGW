@@ -207,19 +207,16 @@ nwMmeDpeCreateIpv4Service( NwMmeDpeT* thiz, NwU8T* nwIfName)
 {
   NwRcT rc;
   NwU32T selObj;
-  NwU8T hwAddr[6];
 
   /* Initialize and Set up IPv4 Entity */
 
-  rc = nwIpv4IfInitialize(&thiz->ipv4If, nwIfName, thiz->hSdp, hwAddr);
+  rc = nwIpv4IfInitialize(&thiz->ipv4If, nwIfName, thiz->hSdp);
   NW_ASSERT( NW_OK == rc );
 
   rc = nwSdpCreateIpv4Service(thiz->hSdp,
                               NW_SDP_IPv4_MODE_UPLINK,
-                              hwAddr,
                               (NwU32T)&thiz->ipv4If,
                               nwIpv4IfIpv4DataReq,
-                              nwIpv4IfArpDataReq,
                               &thiz->hIpv4);
   rc = nwIpv4IfGetSelectionObjectIpv4(&thiz->ipv4If, &selObj);
   NW_ASSERT( NW_OK == rc );

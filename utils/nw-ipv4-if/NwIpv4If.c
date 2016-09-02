@@ -45,6 +45,8 @@
 #include <linux/if_ether.h>
 #include <linux/if_arp.h>
 #include <linux/sockios.h>
+#include <linux/if_tun.h>
+#include <sys/ioctl.h>
 
 #include "NwEvt.h"
 #include "NwUtils.h"
@@ -56,182 +58,73 @@
 extern "C" {
 #endif
 
-typedef struct NwArpPacket
-{
-  NwU8T  dstMac[6];
-  NwU8T  srcMac[6];
-  NwU16T protocol;
-  NwU16T hwType;
-  NwU16T protoType;
-  NwU8T  hwAddrLen;
-  NwU8T  protoAddrLen;
-  NwU16T opCode;
-  NwU8T  senderMac[6];
-  NwU8T  senderIpAddr[4];
-  NwU8T  targetMac[6];
-  NwU8T  targetIpAddr[4];
-} NwArpPacketT;
-
 /*---------------------------------------------------------------------------
  *                          I P     E N T I T Y
  *--------------------------------------------------------------------------*/
 
-NwRcT nwIpv4IfInitialize(NwIpv4IfT* thiz, NwU8T* device, NwSdpHandleT hSdp, NwU8T *pHwAddr)
-{
-  int sd, send_sd;
-  struct sockaddr_ll sll;
+/*
+ The following function was taken from :
+ https://github.com/a34729t/exp/blob/master/tunclient.c
+*/
+static int tun_alloc(char *dev, int flags) {
+
   struct ifreq ifr;
+  int fd, err;
+  char *clonedev = "/dev/net/tun";
 
-  /*
-   * Create Socket for listening IP packets
-   */
-  sd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_IP));
+   /* open the clone device */
+   if( (fd = open(clonedev, O_RDWR)) < 0 ) {
+     return fd;
+   }
 
-  if (sd < 0)
-  {
-    NW_IP_LOG(NW_LOG_LEVEL_ERRO, "%s", strerror(errno));
-    NW_ASSERT(0);
+   /* preparation of the struct ifr, of type "struct ifreq" */
+   memset(&ifr, 0, sizeof(ifr));
+
+   ifr.ifr_flags = flags;   /* IFF_TUN or IFF_TAP, plus maybe IFF_NO_PI */
+
+   if (*dev) {
+     /* if a device name was specified, put it in the structure; otherwise,
+      * the kernel will try to allocate the "next" device of the
+      * specified type */
+     strncpy(ifr.ifr_name, dev, IFNAMSIZ);
+   }
+
+   /* try to create the device */
+   if( (err = ioctl(fd, TUNSETIFF, (void *) &ifr)) < 0 ) {
+     close(fd);
+     return err;
+   }
+
+  /* if the operation was successful, write back the name of the
+   * interface to the variable "dev", so the caller can know
+   * it. Note that the caller MUST reserve space in *dev (see calling
+   * code below) */
+  strcpy(dev, ifr.ifr_name);
+
+  /* this is the special file descriptor that the caller will use to talk
+   * with the virtual interface */
+  return fd;
+}
+
+NwRcT nwIpv4IfInitialize(NwIpv4IfT* thiz, NwU8T* device, NwSdpHandleT hSdp)
+{
+  int sd;
+
+  sd = tun_alloc(device, IFF_TUN | IFF_NO_PI);  /* tun interface */
+  if(sd < 0){
+    NW_IP_LOG(NW_LOG_LEVEL_ERRO, "Failed to open tun interface (%s)", device);
+    return NW_FAILURE;
   }
-
-  bzero(&sll, sizeof(sll));
-  bzero(&ifr, sizeof(ifr));
-
-  /* First Get the Interface Index  */
-
-  strncpy((char *)ifr.ifr_name, (const char*)device, IFNAMSIZ);
-
-  if((ioctl(sd, SIOCGIFHWADDR, &ifr)) == -1)
-  {
-    printf("Error getting Interface hw address!\n");
-    exit(-1);
-  }
-  else
-  {
-#if 0
-    printf("HW address of interface is: %02x:%02x:%02x:%02x:%02x:%02x\n",
-        (unsigned char)ifr.ifr_ifru.ifru_hwaddr.sa_data[0],
-        (unsigned char)ifr.ifr_ifru.ifru_hwaddr.sa_data[1],
-        (unsigned char)ifr.ifr_ifru.ifru_hwaddr.sa_data[2],
-        (unsigned char)ifr.ifr_ifru.ifru_hwaddr.sa_data[3],
-        (unsigned char)ifr.ifr_ifru.ifru_hwaddr.sa_data[4],
-        (unsigned char)ifr.ifr_ifru.ifru_hwaddr.sa_data[5]);
-#endif
-    memcpy(pHwAddr, ifr.ifr_hwaddr.sa_data, 6);
-    memcpy(thiz->hwAddr, ifr.ifr_hwaddr.sa_data, 6);
-  }
-
-  if((ioctl(sd, SIOCGIFINDEX, &ifr)) == -1)
-  {
-    printf("Error getting Interface index !\n");
-    exit(-1);
-  }
-
-  thiz->ifindex = ifr.ifr_ifindex;
-
-  /* Bind our raw socket to this interface */
-
-  sll.sll_family        = PF_PACKET;
-  sll.sll_ifindex       = ifr.ifr_ifindex;
-  sll.sll_protocol      = htons(ETH_P_IP);
-
-  if((bind(sd, (struct sockaddr *)&sll, sizeof(sll)))== -1)
-  {
-    printf("Error binding raw socket to interface\n");
-    exit(-1);
-  }
-
-  thiz->hRecvSocketIpv4 = sd;
-  thiz->hSdp            = hSdp;
-
-
-  /*
-   * Create Socket for listening ARP requests
-   */
-  sd = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ARP));
-
-  if (sd < 0)
-  {
-    NW_IP_LOG(NW_LOG_LEVEL_ERRO, "%s", strerror(errno));
-    NW_ASSERT(0);
-  }
-
-  bzero(&sll, sizeof(sll));
-  bzero(&ifr, sizeof(ifr));
-
-  /* First Get the Interface Index  */
-
-  strncpy((char *)ifr.ifr_name, (const char*)device, IFNAMSIZ);
-  if((ioctl(sd, SIOCGIFINDEX, &ifr)) == -1)
-  {
-    printf("Error getting Interface index !\n");
-    exit(-1);
-  }
-
-  /* Bind our raw socket to this interface */
-
-  sll.sll_family        = PF_PACKET;
-  sll.sll_ifindex       = ifr.ifr_ifindex;
-  sll.sll_protocol      = htons(ETH_P_ARP);
-
-  if((bind(sd, (struct sockaddr *)&sll, sizeof(sll)))== -1)
-  {
-    printf("Error binding raw socket to interface\n");
-    exit(-1);
-  }
-
-  thiz->hRecvSocketArp     = sd;
-
-  /*
-   * Create socket sending data to L2
-   */
-  if((send_sd = socket(AF_PACKET, SOCK_RAW, IPPROTO_RAW))== -1)
-  {
-    printf("Error creating raw socket: send fd");
-    exit(1);
-  }
-
-
-  thiz->hSendSocket     = send_sd;
+  thiz->hSocket = sd;
+  thiz->hSdp    = hSdp;
 
   return NW_OK;
 }
 
 NwRcT nwIpv4IfGetSelectionObjectIpv4(NwIpv4IfT* thiz, NwU32T *pSelObj)
 {
-  *pSelObj = thiz->hRecvSocketIpv4;
+  *pSelObj = thiz->hSocket;
   return NW_OK;
-}
-
-NwRcT nwIpv4IfGetSelectionObjectArp(NwIpv4IfT* thiz, NwU32T *pSelObj)
-{
-  *pSelObj = thiz->hRecvSocketArp;
-  return NW_OK;
-}
-
-void NW_EVT_CALLBACK(nwIpv4IfArpDataIndicationCallback)
-{
-  NwRcT         rc;
-  NwS32T        bytesRead;
-  NwArpPacketT  arpReq;
-  NwIpv4IfT* thiz = (NwIpv4IfT*) arg;
-
-
-  bytesRead = recvfrom(thiz->hRecvSocketArp, &arpReq, sizeof(NwArpPacketT), 0, NULL, NULL);
-  if(bytesRead > 0)
-  {
-    NW_IP_LOG(NW_LOG_LEVEL_DEBG, "Received ARP message of length %u", bytesRead);
-    if(arpReq.opCode == htons(0x0001) &&
-      (*((NwU32T*)arpReq.targetIpAddr) != *((NwU32T*)arpReq.senderIpAddr)))
-    {
-      nwLogHexDump((NwU8T*)&arpReq, bytesRead);
-      rc = nwSdpProcessIpv4DataInd(thiz->hSdp, 0, (NwU8T*)(&arpReq), (bytesRead));
-    }
-  }
-  else
-  {
-    NW_IP_LOG(NW_LOG_LEVEL_ERRO, "%s", strerror(errno));
-  }
-  return;
 }
 
 void NW_EVT_CALLBACK(nwIpv4IfDataIndicationCallback)
@@ -241,7 +134,7 @@ void NW_EVT_CALLBACK(nwIpv4IfDataIndicationCallback)
   NwS32T        bytesRead;
   NwIpv4IfT* thiz = (NwIpv4IfT*) arg;
 
-  bytesRead = recvfrom(thiz->hRecvSocketIpv4, ipDataBuf, MAX_IP_PAYLOAD_LEN , 0, NULL, NULL);
+  bytesRead = read(thiz->hSocket, ipDataBuf, MAX_IP_PAYLOAD_LEN);
   if(bytesRead > 0)
   {
     NW_IP_LOG(NW_LOG_LEVEL_DEBG, "Received IP message of length %u", bytesRead);
@@ -258,81 +151,17 @@ NwRcT nwIpv4IfIpv4DataReq(NwSdpHandleT hThiz,
     NwU8T* dataBuf,
     NwU32T dataSize)
 {
-  struct sockaddr_ll peerAddrEth;
   NwS32T bytesSent;
   NwIpv4IfT* thiz = (NwIpv4IfT*) hThiz;
 
-  NwU8T dstMacAddr[6] = {0x00, 0x00, 0x06, 0x01, 0x02, 0x03};
-  NwU8T bufToSend[2000];
-  struct ethhdr *eh = (struct ethhdr*) bufToSend;
+  nwLogHexDump((NwU8T*)dataBuf, dataSize);
 
-  /* Configure socket address */
-  peerAddrEth.sll_ifindex = thiz->ifindex;
-  peerAddrEth.sll_halen = 6;
-  memcpy(peerAddrEth.sll_addr, dstMacAddr, 6);
-  /* Set ethernet header */
-  memcpy(eh->h_dest, dstMacAddr , ETH_ALEN);
-  memcpy(eh->h_source, thiz->hwAddr, ETH_ALEN);
-  eh->h_proto = htons(ETH_P_IP);
-  /* Add IPue after Ethernet header */
-  memcpy(bufToSend+ETH_HLEN, dataBuf, dataSize);
-  dataSize += ETH_HLEN;
-  nwLogHexDump((NwU8T*)bufToSend, dataSize);
-  bytesSent = sendto (thiz->hSendSocket, bufToSend, dataSize, 0, (struct sockaddr *) &peerAddrEth, sizeof(struct sockaddr_ll));
+  bytesSent = write(thiz->hSocket, dataBuf, dataSize);
 
   if(bytesSent < 0)
   {
     NW_IP_LOG(NW_LOG_LEVEL_ERRO, "IP PDU send error - %s", strerror(errno));
   }
-  return NW_OK;
-}
-
-NwRcT nwIpv4IfArpDataReq(NwSdpHandleT       hThiz,
-                     NwU16T             opCode,
-                     NwU8T              *pTargetMac,
-                     NwU8T              *pTargetIpAddr,
-                     NwU8T              *pSenderIpAddr)
-{
-  NwU32T                bytesSent;
-  struct sockaddr_ll    sa;
-  NwArpPacketT          arpRsp;
-  NwIpv4IfT* thiz = (NwIpv4IfT*) hThiz;
-
-  sa.sll_family         = AF_PACKET;
-  sa.sll_ifindex        = thiz->ifindex;
-  sa.sll_protocol       = htons(ETH_P_ARP);
-  sa.sll_hatype         = ARPHRD_ETHER;
-  sa.sll_halen          = ETH_ALEN;
-  sa.sll_pkttype        = PACKET_BROADCAST;
-
-  memcpy(arpRsp.dstMac, pTargetMac, ETH_ALEN);
-  memcpy(arpRsp.srcMac, thiz->hwAddr, ETH_ALEN);
-  arpRsp.protocol       = htons(ETH_P_ARP);
-
-  arpRsp.hwType         = htons(ARPHRD_ETHER);
-  arpRsp.protoType      = htons(ETH_P_IP);
-
-  arpRsp.hwAddrLen      = ETH_ALEN;
-  arpRsp.protoAddrLen   = 0x04;
-  arpRsp.opCode         = htons(opCode);
-
-  memcpy(arpRsp.senderMac, thiz->hwAddr, 6);
-  memcpy(arpRsp.senderIpAddr, pSenderIpAddr, 4);
-
-  if(opCode == ARPOP_REQUEST)
-    memset(arpRsp.targetMac, 0x00, 6);
-  else
-    memcpy(arpRsp.targetMac, pTargetMac, 6);
-
-  memcpy(arpRsp.targetIpAddr, pTargetIpAddr, 4);
-
-  nwLogHexDump((NwU8T*)&arpRsp, sizeof(arpRsp));
-  bytesSent = sendto (thiz->hRecvSocketArp, (void*)&arpRsp, sizeof(NwArpPacketT), 0, (struct sockaddr *) &sa, sizeof(sa));
-  if(bytesSent < 0)
-  {
-    NW_IP_LOG(NW_LOG_LEVEL_ERRO, "ARP PDU send error - %s", strerror(errno));
-  }
-
   return NW_OK;
 }
 
