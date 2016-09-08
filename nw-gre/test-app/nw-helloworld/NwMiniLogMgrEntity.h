@@ -44,7 +44,7 @@ typedef struct
 extern "C" {
 #endif
 
-NwRcT nwMiniLogMgrLogRequest (NwGreLogMgrHandleT logMgrHandle,
+NwGreRcT nwMiniLogMgrLogRequest (NwGreLogMgrHandleT logMgrHandle,
     NwU32T logLevel,
     NwCharT* file,
     NwU32T line,

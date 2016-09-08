@@ -149,10 +149,10 @@ nwGreCompareSeqNum(struct NwGreTrxn* a, struct NwGreTrxn* b)
  * Send GRE Message Indication to ULP entity.
  *
  * @param[in] hGreStackHandle : Stack handle
- * @return NW_OK on success.
+ * @return NW_GRE_OK on success.
  */
 
-static NwRcT
+static NwGreRcT
 nwGreSendUlpMessageIndication( NW_IN NwGreStackT* thiz,
     NW_IN NwU32T  hUlpTrxn,
     NW_IN NwU32T  apiType,
@@ -162,7 +162,7 @@ nwGreSendUlpMessageIndication( NW_IN NwGreStackT* thiz,
     NW_IN NwU8T   *pMsgBuf,
     NW_IN NwU16T  msgLength)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreUlpApiT ulpApi;
 
   NW_ENTER(thiz);
@@ -176,21 +176,21 @@ nwGreSendUlpMessageIndication( NW_IN NwGreStackT* thiz,
   if(pMsgBuf && msgLength)
   {
     rc = nwGreMsgFromBufferNew((NwGreStackHandleT)thiz, pMsgBuf, msgLength, &(ulpApi.apiInfo.recvMsgInfo.hMsg));
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GRE_OK == rc);
   }
 
   rc = thiz->ulp.ulpReqCallback(thiz->ulp.hUlp, &ulpApi);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GRE_OK == rc);
 
   NW_LEAVE(thiz);
 
   return rc;
 }
 
-NwRcT
+NwGreRcT
 nwGrePeerRspTimeout(void* arg)
 {
-  NwRcT rc = NW_OK;
+  NwGreRcT rc = NW_GRE_OK;
   NwGreTrxnT* thiz;
   NwGreTimeoutInfoT *timeoutInfo = arg;
 
@@ -225,16 +225,16 @@ nwGrePeerRspTimeout(void* arg)
 
   @param[in] hGreStackHandle : Stack handle
   @param[in] pUlpReq : Pointer to Ulp Req.
-  @return NW_OK on success.
+  @return NW_GRE_OK on success.
  */
 
-static NwRcT
+static NwGreRcT
 NwGreCreateTunnelEndPoint( NW_IN  NwGreStackT* thiz,
                     NW_IN  NwU32T greKey,
                     NW_IN  NwGreUlpSessionHandleT hUlpSession,
                     NW_OUT NwGreStackSessionHandleT *phStackSession )
 {
-  NwRcT rc = NW_OK;
+  NwGreRcT rc = NW_GRE_OK;
   NwGreTunnelEndPointT* pTunnelEndPoint;
   NwGreTunnelEndPointT* pCollision;
 
@@ -257,8 +257,8 @@ NwGreCreateTunnelEndPoint( NW_IN  NwGreStackT* thiz,
     {
       NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Tunnel end-point cannot be created for GRE Key 0x%x. GRE Key already exists", pTunnelEndPoint, greKey);
       rc = nwGreTunnelEndPointDestroy(thiz, pTunnelEndPoint);
-      NW_ASSERT(NW_OK == rc);
-      rc = NW_FAILURE;
+      NW_ASSERT(NW_GRE_OK == rc);
+      rc = NW_GRE_FAILURE;
     }
     else
     {
@@ -268,7 +268,7 @@ NwGreCreateTunnelEndPoint( NW_IN  NwGreStackT* thiz,
   }
   else
   {
-    rc = NW_FAILURE;
+    rc = NW_GRE_FAILURE;
   }
 
   NW_LEAVE(thiz);
@@ -280,13 +280,13 @@ NwGreCreateTunnelEndPoint( NW_IN  NwGreStackT* thiz,
 
   @param[in] hGreStackHandle : Stack handle
   @param[in] pUlpReq : Pointer to Ulp Req.
-  @return NW_OK on success.
+  @return NW_GRE_OK on success.
  */
 
-static NwRcT
+static NwGreRcT
 nwGreDestroyTunnelEndPoint( NwGreStackT* thiz,  NW_IN NwGreUlpApiT *pUlpReq)
 {
-  NwRcT rc = NW_OK;
+  NwGreRcT rc = NW_GRE_OK;
   NwGreTunnelEndPointT *pRemovedTunnel;
 
   NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destroying Tunnel end-point '%x'", pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
@@ -304,13 +304,13 @@ nwGreDestroyTunnelEndPoint( NwGreStackT* thiz,  NW_IN NwGreUlpApiT *pUlpReq)
 
   @param[in] hGreStackHandle : Stack handle
   @param[in] pUlpReq : Pointer to Ulp Req.
-  @return NW_OK on success.
+  @return NW_GRE_OK on success.
  */
 
-static NwRcT
+static NwGreRcT
 nwGreInitialReq( NW_IN NwGreStackT* thiz, NW_IN NwGreUlpApiT *pUlpReq)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreTrxnT *pTrxn;
 
   NW_ENTER(thiz);
@@ -326,7 +326,7 @@ nwGreInitialReq( NW_IN NwGreStackT* thiz, NW_IN NwGreUlpApiT *pUlpReq)
         pUlpReq->apiInfo.initialReqInfo.peerPort,
         (NwGreMsgT*) pUlpReq->apiInfo.initialReqInfo.hMsg);
 
-    if(NW_OK == rc)
+    if(NW_GRE_OK == rc)
     {
       /* Insert into search tree */
       RB_INSERT(NwGreOutstandingTxSeqNumTrxnMap, &(thiz->outstandingTxSeqNumMap), pTrxn);
@@ -334,7 +334,7 @@ nwGreInitialReq( NW_IN NwGreStackT* thiz, NW_IN NwGreUlpApiT *pUlpReq)
     else
     {
       rc = nwGreTrxnDelete(&pTrxn);
-      NW_ASSERT(NW_OK == rc);
+      NW_ASSERT(NW_GRE_OK == rc);
     }
   }
 
@@ -348,13 +348,13 @@ nwGreInitialReq( NW_IN NwGreStackT* thiz, NW_IN NwGreUlpApiT *pUlpReq)
 
   @param[in] thiz: Stack handle
   @param[in] pUlpReq : Pointer to Ulp Req.
-  @return NW_OK on success.
+  @return NW_GRE_OK on success.
  */
 
-static NwRcT
+static NwGreRcT
 nwGreSendto( NwGreStackT* thiz,  NW_IN NwGreUlpApiT *pUlpReq)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwU8T* greHdr;
   NwGreMsgT*  pMsg;
 
@@ -412,17 +412,17 @@ nwGreSendto( NwGreStackT* thiz,  NW_IN NwGreUlpApiT *pUlpReq)
 
   @param[in] thiz: Stack handle
   @param[in] pUlpReq : Pointer to Ulp Req.
-  @return NW_OK on success.
+  @return NW_GRE_OK on success.
  */
 
-static NwRcT
+static NwGreRcT
 nwGreProcessGpdu( NwGreStackT* thiz,
                      NW_IN NwCharT* gpdu,
                      NW_IN NwU32T gdpuLen,
                      NW_IN NwU32T peerIp)
 
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreTunnelEndPointT* pTunnelEndPoint;
   NwGreTunnelEndPointT tunnelEndPointKey;
 
@@ -445,7 +445,7 @@ nwGreProcessGpdu( NwGreStackT* thiz,
           gdpuLen - 20,
           &hMsg);
 
-      if(NW_OK == rc)
+      if(NW_GRE_OK == rc)
       {
         NwGreMsgT* pMsg = (NwGreMsgT*) hMsg;
         NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received T-PDU over tunnel end-point '%x' of size %u", tunnelEndPointKey.greKey, pMsg->msgLen);
@@ -477,10 +477,10 @@ NwCharT* greLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI", "I
  * Constructor
  *--------------------------------------------------------------------------*/
 
-NwRcT
+NwGreRcT
 nwGreInitialize( NW_INOUT NwGreStackHandleT* hGreStackHandle)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreStackT* thiz;
 
   thiz = (NwGreStackT*) malloc (sizeof(NwGreStackT));
@@ -493,11 +493,11 @@ nwGreInitialize( NW_INOUT NwGreStackHandleT* hGreStackHandle)
     RB_INIT(&(thiz->outstandingRxSeqNumMap));
     nwGreDisplayBanner(thiz);
 
-    rc = NW_OK;
+    rc = NW_GRE_OK;
   }
   else
   {
-    rc = NW_FAILURE;
+    rc = NW_GRE_FAILURE;
   }
 
 
@@ -510,18 +510,18 @@ nwGreInitialize( NW_INOUT NwGreStackHandleT* hGreStackHandle)
  * Destructor
  *--------------------------------------------------------------------------*/
 
-NwRcT
+NwGreRcT
 nwGreFinalize( NW_IN  NwGreStackHandleT hGreStackHandle)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   if(hGreStackHandle)
   {
     free((void*)hGreStackHandle);
-    rc = NW_OK;
+    rc = NW_GRE_OK;
   }
   else
   {
-    rc = NW_FAILURE;
+    rc = NW_GRE_FAILURE;
   }
   return rc;
 }
@@ -531,89 +531,89 @@ nwGreFinalize( NW_IN  NwGreStackHandleT hGreStackHandle)
  * Configuration Get/Set
  *--------------------------------------------------------------------------*/
 
-NwRcT
+NwGreRcT
 nwGreSetUlpEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                           NW_IN NwGreUlpEntityT* pUlpEntity)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreStackT* thiz = (NwGreStackT*) hGreStackHandle;
 
   if(pUlpEntity)
   {
     thiz->ulp = *(pUlpEntity);
-    rc = NW_OK;
+    rc = NW_GRE_OK;
   }
   else
   {
-    rc = NW_FAILURE;
+    rc = NW_GRE_FAILURE;
   }
 
   return rc;
 }
 
 
-NwRcT
+NwGreRcT
 nwGreSetUdpEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                           NW_IN NwGreLlpEntityT* pUdpEntity)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreStackT* thiz = (NwGreStackT*) hGreStackHandle;
 
   if(pUdpEntity)
   {
     thiz->udp = *(pUdpEntity);
-    rc = NW_OK;
+    rc = NW_GRE_OK;
   }
   else
   {
-    rc = NW_FAILURE;
+    rc = NW_GRE_FAILURE;
   }
 
   return rc;
 }
 
 
-NwRcT
+NwGreRcT
 nwGreSetTimerMgrEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                                NW_IN NwGreTimerMgrEntityT* pTmrMgrEntity)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreStackT* thiz = (NwGreStackT*) hGreStackHandle;
 
   if(pTmrMgrEntity)
   {
     thiz->tmrMgr = *(pTmrMgrEntity);
-    rc = NW_OK;
+    rc = NW_GRE_OK;
   }
   else
   {
-    rc = NW_FAILURE;
+    rc = NW_GRE_FAILURE;
   }
 
   return rc;
 }
 
 
-NwRcT
+NwGreRcT
 nwGreSetLogMgrEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                              NW_IN NwGreLogMgrEntityT* pLogMgrEntity)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreStackT* thiz = (NwGreStackT*) hGreStackHandle;
 
   if(pLogMgrEntity)
   {
     thiz->logMgr = *(pLogMgrEntity);
-    rc = NW_OK;
+    rc = NW_GRE_OK;
   }
   else
   {
-    rc = NW_FAILURE;
+    rc = NW_GRE_FAILURE;
   }
  return rc;
 }
 
-NwRcT
+NwGreRcT
 nwGreSetLogLevel( NW_IN NwGreStackHandleT hGreStackHandle,
                          NW_IN NwU32T logLevel)
 {
@@ -625,14 +625,14 @@ nwGreSetLogLevel( NW_IN NwGreStackHandleT hGreStackHandle,
  * Process Request from Udp Layer
  *--------------------------------------------------------------------------*/
 
-NwRcT
+NwGreRcT
 nwGreProcessUdpReq( NW_IN NwGreStackHandleT hGreStackHandle,
                     NW_IN NwCharT* udpData,
                     NW_IN NwU32T udpDataLen,
                     NW_IN NwU16T peerPort,
                     NW_IN NwU32T peerIp)
 {
-  NwRcT                 rc;
+  NwGreRcT                 rc;
   NwGreStackT*       thiz;
   NwU16T                msgType;
 
@@ -651,11 +651,11 @@ nwGreProcessUdpReq( NW_IN NwGreStackHandleT hGreStackHandle,
  * Process Request from Upper Layer
  *--------------------------------------------------------------------------*/
 
-NwRcT
+NwGreRcT
 nwGreProcessUlpReq( NW_IN NwGreStackHandleT hGreStackHandle,
                     NW_IN NwGreUlpApiT *pUlpReq)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreStackT* thiz = (NwGreStackT*) hGreStackHandle;
 
   NW_ASSERT(thiz);
@@ -698,7 +698,7 @@ nwGreProcessUlpReq( NW_IN NwGreStackHandleT hGreStackHandle,
 
     default:
       NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Unsupported API received from ulp");
-      rc = NW_FAILURE;
+      rc = NW_GRE_FAILURE;
       break;
   }
 
@@ -711,10 +711,10 @@ nwGreProcessUlpReq( NW_IN NwGreStackHandleT hGreStackHandle,
  * Process Timer timeout Request from Timer Manager
  *--------------------------------------------------------------------------*/
 
-NwRcT
+NwGreRcT
 nwGreProcessTimeout(void* timeoutInfo)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreStackT* thiz;
 
   NW_ASSERT(timeoutInfo != NULL);

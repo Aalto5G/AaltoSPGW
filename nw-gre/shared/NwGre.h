@@ -173,12 +173,12 @@ typedef enum
  * Gre Stack API information elements definitions
  *--------------------------------------------------------------------------*/
 
-typedef NwPtrT  NwGreStackSessionHandleT;/**< Gre Stack session Handle */
-typedef NwPtrT  NwGreTrxnHandleT;        /**< Gre Transaction Handle */
-typedef NwPtrT  NwGreUlpTrxnHandleT;     /**< Gre Ulp Transaction Handle */
-typedef NwPtrT  NwGreUlpSessionHandleT;  /**< Gre Ulp session Handle */
+typedef NwHandleT  NwGreStackSessionHandleT;/**< Gre Stack session Handle */
+typedef NwHandleT  NwGreTrxnHandleT;        /**< Gre Transaction Handle */
+typedef NwHandleT  NwGreUlpTrxnHandleT;     /**< Gre Ulp Transaction Handle */
+typedef NwHandleT  NwGreUlpSessionHandleT;  /**< Gre Ulp session Handle */
 
-typedef NwU8T   NwGreMsgTypeT;           /**< Gre Msg Type     */
+typedef NwU8T      NwGreMsgTypeT;           /**< Gre Msg Type     */
 /**
  * API information elements between ULP and Stack for
  * creating a session.
@@ -316,7 +316,7 @@ typedef struct
 typedef struct
 {
   NwGreUlpApiTypeT               apiType;
-  NwRcT rc;
+  NwGreRcT rc;
   union
   {
     NwGreCreateTunnelEndPointT       createTunnelEndPointInfo;
@@ -347,7 +347,7 @@ typedef struct
 typedef struct
 {
   NwGreUlpHandleT        hUlp;
-  NwRcT (*ulpReqCallback) ( NW_IN        NwGreUlpHandleT hUlp,
+  NwGreRcT (*ulpReqCallback) ( NW_IN        NwGreUlpHandleT hUlp,
                             NW_IN        NwGreUlpApiT *pUlpApi);
 } NwGreUlpEntityT;
 
@@ -363,7 +363,7 @@ typedef struct
 typedef struct
 {
   NwGreUdpHandleT        hUdp;
-  NwRcT (*udpDataReqCallback) ( NW_IN     NwGreUdpHandleT udpHandle,
+  NwGreRcT (*udpDataReqCallback) ( NW_IN     NwGreUdpHandleT udpHandle,
                                 NW_IN     NwU8T* dataBuf,
                                 NW_IN     NwU32T dataSize,
                                 NW_IN     NwU32T peerIP,
@@ -403,14 +403,14 @@ typedef struct
 typedef struct
 {
   NwGreTimerMgrHandleT        tmrMgrHandle;
-  NwRcT (*tmrStartCallback)( NW_IN       NwGreTimerMgrHandleT tmrMgrHandle,
+  NwGreRcT (*tmrStartCallback)( NW_IN       NwGreTimerMgrHandleT tmrMgrHandle,
                              NW_IN       NwU32T timeoutSecs,
                              NW_IN       NwU32T timeoutUsec,
                              NW_IN       NwU32T tmrType,
                              NW_IN       void* tmrArg,
                              NW_OUT      NwGreTimerHandleT* tmrHandle);
 
-  NwRcT (*tmrStopCallback) ( NW_IN       NwGreTimerMgrHandleT tmrMgrHandle,
+  NwGreRcT (*tmrStopCallback) ( NW_IN       NwGreTimerMgrHandleT tmrMgrHandle,
                              NW_IN       NwGreTimerHandleT tmrHandle);
 } NwGreTimerMgrEntityT;
 
@@ -446,7 +446,7 @@ NwCharT* greLogLevelStr[];
 typedef struct
 {
   NwGreLogMgrHandleT          logMgrHandle;
-  NwRcT (*logReqCallback) (NW_IN      NwGreLogMgrHandleT logMgrHandle,
+  NwGreRcT (*logReqCallback) (NW_IN      NwGreLogMgrHandleT logMgrHandle,
                            NW_IN      NwU32T logLevel,
                            NW_IN      NwCharT* file,
                            NW_IN      NwU32T line,
@@ -472,7 +472,7 @@ extern "C" {
  @param[in,out] phGreStackHandle : Pointer to stack handle
  */
 
-NwRcT
+NwGreRcT
 nwGreInitialize( NW_INOUT NwGreStackHandleT* phGreStackHandle);
 
 /*---------------------------------------------------------------------------
@@ -485,7 +485,7 @@ nwGreInitialize( NW_INOUT NwGreStackHandleT* phGreStackHandle);
  @param[in] hGreStackHandle : Stack handle
  */
 
-NwRcT
+NwGreRcT
 nwGreFinalize( NW_IN  NwGreStackHandleT hGreStackHandle);
 
 /*---------------------------------------------------------------------------
@@ -498,7 +498,7 @@ nwGreFinalize( NW_IN  NwGreStackHandleT hGreStackHandle);
  @param[in,out] phGreStackHandle : Pointer to stack handle
  */
 
-NwRcT
+NwGreRcT
 NwGreConfigSet( NW_IN NwGreStackHandleT* phGreStackHandle, NW_IN NwGreStackConfigT* pConfig);
 
 /**
@@ -507,7 +507,7 @@ NwGreConfigSet( NW_IN NwGreStackHandleT* phGreStackHandle, NW_IN NwGreStackConfi
  @param[in,out] phGreStackHandle : Pointer to stack handle
  */
 
-NwRcT
+NwGreRcT
 NwGreConfigGet( NW_IN NwGreStackHandleT* phGreStackHandle, NW_OUT NwGreStackConfigT* pConfig);
 
 /**
@@ -515,10 +515,10 @@ NwGreConfigGet( NW_IN NwGreStackHandleT* phGreStackHandle, NW_OUT NwGreStackConf
 
  @param[in] hGreStackHandle : Stack handle
  @param[in] pUlpEntity : Pointer to ULP entity.
- @return NW_OK on success.
+ @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreSetUlpEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                    NW_IN NwGreUlpEntityT* pUlpEntity);
 
@@ -527,10 +527,10 @@ nwGreSetUlpEntity( NW_IN NwGreStackHandleT hGreStackHandle,
 
  @param[in] hGreStackHandle : Stack handle
  @param[in] pUdpEntity : Pointer to UDP entity.
- @return NW_OK on success.
+ @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreSetUdpEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                    NW_IN NwGreLlpEntityT* pUdpEntity);
 
@@ -539,10 +539,10 @@ nwGreSetUdpEntity( NW_IN NwGreStackHandleT hGreStackHandle,
 
  @param[in] hGreStackHandle : Stack handle
  @param[in] pTmrMgr : Pointer to Timer Manager.
- @return NW_OK on success.
+ @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreSetTimerMgrEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                         NW_IN NwGreTimerMgrEntityT* pTmrMgr);
 
@@ -551,10 +551,10 @@ nwGreSetTimerMgrEntity( NW_IN NwGreStackHandleT hGreStackHandle,
 
  @param[in] hGreStackHandle : Stack handle
  @param[in] pLogMgr : Pointer to Log Manager.
- @return NW_OK on success.
+ @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreSetLogMgrEntity( NW_IN NwGreStackHandleT hGreStackHandle,
                       NW_IN NwGreLogMgrEntityT* pLogMgr);
 
@@ -563,10 +563,10 @@ nwGreSetLogMgrEntity( NW_IN NwGreStackHandleT hGreStackHandle,
 
  @param[in] hGreStackHandle : Stack handle
  @param[in] logLevel : Log level.
- @return NW_OK on success.
+ @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreSetLogLevel( NW_IN NwGreStackHandleT hGreStackHandle,
                      NW_IN NwU32T logLevel);
 /*---------------------------------------------------------------------------
@@ -581,10 +581,10 @@ nwGreSetLogLevel( NW_IN NwGreStackHandleT hGreStackHandle,
  @param[in] udpDataLen : Received data length.
  @param[in] dstPort : Received on port.
  @param[in] from : Received from peer information.
- @return NW_OK on success.
+ @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreProcessUdpReq( NW_IN NwGreStackHandleT hGreStackHandle,
                     NW_IN NwCharT* udpData,
                     NW_IN NwU32T udpDataLen,
@@ -600,10 +600,10 @@ nwGreProcessUdpReq( NW_IN NwGreStackHandleT hGreStackHandle,
 
  @param[in] hGreStackHandle : Stack handle
  @param[in] pLogMgr : Pointer to Ulp Req.
- @return NW_OK on success.
+ @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreProcessUlpReq( NW_IN NwGreStackHandleT hGreStackHandle,
                        NW_IN NwGreUlpApiT *ulpReq);
 
@@ -616,10 +616,10 @@ nwGreProcessUlpReq( NW_IN NwGreStackHandleT hGreStackHandle,
  Process Timer timeout Request from Timer Manager
 
  @param[in] pLogMgr : Pointer timeout arguments.
- @return NW_OK on success.
+ @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreProcessTimeout( NW_IN void* timeoutArg);
 
 #ifdef __cplusplus

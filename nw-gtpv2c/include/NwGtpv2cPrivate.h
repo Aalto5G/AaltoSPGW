@@ -40,7 +40,7 @@
 #include "queue.h"
 
 #include "NwTypes.h"
-#include "NwError.h"
+#include "NwGtpv2cError.h"
 #include "NwGtpv2c.h"
 #include "NwGtpv2cIe.h"
 #include "NwGtpv2cMsg.h"
@@ -130,7 +130,7 @@ typedef struct NwGtpv2cTimeoutInfo
   struct timeval                tvTimeout;
   NwU32T                        tmrType;
   void*                         timeoutArg;
-  NwRcT                         (*timeoutCallbackFunc)(void*);
+  NwGtpv2cRcT                         (*timeoutCallbackFunc)(void*);
   NwGtpv2cTimerHandleT          hTimer;
   RB_ENTRY (NwGtpv2cTimeoutInfo)       activeTimerListRbtNode;            /**< RB Tree Data Structure Node        */
   NwU32T                        timerMinHeapIndex;
@@ -222,12 +222,12 @@ RB_PROTOTYPE(NwGtpv2cPathMap, NwGtpv2cPathS, pathMapRbtNode, nwGtpv2cComparePath
  * Start Timer with ULP Timer Manager
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cStartTimer(NwGtpv2cStackT* thiz,
                    NwU32T timeoutSec,
                    NwU32T timeoutUsec,
                    NwU32T tmrType,
-                   NwRcT (*timeoutCallbackFunc)(void*),
+                   NwGtpv2cRcT (*timeoutCallbackFunc)(void*),
                    void*  timeoutCallbackArg,
                    NwGtpv2cTimerHandleT *phTimer);
 
@@ -236,7 +236,7 @@ nwGtpv2cStartTimer(NwGtpv2cStackT* thiz,
  * Stop Timer with ULP Timer Manager
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cStopTimer(NwGtpv2cStackT* thiz,
                   NwGtpv2cTimerHandleT hTimer);
 
@@ -248,9 +248,9 @@ nwGtpv2cStopTimer(NwGtpv2cStackT* thiz,
  * @param[in] peerIp : Peer Ip address.
  * @param[in] peerPort : Peer Ip port.
  * @param[in] pMsg : Message to be sent.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cCreateAndSendMsg(NW_IN  NwGtpv2cStackT* thiz,
                          NW_IN  NwU32T seqNum,
                          NW_IN  NwU32T peerIp,

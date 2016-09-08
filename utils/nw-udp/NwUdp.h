@@ -1,5 +1,6 @@
 #include "NwEvt.h"
 #include "NwTypes.h"
+#include "NwError.h"
 #include "NwGtpv2c.h"
 
 #ifndef __NW_UDP_H__

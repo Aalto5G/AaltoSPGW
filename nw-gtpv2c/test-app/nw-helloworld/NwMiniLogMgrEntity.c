@@ -15,7 +15,7 @@
 #include <assert.h>
 #include "NwEvt.h"
 #include "NwTypes.h"
-#include "NwError.h"
+#include "NwGtpv2cError.h"
 #include "NwLog.h"
 #include "NwGtpv2c.h"
 
@@ -40,18 +40,18 @@ NwMiniLogMgrT* nwMiniLogMgrGetInstance()
   return &(__gLogMgr);
 }
 
-NwRcT nwMiniLogMgrInit(NwMiniLogMgrT* thiz, NwU32T logLevel )
+NwGtpv2cRcT nwMiniLogMgrInit(NwMiniLogMgrT* thiz, NwU32T logLevel )
 {
   thiz->logLevel = logLevel;
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-NwRcT nwMiniLogMgrSetLogLevel(NwMiniLogMgrT* thiz, NwU32T logLevel)
+NwGtpv2cRcT nwMiniLogMgrSetLogLevel(NwMiniLogMgrT* thiz, NwU32T logLevel)
 {
   thiz->logLevel = logLevel;
 }
 
-NwRcT nwMiniLogMgrLogRequest (NwGtpv2cLogMgrHandleT hLogMgr,
+NwGtpv2cRcT nwMiniLogMgrLogRequest (NwGtpv2cLogMgrHandleT hLogMgr,
     NwU32T logLevel,
     NwCharT* file,
     NwU32T line,
@@ -60,7 +60,7 @@ NwRcT nwMiniLogMgrLogRequest (NwGtpv2cLogMgrHandleT hLogMgr,
   NwMiniLogMgrT* thiz = (NwMiniLogMgrT*) hLogMgr;
   if(thiz->logLevel >= logLevel)
     printf("NWGTPV2C-STK  %s - %s <%s,%u>\n", gLogLevelStr[logLevel], logStr, basename(file), line);
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
 #ifdef __cplusplus

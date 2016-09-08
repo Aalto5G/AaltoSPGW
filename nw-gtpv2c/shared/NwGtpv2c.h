@@ -38,7 +38,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include "NwTypes.h"
-#include "NwError.h"
+#include "NwGtpv2cError.h"
 
 /** @mainpage
 
@@ -368,7 +368,7 @@ typedef struct
 typedef struct
 {
   NwGtpv2cUlpHandleT        hUlp;
-  NwRcT (*ulpReqCallback) ( NW_IN        NwGtpv2cUlpHandleT hUlp,
+  NwGtpv2cRcT (*ulpReqCallback) ( NW_IN        NwGtpv2cUlpHandleT hUlp,
                             NW_IN        NwGtpv2cUlpApiT *pUlpApi);
 } NwGtpv2cUlpEntityT;
 
@@ -380,7 +380,7 @@ typedef struct
 typedef struct
 {
   NwGtpv2cUdpHandleT        hUdp;
-  NwRcT (*udpDataReqCallback) ( NW_IN     NwGtpv2cUdpHandleT udpHandle,
+  NwGtpv2cRcT (*udpDataReqCallback) ( NW_IN     NwGtpv2cUdpHandleT udpHandle,
                                 NW_IN     NwU8T* dataBuf,
                                 NW_IN     NwU32T dataSize,
                                 NW_IN     NwU32T peerIp,
@@ -415,14 +415,14 @@ typedef struct
 typedef struct
 {
   NwGtpv2cTimerMgrHandleT        tmrMgrHandle;
-  NwRcT (*tmrStartCallback)( NW_IN       NwGtpv2cTimerMgrHandleT tmrMgrHandle,
+  NwGtpv2cRcT (*tmrStartCallback)( NW_IN       NwGtpv2cTimerMgrHandleT tmrMgrHandle,
                              NW_IN       NwU32T timeoutSec,
                              NW_IN       NwU32T timeoutUsec,
                              NW_IN       NwU32T tmrType,
                              NW_IN       void* tmrArg,
                              NW_OUT      NwGtpv2cTimerHandleT* tmrHandle);
 
-  NwRcT (*tmrStopCallback) ( NW_IN       NwGtpv2cTimerMgrHandleT tmrMgrHandle,
+  NwGtpv2cRcT (*tmrStopCallback) ( NW_IN       NwGtpv2cTimerMgrHandleT tmrMgrHandle,
                              NW_IN       NwGtpv2cTimerHandleT tmrHandle);
 } NwGtpv2cTimerMgrEntityT;
 
@@ -433,7 +433,7 @@ typedef struct
 typedef struct
 {
   NwGtpv2cLogMgrHandleT          logMgrHandle;
-  NwRcT (*logReqCallback) (NW_IN      NwGtpv2cLogMgrHandleT logMgrHandle,
+  NwGtpv2cRcT (*logReqCallback) (NW_IN      NwGtpv2cLogMgrHandleT logMgrHandle,
                            NW_IN      NwU32T logLevel,
                            NW_IN      NwCharT* filename,
                            NW_IN      NwU32T line,
@@ -455,7 +455,7 @@ extern "C" {
  @param[in,out] phGtpcStackHandle : Pointer to stack instance handle
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cInitialize( NW_INOUT NwGtpv2cStackHandleT* phGtpcStackHandle);
 
 /**
@@ -464,7 +464,7 @@ nwGtpv2cInitialize( NW_INOUT NwGtpv2cStackHandleT* phGtpcStackHandle);
  @param[in] hGtpcStackHandle : Stack instance handle
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cFinalize( NW_IN  NwGtpv2cStackHandleT hGtpcStackHandle);
 
 /**
@@ -473,7 +473,7 @@ nwGtpv2cFinalize( NW_IN  NwGtpv2cStackHandleT hGtpcStackHandle);
  @param[in,out] phGtpcStackHandle : Pointer to stack handle
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cConfigSet( NW_IN NwGtpv2cStackHandleT* phGtpcStackHandle, NW_IN NwGtpv2cStackConfigT* pConfig);
 
 /**
@@ -482,7 +482,7 @@ nwGtpv2cConfigSet( NW_IN NwGtpv2cStackHandleT* phGtpcStackHandle, NW_IN NwGtpv2c
  @param[in,out] phGtpcStackHandle : Pointer to stack handle
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cConfigGet( NW_IN NwGtpv2cStackHandleT* phGtpcStackHandle, NW_OUT NwGtpv2cStackConfigT* pConfig);
 
 /**
@@ -490,10 +490,10 @@ nwGtpv2cConfigGet( NW_IN NwGtpv2cStackHandleT* phGtpcStackHandle, NW_OUT NwGtpv2
 
  @param[in] hGtpcStackHandle : Stack handle
  @param[in] pUlpEntity : Pointer to ULP entity.
- @return NW_OK on success.
+ @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cSetUlpEntity( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                    NW_IN NwGtpv2cUlpEntityT* pUlpEntity);
 
@@ -502,10 +502,10 @@ nwGtpv2cSetUlpEntity( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
 
  @param[in] hGtpcStackHandle : Stack handle
  @param[in] pUdpEntity : Pointer to UDP entity.
- @return NW_OK on success.
+ @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cSetUdpEntity( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                    NW_IN NwGtpv2cUdpEntityT* pUdpEntity);
 
@@ -514,10 +514,10 @@ nwGtpv2cSetUdpEntity( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
 
  @param[in] hGtpcStackHandle : Stack handle
  @param[in] pMemMgr : Pointer to Memory Manager.
- @return NW_OK on success.
+ @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cSetMemMgrEntity( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                         NW_IN NwGtpv2cMemMgrEntityT* pMemMgr);
 
@@ -527,10 +527,10 @@ nwGtpv2cSetMemMgrEntity( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
 
  @param[in] hGtpcStackHandle : Stack handle
  @param[in] pTmrMgr : Pointer to Timer Manager.
- @return NW_OK on success.
+ @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cSetTimerMgrEntity( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                         NW_IN NwGtpv2cTimerMgrEntityT* pTmrMgr);
 
@@ -539,10 +539,10 @@ nwGtpv2cSetTimerMgrEntity( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
 
  @param[in] hGtpcStackHandle : Stack handle
  @param[in] pLogMgr : Pointer to Log Manager.
- @return NW_OK on success.
+ @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cSetLogMgrEntity( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                       NW_IN NwGtpv2cLogMgrEntityT* pLogMgr);
 
@@ -551,10 +551,10 @@ nwGtpv2cSetLogMgrEntity( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
 
  @param[in] hGtpcStackHandle : Stack handle
  @param[in] logLevel : Log Level.
- @return NW_OK on success.
+ @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cSetLogLevel( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                      NW_IN NwU32T logLevel);
 
@@ -563,10 +563,10 @@ nwGtpv2cSetLogLevel( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
  *
  * @param[in] hGtpcStackHandle : Stack handle
  * @param[in] restartCounter : Restart Counter.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cSetRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                            NW_IN NwU8T restartCounter);
 /**
@@ -574,10 +574,10 @@ nwGtpv2cSetRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
  *
  * @param[in] hGtpcStackHandle : Stack handle
  * @param[out] restartCounter : Restart Counter.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cGetRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                            NW_OUT NwU8T *restartCounter);
 
@@ -588,10 +588,10 @@ nwGtpv2cGetRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
  * @param[in] hGtpcStackHandle : Stack handle
  * @param[in] peerAddr : Peer IP address
  * @param[in] restartCounter : Restart Counter.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cSetPeerRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                                NW_IN NwU32T peerAddr,
                                NW_IN NwU8T restartCounter);
@@ -613,10 +613,10 @@ nwGtpv2cIsPeer( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
  * @param[in] hGtpcStackHandle : Stack handle
  * @param[in] peerAddr : Peer IP address
  * @param[in] restartCounter : Restart Counter.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cCheckPeerRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                                  NW_IN NwU32T peerAddr,
                                  NW_IN NwU8T restartCounter);
@@ -629,10 +629,10 @@ nwGtpv2cCheckPeerRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
  @param[in] udpDataLen : Received data length.
  @param[in] dstPort : Received on port.
  @param[in] from : Received from peer information.
- @return NW_OK on success.
+ @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cProcessUdpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                     NW_IN NwU8T* udpData,
                     NW_IN NwU32T udpDataLen,
@@ -644,10 +644,10 @@ nwGtpv2cProcessUdpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
 
  @param[in] hGtpcStackHandle : Stack handle
  @param[in] pLogMgr : Pointer to Ulp Req.
- @return NW_OK on success.
+ @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cProcessUlpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                     NW_IN NwGtpv2cUlpApiT *ulpReq);
 
@@ -656,10 +656,10 @@ nwGtpv2cProcessUlpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
  Process Timer timeout Request from Timer Manager
 
  @param[in] pLogMgr : Pointer timeout arguments.
- @return NW_OK on success.
+ @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cProcessTimeout( NW_IN void* timeoutArg);
 
 

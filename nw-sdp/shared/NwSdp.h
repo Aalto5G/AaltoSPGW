@@ -40,6 +40,8 @@
 #include "NwTypes.h"
 #include "NwSdpError.h"
 #include "NwGtpv1u.h"
+#include "NwGre.h"
+#include "NwIpv4.h"
 
 /** @mainpage
 
@@ -163,10 +165,10 @@ typedef struct
   } flowKey;
 
   union {
-    NwU32T gtpu;
-    NwU32T gre;
+    NwGtpv1uUlpSessionHandleT gtpu;
+    NwGreStackSessionHandleT gre;
     NwU32T udp;
-    NwU32T ipv4;
+    NwIpv4StackSessionHandleT ipv4;
   } hTunnelEndPoint;
 
 } NwSdpFlowEndPointT;

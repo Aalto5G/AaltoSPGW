@@ -36,14 +36,14 @@ NwCharT* gLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI", "INF
 static void
 NW_TMR_CALLBACK(nwGtpv2cNodeHandleStackTimerTimeout)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   NwGtpv2cNodeTmrT *pTmr = (NwGtpv2cNodeTmrT*) arg;
 
   /*
    *  Send Timeout Request to Gtpv2c Stack Instance
    */
   rc = nwGtpv2cProcessTimeout(pTmr->timeoutArg);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   free(pTmr);
 
@@ -54,14 +54,14 @@ NW_TMR_CALLBACK(nwGtpv2cNodeHandleStackTimerTimeout)
  * Public functions
  *--------------------------------------------------------------------------*/
 
-NwRcT nwTimerStart( NwGtpv2cTimerMgrHandleT tmrMgrHandle,
+NwGtpv2cRcT nwTimerStart( NwGtpv2cTimerMgrHandleT tmrMgrHandle,
     NwU32T timeoutSec,
     NwU32T timeoutUsec,
     NwU32T tmrType,
     void*  timeoutArg,
     NwGtpv2cTimerHandleT* hTmr)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cNodeTmrT *pTmr;
   struct timeval tv;
 
@@ -84,12 +84,12 @@ NwRcT nwTimerStart( NwGtpv2cTimerMgrHandleT tmrMgrHandle,
   return rc;
 }
 
-NwRcT nwTimerStop( NwGtpv2cTimerMgrHandleT tmrMgrHandle,
+NwGtpv2cRcT nwTimerStop( NwGtpv2cTimerMgrHandleT tmrMgrHandle,
     NwGtpv2cTimerHandleT hTmr)
 {
   evtimer_del(&(((NwGtpv2cNodeTmrT*)hTmr)->ev));
   free((void*)hTmr);
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
 #ifdef __cplusplus

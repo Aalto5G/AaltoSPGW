@@ -87,15 +87,15 @@ nwGreTunnelEndPointNew(struct NwGreStack *pStack)
   Destructor
 
   @param[in] thiz: Pointer to session
-  @return NW_OK on success.
+  @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreTunnelEndPointDestroy(struct NwGreStack *pStack, NwGreTunnelEndPointT* thiz)
 {
   thiz->next = gpGreTunnelEndPointPool;
   gpGreTunnelEndPointPool = thiz;
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
 /**
@@ -103,14 +103,14 @@ nwGreTunnelEndPointDestroy(struct NwGreStack *pStack, NwGreTunnelEndPointT* thiz
 
   @param[in] thiz: Pointer to session
   @param[in,out] pTrxn: Pointer to the trxn.
-  @return NW_OK on success.
+  @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreSessionSendMsgApiToUlpEntity(NwGreTunnelEndPointT* thiz,
     NwGreMsgT *pMsg)
 {
-  NwRcT rc = NW_OK;
+  NwGreRcT rc = NW_GRE_OK;
   NwGreUlpApiT api;
 
   api.apiType                         = NW_GRE_ULP_API_RECV_TPDU;

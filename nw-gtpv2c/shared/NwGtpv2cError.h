@@ -32,11 +32,11 @@
  *----------------------------------------------------------------------------*/
 
 
-#ifndef __NW_ERROR_H__
-#define __NW_ERROR_H__
+#ifndef __NW_GTPV2C_ERROR_H__
+#define __NW_GTPV2C_ERROR_H__
 
 /**
- * @file NwError.h
+ * @file NwGtpv2cError.h
  * @brief This header file contains return error code type definitions.
 */
 
@@ -46,18 +46,18 @@ extern "C" {
 
 typedef enum {
 
-  NW_OK                 = 0x00000000,
+  NW_GTPV2C_OK                 = 0x00000000,
   NW_GTPV2C_IE_MISSING,
   NW_GTPV2C_IE_INCORRECT,
   NW_GTPV2C_MANDATORY_IE_DUPLICATE,
   NW_GTPV2C_CONDITIONAL_IE_MISSING,
   NW_GTPV2C_MANDATORY_IE_MISSING,
   NW_GTPV2C_MSG_MALFORMED,
-  NW_FAILURE            = 0xFFFFFFFE
-} NwRcT;
+  NW_GTPV2C_FAILURE            = 0xFFFFFFFE
+} NwGtpv2cRcT;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __NW_ERROR_CODE_H__ */
+#endif /* __NW_GTPV2C_ERROR_H__ */

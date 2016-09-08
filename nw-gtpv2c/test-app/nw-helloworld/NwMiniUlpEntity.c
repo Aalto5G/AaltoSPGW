@@ -33,38 +33,38 @@ extern "C" {
 static
 NwCharT* gLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI", "INFO", "DEBG"};
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cCreateSessionRequestIeIndication(NwU8T ieType, NwU8T ieLength, NwU8T ieInstance, NwU8T* ieValue, void* arg)
 {
   NW_LOG(NW_LOG_LEVEL_DEBG, "Received IE Parse Indication for of type %u, length %u, instance %u!", ieType, ieLength, ieInstance);
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
 /*---------------------------------------------------------------------------
  * Public Functions
  *--------------------------------------------------------------------------*/
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpInit(NwGtpv2cNodeUlpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack, char* peerIpStr)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   thiz->hGtpv2cStack = hGtpv2cStack;
   strcpy(thiz->peerIpStr, peerIpStr);
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpDestroy(NwGtpv2cNodeUlpT* thiz)
 {
   NW_ASSERT(thiz);
   memset(thiz, 0, sizeof(NwGtpv2cNodeUlpT));
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpSenEchoRequestToPeer(NwGtpv2cNodeUlpT* thiz, NwU32T peerIp)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   NwGtpv2cUlpApiT           ulpReq;
   /*
    *  Send Message Request to Gtpv2c Stack Instance
@@ -85,21 +85,21 @@ nwGtpv2cUlpSenEchoRequestToPeer(NwGtpv2cNodeUlpT* thiz, NwU32T peerIp)
       0,
       &(ulpReq.hMsg));
 
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_RECOVERY, 0, thiz->restartCounter);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cProcessUlpReq(thiz->hGtpv2cStack, &ulpReq);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpCreateSessionRequestToPeer(NwGtpv2cNodeUlpT* thiz)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   NwGtpv2cUlpApiT           ulpReq;
 
   /*
@@ -119,22 +119,22 @@ nwGtpv2cUlpCreateSessionRequestToPeer(NwGtpv2cNodeUlpT* thiz)
       0,
       &(ulpReq.hMsg));
 
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_RECOVERY, 0, thiz->restartCounter);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cProcessUlpReq(thiz->hGtpv2cStack, &ulpReq);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
                        NwGtpv2cUlpApiT *pUlpApi)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   NwGtpv2cNodeUlpT* thiz;
   NW_ASSERT(pUlpApi != NULL);
 
@@ -150,7 +150,7 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
         NW_LOG(NW_LOG_LEVEL_DEBG, "Received NW_GTPV2C_ULP_API_INITIAL_REQ_IND from gtpv2c stack! %X:%u", pUlpApi->apiInfo.initialReqIndInfo.peerIp, pUlpApi->apiInfo.initialReqIndInfo.peerPort);
 
         rc = nwGtpv2cMsgParserNew(thiz->hGtpv2cStack, NW_GTP_CREATE_SESSION_REQ, nwGtpv2cCreateSessionRequestIeIndication, NULL, &pMsgParser);
-        NW_ASSERT(NW_OK == rc);
+        NW_ASSERT(NW_GTPV2C_OK == rc);
 
         if(pUlpApi->apiInfo.initialReqIndInfo.msgType == NW_GTP_CREATE_SESSION_REQ)
         {
@@ -166,11 +166,11 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
 
 
           rc = nwGtpv2cMsgParserAddIe(pMsgParser, NW_GTPV2C_IE_RECOVERY, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY, nwGtpv2cCreateSessionRequestIeIndication, NULL);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
 
           NwU8T offendingIeType, OffendingIeLength;
           rc = nwGtpv2cMsgParserRun(pMsgParser, (pUlpApi->hMsg), &offendingIeType, &OffendingIeLength);
-          if( rc != NW_OK )
+          if( rc != NW_GTPV2C_OK )
           {
             switch(rc)
             {
@@ -205,18 +205,18 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
               &(ulpReq.hMsg));
 
           rc = nwGtpv2cMsgAddIe((ulpReq.hMsg), NW_GTPV2C_IE_CAUSE, 2, 0, (NwU8T*)&cause);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
 
           NW_LOG(NW_LOG_LEVEL_NOTI, "Received NW_GTP_CREATE_SESSION_REQ, Sending NW_GTP_CREATE_SESSION_RSP!");
           rc = nwGtpv2cProcessUlpReq(thiz->hGtpv2cStack, &ulpReq);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
         }
 
         rc = nwGtpv2cMsgParserDelete(thiz->hGtpv2cStack, pMsgParser);
-        NW_ASSERT(NW_OK == rc);
+        NW_ASSERT(NW_GTPV2C_OK == rc);
 
         rc = nwGtpv2cMsgDelete(thiz->hGtpv2cStack, (pUlpApi->hMsg));
-        NW_ASSERT(NW_OK == rc);
+        NW_ASSERT(NW_GTPV2C_OK == rc);
 
       }
       break;
@@ -228,16 +228,16 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
         NW_LOG(NW_LOG_LEVEL_DEBG, "Received NW_GTPV2C_ULP_API_TRIGGERED_RSP_IND from gtpv2c stack!", pUlpApi->apiInfo.triggeredRspIndInfo, pUlpApi->apiInfo.triggeredRspIndInfo);
 
         rc = nwGtpv2cMsgParserNew(thiz->hGtpv2cStack, NW_GTP_CREATE_SESSION_REQ, nwGtpv2cCreateSessionRequestIeIndication, NULL, &pMsgParser);
-        NW_ASSERT(NW_OK == rc);
+        NW_ASSERT(NW_GTPV2C_OK == rc);
 
         if(pUlpApi->apiInfo.triggeredRspIndInfo.msgType == NW_GTP_CREATE_SESSION_RSP)
         {
           rc = nwGtpv2cMsgParserAddIe(pMsgParser, NW_GTPV2C_IE_CAUSE, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY, nwGtpv2cCreateSessionRequestIeIndication, NULL);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
 
           NwU8T offendingIeType, OffendingIeLength;
           rc = nwGtpv2cMsgParserRun(pMsgParser, (pUlpApi->hMsg), &offendingIeType, &OffendingIeLength);
-          if( rc != NW_OK )
+          if( rc != NW_GTPV2C_OK )
           {
             switch(rc)
             {
@@ -259,10 +259,10 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
           nwGtpv2cUlpCreateSessionRequestToPeer(thiz);
         }
         rc = nwGtpv2cMsgParserDelete(thiz->hGtpv2cStack, pMsgParser);
-        NW_ASSERT(NW_OK == rc);
+        NW_ASSERT(NW_GTPV2C_OK == rc);
 
         rc = nwGtpv2cMsgDelete(thiz->hGtpv2cStack, (pUlpApi->hMsg));
-        NW_ASSERT(NW_OK == rc);
+        NW_ASSERT(NW_GTPV2C_OK == rc);
 
       }
       break;
@@ -276,7 +276,7 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
     default:
       NW_LOG(NW_LOG_LEVEL_WARN, "Received undefined UlpApi from gtpv2c stack!");
   }
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
 #ifdef __cplusplus

@@ -45,7 +45,7 @@ NwCharT* gLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI", "INF
 static
 void NW_EVT_CALLBACK(nwUdpDataIndicationCallbackData)
 {
-  NwRcT         rc;
+  NwGtpv2cRcT         rc;
   NwU8T         udpBuf[MAX_UDP_PAYLOAD_LEN];
   NwS32T        bytesRead;
   NwU32T        peerLen;
@@ -77,7 +77,7 @@ void NW_EVT_CALLBACK(nwUdpDataIndicationCallbackData)
  * Public functions
  *--------------------------------------------------------------------------*/
 
-NwRcT nwGtpv2cUdpInit(NwGtpv2cNodeUdpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack, NwU8T* ipv4Addr)
+NwGtpv2cRcT nwGtpv2cUdpInit(NwGtpv2cNodeUdpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack, NwU8T* ipv4Addr)
 {
   int sd;
   struct sockaddr_in addr;
@@ -106,15 +106,15 @@ NwRcT nwGtpv2cUdpInit(NwGtpv2cNodeUdpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack,
   thiz->hSocket = sd;
   thiz->hGtpv2cStack = hGtpv2cStack;
 
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-NwRcT nwGtpv2cUdpDestroy(NwGtpv2cNodeUdpT* thiz)
+NwGtpv2cRcT nwGtpv2cUdpDestroy(NwGtpv2cNodeUdpT* thiz)
 {
   close(thiz->hSocket);
 }
 
-NwRcT nwGtpv2cUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
+NwGtpv2cRcT nwGtpv2cUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
     NwU8T* dataBuf,
     NwU32T dataSize,
     NwU32T peerIp,
@@ -143,7 +143,7 @@ NwRcT nwGtpv2cUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
     NW_LOG(NW_LOG_LEVEL_ERRO, "%s", strerror(errno));
     NW_ASSERT(0);
   }
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
 

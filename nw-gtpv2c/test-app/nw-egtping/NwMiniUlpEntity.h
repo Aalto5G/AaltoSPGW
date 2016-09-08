@@ -30,17 +30,17 @@ typedef struct
 extern "C" {
 #endif
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpInit(NwGtpv2cNodeUlpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack, char* peerIpStr );
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpDestroy(NwGtpv2cNodeUlpT* thiz);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
                        NwGtpv2cUlpApiT *pUlpApi);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpPing(NwGtpv2cNodeUlpT* thiz,
                 NwU32T peerIp,
                 NwU32T pingCount,

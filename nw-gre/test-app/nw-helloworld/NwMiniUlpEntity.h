@@ -34,25 +34,25 @@ typedef struct
 extern "C" {
 #endif
 
-NwRcT
+NwGreRcT
 nwMiniUlpInit(NwMiniUlpEntityT* thiz, NwGreStackHandleT hGreStack);
 
-NwRcT
+NwGreRcT
 nwMiniUlpDestroy(NwMiniUlpEntityT* thiz);
 
-NwRcT
+NwGreRcT
 nwMiniUlpCreateConn(NwMiniUlpEntityT* thiz, char* localIpStr, NwU16T localPort, char* peerIpStr);
 
-NwRcT
+NwGreRcT
 nwMiniUlpDestroyConn(NwMiniUlpEntityT* thiz);
 
-NwRcT
+NwGreRcT
 nwMiniUlpSendMsg(NwMiniUlpEntityT* thiz);
 
-NwRcT
+NwGreRcT
 nwMiniUlpTpduSend(NwMiniUlpEntityT* thiz, NwU8T* tpduBuf, NwU32T tpduLen , NwU16T fromPort);
 
-NwRcT
+NwGreRcT
 nwMiniUlpProcessStackReqCallback (NwGreUlpHandleT hUlp,
                        NwGreUlpApiT *pUlpApi);
 

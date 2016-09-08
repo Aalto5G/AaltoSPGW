@@ -223,7 +223,7 @@ NwGtpv2cMsgIeInfoT releaseAccessBearersRspIeInfoTbl[] =
  *                     P R I V A T E     F U N C T I O N S                    *
  *----------------------------------------------------------------------------*/
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cMsgIeParseInfoUpdate(NwGtpv2cMsgIeParseInfoT* thiz, NwGtpv2cMsgIeInfoT* pMsgIeInfo)
 {
   NwU32T i;
@@ -237,10 +237,10 @@ nwGtpv2cMsgIeParseInfoUpdate(NwGtpv2cMsgIeParseInfoT* thiz, NwGtpv2cMsgIeInfoT* 
       thiz->mandatoryIeCount++;
   }
 
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cMsgGroupedIeParse(NW_IN NwGtpv2cGroupedIeParseInfoT* thiz,
                           NW_IN NwU8T  ieType,
                           NW_IN NwU16T ieLength,
@@ -248,7 +248,7 @@ nwGtpv2cMsgGroupedIeParse(NW_IN NwGtpv2cGroupedIeParseInfoT* thiz,
                           NW_IN NwU8T  *pIeValue)
 {
   NW_ASSERT(thiz);
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
 /*----------------------------------------------------------------------------*
@@ -263,7 +263,7 @@ nwGtpv2cMsgGroupedIeParse(NW_IN NwGtpv2cGroupedIeParseInfoT* thiz,
 NwGtpv2cMsgIeParseInfoT*
 nwGtpv2cMsgIeParseInfoNew(NwGtpv2cStackHandleT hStack, NwU8T msgType)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   NwGtpv2cMsgIeParseInfoT *thiz;
 
   NW_GTPV2C_MALLOC(hStack, sizeof(NwGtpv2cMsgIeParseInfoT), thiz, NwGtpv2cMsgIeParseInfoT*);
@@ -280,61 +280,61 @@ nwGtpv2cMsgIeParseInfoNew(NwGtpv2cStackHandleT hStack, NwU8T msgType)
       case NW_GTP_ECHO_REQ:
         {
           rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, echoReqIeInfoTbl);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
         }
         break;
       case NW_GTP_ECHO_RSP:
         {
           rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, echoRspIeInfoTbl);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
         }
         break;
       case NW_GTP_CREATE_SESSION_REQ:
         {
           rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, createSessionReqIeInfoTbl);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
         }
         break;
       case NW_GTP_CREATE_SESSION_RSP:
         {
           rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, createSessionRspIeInfoTbl);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
         }
         break;
       case NW_GTP_DELETE_SESSION_REQ:
         {
           rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, deleteSessionReqIeInfoTbl);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
         }
         break;
       case NW_GTP_DELETE_SESSION_RSP:
         {
           rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, deleteSessionRspIeInfoTbl);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
         }
         break;
       case NW_GTP_MODIFY_BEARER_REQ:
         {
           rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, modifyBearerReqIeInfoTbl);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
         }
         break;
       case NW_GTP_MODIFY_BEARER_RSP:
         {
           rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, modifyBearerRspIeInfoTbl);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
         }
         break;
       case NW_GTP_RELEASE_ACCESS_BEARERS_REQ:
         {
           rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, releaseAccessBearersReqIeInfoTbl);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
         }
         break;
       case NW_GTP_RELEASE_ACCESS_BEARERS_RSP:
         {
           rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, releaseAccessBearersRspIeInfoTbl);
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
         }
         break;
 
@@ -352,27 +352,27 @@ nwGtpv2cMsgIeParseInfoNew(NwGtpv2cStackHandleT hStack, NwU8T msgType)
 
 /**
  * Destructor
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgIeParseInfoDelete(NwGtpv2cMsgIeParseInfoT* thiz)
 {
   NW_GTPV2C_FREE(thiz->hStack, thiz);
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
 /**
  * Parse message
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
     NW_IN       NwGtpv2cMsgHandleT hMsg,
     NW_INOUT    NwGtpv2cErrorT     *pError)
 {
-  NwRcT                 rc = NW_OK;
+  NwGtpv2cRcT           rc = NW_GTPV2C_OK;
   NwU16T                mandatoryIeCount =0;
   NwU8T                 *pIeBufStart;
   NwU8T                 *pIeBufEnd;
@@ -405,7 +405,7 @@ nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
       pError->cause                     = NW_GTPV2C_CAUSE_INVALID_LENGTH;
       pError->offendingIe.type          = ieType;
       pError->offendingIe.instance      = ieInstance;
-      return NW_FAILURE;
+      return NW_GTPV2C_FAILURE ;
     }
 
     if((thiz->ieParseInfo[ieType][ieInstance].iePresence))
@@ -424,7 +424,7 @@ nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
           pError->offendingIe.type          = ieType;
           pError->offendingIe.instance      = ieInstance;
           NW_LOG(thiz->hStack, NW_LOG_LEVEL_ERRO, "Mandatory IE of type %u and instance %u incorrect!", ieType, ieInstance);
-          return NW_FAILURE;
+          return NW_GTPV2C_FAILURE ;
         }
       }
 
@@ -448,13 +448,13 @@ nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
       {
         /* Parse the grouped IE */
         rc = nwGtpv2cMsgGroupedIeParse(thiz->ieParseInfo[ieType][ieInstance].pGroupedIeInfo, ieType, ieLength, ieInstance, ((NwU8T*) pIe) + 4);
-        if (rc != NW_OK)
+        if (rc != NW_GTPV2C_OK)
         {
           pError->cause                     = NW_GTPV2C_CAUSE_MANDATORY_IE_INCORRECT;
           pError->offendingIe.type          = ieType;
           pError->offendingIe.instance      = ieInstance;
           NW_LOG(thiz->hStack, NW_LOG_LEVEL_ERRO, "Mandatory IE of type %u and instance %u incorrect!", ieType, ieInstance);
-          return NW_FAILURE;
+          return NW_GTPV2C_FAILURE ;
         }
       }
 
@@ -471,7 +471,7 @@ nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
     pIeBufStart += (ieLength + 4);
   }
 
-  if((NW_OK == rc) && (mandatoryIeCount != thiz->mandatoryIeCount))
+  if((NW_GTPV2C_OK == rc) && (mandatoryIeCount != thiz->mandatoryIeCount))
   {
     for(ieType = 0; ieType < NW_GTPV2C_IE_TYPE_MAXIMUM; ieType++)
     {
@@ -485,7 +485,7 @@ nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
             pError->cause = NW_GTPV2C_CAUSE_MANDATORY_IE_MISSING;
             pError->offendingIe.type          = ieType;
             pError->offendingIe.instance      = ieInstance;
-            return NW_FAILURE;
+            return NW_GTPV2C_FAILURE ;
           }
         }
       }
@@ -494,11 +494,11 @@ nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
     pError->cause = NW_GTPV2C_CAUSE_MANDATORY_IE_MISSING;
     pError->offendingIe.type          = 0;
     pError->offendingIe.instance      = 0;
-    return NW_FAILURE;
+    return NW_GTPV2C_FAILURE ;
   }
 
   pError->cause = NW_GTPV2C_CAUSE_REQUEST_ACCEPTED;
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
 

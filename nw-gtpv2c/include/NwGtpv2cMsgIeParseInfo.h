@@ -75,10 +75,10 @@ extern "C" {
 NwGtpv2cMsgIeParseInfoT*
 nwGtpv2cMsgIeParseInfoNew(NwGtpv2cStackHandleT hStack, NwU8T msgType);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgIeParseInfoDelete(NwGtpv2cMsgIeParseInfoT* thiz);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgIeParse(NW_IN NwGtpv2cMsgIeParseInfoT* thiz,
     NW_IN       NwGtpv2cMsgHandleT hMsg,
     NW_INOUT    NwGtpv2cErrorT     *pError);

@@ -3,6 +3,7 @@
 
 #include "NwEvt.h"
 #include "NwTypes.h"
+#include "NwError.h"
 #include "NwGtpv2c.h"
 
 /*---------------------------------------------------------------------------

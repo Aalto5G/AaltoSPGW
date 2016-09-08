@@ -37,7 +37,7 @@
 
 #include "NwTypes.h"
 #include "NwUtils.h"
-#include "NwError.h"
+#include "NwGtpv2cError.h"
 #include "NwGtpv2cPrivate.h"
 #include "NwGtpv2cTunnel.h"
 
@@ -72,20 +72,20 @@ nwGtpv2cTunnelNew(struct NwGtpv2cStack *pStack, NwU32T teid, NwU32T ipv4AddrRemo
   return thiz;
 }
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTunnelDelete(struct NwGtpv2cStack *pStack, NwGtpv2cTunnelT* thiz)
 {
   thiz->next = gpGtpv2cTunnelPool;
   gpGtpv2cTunnelPool = thiz;
 
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTunnelGetUlpTunnelHandle( NwGtpv2cTunnelT* thiz, NwGtpv2cUlpTunnelHandleT* phUlpTunnel)
 {
   *phUlpTunnel = (thiz? thiz->hUlpTunnel : 0x00000000);
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
 #ifdef __cplusplus

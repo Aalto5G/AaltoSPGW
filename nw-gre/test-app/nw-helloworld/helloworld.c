@@ -35,7 +35,7 @@
 
 int main(int argc, char* argv[])
 {
-  NwRcT rc;
+  NwGreRcT rc;
   char*                         logLevelStr;
   NwU32T                        logLevel;
   NwU32T                        num_of_connections;
@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
 
   rc = nwGreInitialize(&hGreStack);
 
-  if(rc != NW_OK)
+  if(rc != NW_GRE_OK)
   {
     NW_LOG(NW_LOG_LEVEL_ERRO, "Failed to create GRE stack instance. Error '%u' occured", rc);
     exit(1);
@@ -113,13 +113,13 @@ int main(int argc, char* argv[])
    *--------------------------------------------------------------------------*/
 
   rc = nwMiniUlpInit(&ulpObj, hGreStack);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   ulp.hUlp = (NwGreUlpHandleT) &ulpObj;
   ulp.ulpReqCallback = nwMiniUlpProcessStackReqCallback;
 
   rc = nwGreSetUlpEntity(hGreStack, &ulp);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
 
   /*---------------------------------------------------------------------------
@@ -127,13 +127,13 @@ int main(int argc, char* argv[])
    *--------------------------------------------------------------------------*/
 
   rc = nwMiniUdpInit(&udpObj, hGreStack, (argv[2]));
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   udp.hUdp = (NwGreUdpHandleT) &udpObj;
   udp.udpDataReqCallback = nwMiniUdpDataReq;
 
   rc = nwGreSetUdpEntity(hGreStack, &udp);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   /*---------------------------------------------------------------------------
    * Set up Log Entity
@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
   tmrMgr.tmrStopCallback = nwTimerStop;
 
   rc = nwGreSetTimerMgrEntity(hGreStack, &tmrMgr);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   /*---------------------------------------------------------------------------
    * Set up Log Entity
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
   logMgr.logReqCallback  = nwMiniLogMgrLogRequest;
 
   rc = nwGreSetLogMgrEntity(hGreStack, &logMgr);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   /*---------------------------------------------------------------------------
    * Set GRE log level
@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
   while ( num_of_connections-- )
   {
     rc = nwMiniUlpCreateConn(&ulpObj, argv[2], 1234 + num_of_connections, argv[3]);
-    NW_ASSERT( NW_OK == rc );
+    NW_ASSERT( NW_GRE_OK == rc );
   }
 
   /*---------------------------------------------------------------------------
@@ -186,7 +186,7 @@ int main(int argc, char* argv[])
    *--------------------------------------------------------------------------*/
 
   rc = nwMiniUlpDestroyConn(&ulpObj);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
 
   /*---------------------------------------------------------------------------
@@ -195,7 +195,7 @@ int main(int argc, char* argv[])
 
   rc = nwGreFinalize(hGreStack);
 
-  if(rc != NW_OK)
+  if(rc != NW_GRE_OK)
   {
     NW_LOG(NW_LOG_LEVEL_ERRO, "Failed to finalize GRE stack instance. Error '%u' occured", rc);
   }

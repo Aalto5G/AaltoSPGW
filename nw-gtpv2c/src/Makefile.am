@@ -17,7 +17,7 @@ libNwGtpv2c_adir = $(includedir)/mylib
 libNwGtpv2c_a_HEADERS =    \
 			../shared/NwTypes.h\
 			../shared/NwUtils.h\
-			../shared/NwError.h\
+			../shared/NwGtpv2cError.h\
 			../shared/NwLog.h\
 			../shared/NwGtpv2c.h\
 			../shared/NwGtpv2cMsg.h\

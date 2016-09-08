@@ -34,11 +34,11 @@ typedef struct
 extern "C" {
 #endif
 
-NwRcT nwMiniUdpInit(NwMiniUdpEntityT* thiz, NwGreStackHandleT hGreStack, NwU8T* ipAddr);
+NwGreRcT nwMiniUdpInit(NwMiniUdpEntityT* thiz, NwGreStackHandleT hGreStack, NwU8T* ipAddr);
 
-NwRcT nwMiniUdpDestroy(NwMiniUdpEntityT* thiz);
+NwGreRcT nwMiniUdpDestroy(NwMiniUdpEntityT* thiz);
 
-NwRcT nwMiniUdpDataReq(NwGreUdpHandleT udpHandle,
+NwGreRcT nwMiniUdpDataReq(NwGreUdpHandleT udpHandle,
     NwU8T* dataBuf,
     NwU32T dataSize,
     NwU32T peerAddr,

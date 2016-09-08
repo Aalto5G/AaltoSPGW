@@ -96,7 +96,7 @@ typedef struct NwGreIeTlv
   * @param[out] phMsg : Pointer to message handle.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgNew( NW_IN NwGreStackHandleT hGreStackHandle,
                 NW_IN NwU8T     keyPresent,
                 NW_IN NwU8T     seqNumPresent,
@@ -121,7 +121,7 @@ nwGreMsgNew( NW_IN NwGreStackHandleT hGreStackHandle,
   * @param[out] phMsg : Pointer to message handle.
   */
 
-NwRcT
+NwGreRcT
 nwGreGpduMsgNew( NW_IN NwGreStackHandleT hGreStackHandle,
                 NW_IN NwU8T     csumPresent,
                 NW_IN NwU8T     keyPresent,
@@ -142,7 +142,7 @@ nwGreGpduMsgNew( NW_IN NwGreStackHandleT hGreStackHandle,
   * @param[out] phMsg : Pointer to message handle.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgFromBufferNew( NW_IN NwGreStackHandleT hGreStackHandle,
                          NW_IN NwU8T* pBuf,
                          NW_IN NwU32T bufLen,
@@ -155,7 +155,7 @@ nwGreMsgFromBufferNew( NW_IN NwGreStackHandleT hGreStackHandle,
   * @param[in] hMsg : Message handle.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgDelete( NW_IN NwGreStackHandleT hGreStackHandle,
                    NW_IN NwGreMsgHandleT hMsg);
 
@@ -166,7 +166,7 @@ nwGreMsgDelete( NW_IN NwGreStackHandleT hGreStackHandle,
   * @param[in] teid: TEID value.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgSetTeid(NW_IN NwGreMsgHandleT hMsg, NwU32T teid);
 
  /**
@@ -176,7 +176,7 @@ nwGreMsgSetTeid(NW_IN NwGreMsgHandleT hMsg, NwU32T teid);
   * @param[in] teidPesent: Flag boolean value.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgSetTeidPresent(NW_IN NwGreMsgHandleT hMsg, NwBoolT teidPresent);
 
  /**
@@ -186,7 +186,7 @@ nwGreMsgSetTeidPresent(NW_IN NwGreMsgHandleT hMsg, NwBoolT teidPresent);
   * @param[in] seqNum: Flag boolean value.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgSetSeqNumber(NW_IN NwGreMsgHandleT hMsg, NwU32T seqNum);
 
  /**
@@ -236,7 +236,7 @@ nwGreMsgGetTpdu(NW_IN NwGreMsgHandleT hMsg, NwU8T* pTpduBuf, NwU32T* pTpduLength
   * @param[in] value : IE value.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgAddIeTV1(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
@@ -252,7 +252,7 @@ nwGreMsgAddIeTV1(NW_IN NwGreMsgHandleT hMsg,
   * @param[in] value : IE value.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgAddIeTV2(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
@@ -269,7 +269,7 @@ nwGreMsgAddIeTV2(NW_IN NwGreMsgHandleT hMsg,
   * @param[in] value : IE value.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgAddIeTV4(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
@@ -287,7 +287,7 @@ nwGreMsgAddIeTV4(NW_IN NwGreMsgHandleT hMsg,
   * @param[in] value : IE value.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgAddIe(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
@@ -301,7 +301,7 @@ nwGreMsgAddIe(NW_IN NwGreMsgHandleT hMsg,
  * @param[in] fp: Pointer to output file.
  */
 
-NwRcT
+NwGreRcT
 nwGreMsgHexDump(NwGreMsgHandleT hMsg, FILE* fp);
 
 #ifdef __cplusplus

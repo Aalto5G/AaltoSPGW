@@ -129,7 +129,7 @@ typedef struct NwGreTimeoutInfo
 {
   NwGreStackHandleT hStack;
   void* timeoutArg;
-  NwRcT (*timeoutCallbackFunc)(void*);
+  NwGreRcT (*timeoutCallbackFunc)(void*);
 } NwGreTimeoutInfoT;
 
 /**
@@ -138,10 +138,10 @@ typedef struct NwGreTimeoutInfo
  * @param[in] thiz Pointer to stack instance
  * @param[in] timeoutArg Arg to timeout function.
  * @param[out] phTmr Pointer to timer handle.
- * @return NW_OK on success.
+ * @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreStartTrxnPeerRspTimer(NwGreStackT* thiz, NwGreTimeoutInfoT* timeoutInfo, NwGreTimerHandleT* phTmr);
 
 /**
@@ -149,10 +149,10 @@ nwGreStartTrxnPeerRspTimer(NwGreStackT* thiz, NwGreTimeoutInfoT* timeoutInfo, Nw
  *
  * @param[in] thiz Pointer to stack instance
  * @param[out] phTmr Pointer to timer handle.
- * @return NW_OK on success.
+ * @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreStopTrxnPeerRspTimer(NwGreStackT* thiz, NwGreTimerHandleT* phTmr);
 
 

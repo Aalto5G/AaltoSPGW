@@ -49,17 +49,17 @@
 extern "C" {
 #endif
 
-NwRcT
+NwGreRcT
 nwGreTrxnNew( NW_IN  NwGreStackT* thiz,
                  NW_OUT NwGreTrxnT **ppTrxn);
 
 
-NwRcT
+NwGreRcT
 nwGreTrxnWithSeqNew( NW_IN  NwGreStackT* thiz,
                         NW_IN  NwU32T seqNum,
                         NW_OUT NwGreTrxnT **ppTrxn);
 
-NwRcT
+NwGreRcT
 nwGreTrxnDelete( NW_INOUT NwGreTrxnT **ppTrxn);
 
 

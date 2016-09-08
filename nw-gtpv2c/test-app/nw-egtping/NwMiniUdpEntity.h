@@ -38,17 +38,17 @@ typedef struct
 extern "C" {
 #endif
 
-NwRcT nwGtpv2cUdpInit(NwGtpv2cNodeUdpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack, NwU8T* ipAddrStr);
+NwGtpv2cRcT nwGtpv2cUdpInit(NwGtpv2cNodeUdpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack, NwU8T* ipAddrStr);
 
-NwRcT nwGtpv2cUdpDestroy(NwGtpv2cNodeUdpT* thiz);
+NwGtpv2cRcT nwGtpv2cUdpDestroy(NwGtpv2cNodeUdpT* thiz);
 
-NwRcT nwGtpv2cUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
+NwGtpv2cRcT nwGtpv2cUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
     NwU8T* dataBuf,
     NwU32T dataSize,
     NwU32T peerIp,
     NwU32T peerPort);
 
-NwRcT nwGtpv2cUdpReset(NwGtpv2cNodeUdpT* thiz);
+NwGtpv2cRcT nwGtpv2cUdpReset(NwGtpv2cNodeUdpT* thiz);
 
 #ifdef __cplusplus
 }

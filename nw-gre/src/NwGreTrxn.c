@@ -58,10 +58,10 @@ static NwGreTrxnT* gpGreTrxnPool = NULL;
  * Send msg retransmission to peer via data request to UDP Entity
  *--------------------------------------------------------------------------*/
 
-static NwRcT
+static NwGreRcT
 nwGreTrxnSendMsgRetransmission(NwGreTrxnT* thiz)
 {
-  NwRcT rc;
+  NwGreRcT rc;
 
   NW_ASSERT(thiz);
   NW_ASSERT(thiz->pMsg);
@@ -75,10 +75,10 @@ nwGreTrxnSendMsgRetransmission(NwGreTrxnT* thiz)
   return rc;
 }
 
-static NwRcT
+static NwGreRcT
 nwGreTrxnPeerRspTimeout(void* arg)
 {
-  NwRcT rc = NW_OK;
+  NwGreRcT rc = NW_GRE_OK;
   NwGreTrxnT* thiz;
   NwGreStackT* pStack;
   NwGreTimeoutInfoT *timeoutInfo = arg;
@@ -108,10 +108,10 @@ nwGreTrxnPeerRspTimeout(void* arg)
     thiz->hRspTmr = 0;
 
     rc = nwGreTrxnDelete(&thiz);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GRE_OK == rc);
 
     rc = pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GRE_OK == rc);
   }
   return rc;
 }
@@ -121,13 +121,13 @@ nwGreTrxnPeerRspTimeout(void* arg)
 
   @param[in] thiz : Pointer to transaction
   @param[in] timeoutCallbackFunc : Timeout handler callback function.
-  @return NW_OK on success.
+  @return NW_GRE_OK on success.
  */
 
-static NwRcT
-nwGreTrxnStartPeerRspTimer(NwGreTrxnT* thiz, NwRcT (*timeoutCallbackFunc)(void*))
+static NwGreRcT
+nwGreTrxnStartPeerRspTimer(NwGreTrxnT* thiz, NwGreRcT (*timeoutCallbackFunc)(void*))
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreTimeoutInfoT *timeoutInfo;
 
   NW_ASSERT(thiz->pStack->tmrMgr.tmrStartCallback != NULL);
@@ -146,13 +146,13 @@ nwGreTrxnStartPeerRspTimer(NwGreTrxnT* thiz, NwRcT (*timeoutCallbackFunc)(void*)
   Send timer stop request to TmrMgr Entity.
 
   @param[in] thiz : Pointer to transaction
-  @return NW_OK on success.
+  @return NW_GRE_OK on success.
  */
 
-static NwRcT
+static NwGreRcT
 nwGreTrxnStopPeerRspTimer(NwGreTrxnT* thiz)
 {
-  NwRcT rc;
+  NwGreRcT rc;
 
   NW_ASSERT(thiz->pStack->tmrMgr.tmrStopCallback != NULL);
 
@@ -172,13 +172,13 @@ nwGreTrxnStopPeerRspTimer(NwGreTrxnT* thiz)
  *
  * @param[in] thiz : Pointer to stack
  * @param[out] ppTrxn : Pointer to pointer to Trxn object.
- * @return NW_OK on success.
+ * @return NW_GRE_OK on success.
  */
-NwRcT
+NwGreRcT
 nwGreTrxnNew( NW_IN  NwGreStackT* thiz,
                  NW_OUT NwGreTrxnT **ppTrxn)
 {
-  NwRcT rc = NW_OK;
+  NwGreRcT rc = NW_GRE_OK;
 
   NwGreTrxnT *pTrxn;
 
@@ -209,7 +209,7 @@ nwGreTrxnNew( NW_IN  NwGreStackT* thiz,
   }
   else
   {
-    rc = NW_FAILURE;
+    rc = NW_GRE_FAILURE;
   }
 
   NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Created transaction 0x%X", pTrxn);
@@ -225,14 +225,14 @@ nwGreTrxnNew( NW_IN  NwGreStackT* thiz,
  * @param[in] thiz : Pointer to stack.
  * @param[in] seqNum : Sequence number for this transaction.
  * @param[out] ppTrxn : Pointer to pointer to Trxn object.
- * @return NW_OK on success.
+ * @return NW_GRE_OK on success.
  */
-NwRcT
+NwGreRcT
 nwGreTrxnWithSeqNew( NW_IN  NwGreStackT* thiz,
                         NW_IN  NwU32T seqNum,
                         NW_OUT NwGreTrxnT **ppTrxn)
 {
-  NwRcT rc = NW_OK;
+  NwGreRcT rc = NW_GRE_OK;
   NwGreTrxnT *pTrxn;
 
   NW_ASSERT(thiz);
@@ -258,7 +258,7 @@ nwGreTrxnWithSeqNew( NW_IN  NwGreStackT* thiz,
   }
   else
   {
-    rc = NW_FAILURE;
+    rc = NW_GRE_FAILURE;
   }
 
   NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Created transaction 0x%X", pTrxn);
@@ -272,12 +272,12 @@ nwGreTrxnWithSeqNew( NW_IN  NwGreStackT* thiz,
  * Destructor
  *
  * @param[out] pthiz : Pointer to pointer to Trxn object.
- * @return NW_OK on success.
+ * @return NW_GRE_OK on success.
  */
-NwRcT
+NwGreRcT
 nwGreTrxnDelete( NW_INOUT NwGreTrxnT **pthiz)
 {
-  NwRcT rc = NW_OK;
+  NwGreRcT rc = NW_GRE_OK;
   NwGreStackT* pStack;
   NwGreTrxnT *thiz = *pthiz;
 
@@ -286,13 +286,13 @@ nwGreTrxnDelete( NW_INOUT NwGreTrxnT **pthiz)
   if(thiz->hRspTmr)
   {
     rc = nwGreTrxnStopPeerRspTimer(thiz);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GRE_OK == rc);
   }
 
   if(thiz->pMsg)
   {
     rc = nwGreMsgDelete((NwGreStackHandleT)pStack, (NwGreMsgHandleT)thiz->pMsg);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GRE_OK == rc);
   }
 
   thiz->next = gpGreTrxnPool;
@@ -314,16 +314,16 @@ nwGreTrxnDelete( NW_INOUT NwGreTrxnT **pthiz)
  * @param[in] peerIp : Peer Ip address.
  * @param[in] peerPort : Peer Ip port.
  * @param[in] pMsg : Message to be sent.
- * @return NW_OK on success.
+ * @return NW_GRE_OK on success.
  */
-NwRcT
+NwGreRcT
 nwGreTrxnCreateAndSendMsg( NW_IN  NwGreStackT* thiz,
                          NW_IN  NwGreTrxnT *pTrxn,
                          NW_IN  NwU32T peerIp,
                          NW_IN  NwU32T peerPort,
                          NW_IN  NwGreMsgT *pMsg)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwU8T* msgHdr;
 
   NW_ASSERT(thiz);
@@ -387,14 +387,14 @@ nwGreTrxnCreateAndSendMsg( NW_IN  NwGreStackT* thiz,
       peerPort);
 
   /* Save the message for retransmission */
-  if(NW_OK == rc && pTrxn)
+  if(NW_GRE_OK == rc && pTrxn)
   {
     pTrxn->pMsg         = pMsg;
     pTrxn->peerIp       = peerIp;
     pTrxn->peerPort     = peerPort;
 
     rc = nwGreTrxnStartPeerRspTimer(pTrxn, nwGreTrxnPeerRspTimeout);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GRE_OK == rc);
   }
 
   return rc;

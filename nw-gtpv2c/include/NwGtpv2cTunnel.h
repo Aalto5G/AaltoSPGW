@@ -41,7 +41,7 @@
 #include "tree.h"
 #include "NwTypes.h"
 #include "NwUtils.h"
-#include "NwError.h"
+#include "NwGtpv2cError.h"
 #include "NwGtpv2c.h"
 
 #ifdef __cplusplus
@@ -62,10 +62,10 @@ typedef struct NwGtpv2cTunnel
 NwGtpv2cTunnelT*
 nwGtpv2cTunnelNew(struct NwGtpv2cStack *hStack, NwU32T teid, NwU32T peerIpv4Addr, NwGtpv2cUlpTunnelHandleT hUlpTunnel);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTunnelDelete(struct NwGtpv2cStack *pStack, NwGtpv2cTunnelT* thiz);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTunnelGetUlpTunnelHandle( NwGtpv2cTunnelT* thiz, NwGtpv2cUlpTunnelHandleT* phUlpTunnel);
 
 #ifdef __cplusplus

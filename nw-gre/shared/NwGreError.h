@@ -46,11 +46,11 @@ extern "C" {
 
 typedef enum {
 
-  NW_OK                 = 0x00000000,
+  NW_GRE_OK                 = 0x00000000,
   NW_GRE_MANDATORY_IE_MISSING,
 
-  NW_FAILURE            = 0xFFFFFFFE
-} NwRcT;
+  NW_GRE_FAILURE            = 0xFFFFFFFE
+} NwGreRcT;
 
 #ifdef __cplusplus
 }

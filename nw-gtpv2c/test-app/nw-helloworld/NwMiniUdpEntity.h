@@ -35,11 +35,11 @@ typedef struct
 extern "C" {
 #endif
 
-NwRcT nwGtpv2cUdpInit(NwGtpv2cNodeUdpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack, NwU8T* ipv4Addr);
+NwGtpv2cRcT nwGtpv2cUdpInit(NwGtpv2cNodeUdpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack, NwU8T* ipv4Addr);
 
-NwRcT nwGtpv2cUdpDestroy(NwGtpv2cNodeUdpT* thiz);
+NwGtpv2cRcT nwGtpv2cUdpDestroy(NwGtpv2cNodeUdpT* thiz);
 
-NwRcT nwGtpv2cUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
+NwGtpv2cRcT nwGtpv2cUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
     NwU8T* dataBuf,
     NwU32T dataSize,
     NwU32T peerIp,

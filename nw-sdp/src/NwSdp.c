@@ -281,7 +281,7 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
         if(thiz->hIpv4Stack && pFlowEndPoint->hTunnelEndPoint.ipv4)
         {
           ulpReq.apiType                                        = NW_IPv4_ULP_API_DESTROY_TUNNEL_ENDPOINT;
-          ulpReq.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = (NwIpv4UlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.ipv4;
+          ulpReq.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = pFlowEndPoint->hTunnelEndPoint.ipv4;
           rc = nwIpv4ProcessUlpReq(thiz->hIpv4Stack, &ulpReq);
         }
         else
@@ -299,7 +299,7 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
         if(thiz->hGtpv1uStack && pFlowEndPoint->hTunnelEndPoint.gtpu)
         {
           ulpReq.apiType                                        = NW_GTPV1U_ULP_API_DESTROY_TUNNEL_ENDPOINT;
-          ulpReq.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu;
+          ulpReq.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = pFlowEndPoint->hTunnelEndPoint.gtpu;
           rc = nwGtpv1uProcessUlpReq(thiz->hGtpv1uStack, &ulpReq);
         }
         else
@@ -317,7 +317,7 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
         if(thiz->hGreStack && pFlowEndPoint->hTunnelEndPoint.gre)
         {
           ulpReq.apiType                                        = NW_GRE_ULP_API_DESTROY_TUNNEL_ENDPOINT;
-          ulpReq.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gre;
+          ulpReq.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = pFlowEndPoint->hTunnelEndPoint.gre;
 
           rc = nwGreProcessUlpReq(thiz->hGreStack, &ulpReq);
         }
@@ -519,6 +519,9 @@ nwSdpDestroyFlow( NwSdpT* thiz,  NW_IN NwSdpUlpApiT *pUlpReq)
   rc = nwSdpDestroyFlowEndPoint(thiz, pFlowContext, &pFlowContext->ingressEndPoint);
   NW_ASSERT(rc == NW_SDP_OK);
 
+  rc = nwSdpDestroyFlowEndPoint(thiz, pFlowContext, &pFlowContext->egressEndPoint);
+  NW_ASSERT(rc == NW_SDP_OK);
+
   rc = nwSdpFlowContextDelete(thiz, pFlowContext);
   NW_ASSERT(rc == NW_SDP_OK);
 
@@ -679,7 +682,7 @@ nwSdpProcessGtpuDataIndication(NwSdpT* thiz,
               nwGtpv1uMsgGetTpduHandle(hMsg),
               nwGtpv1uMsgGetTpduLength(hMsg),
               &(ulpReq.apiInfo.sendtoInfo.hMsg));
-          NW_ASSERT(NW_OK == rc);
+          NW_ASSERT(NW_IPv4_OK == rc);
 
 #ifdef NW_SDP_RESPOND_ICMP_PING
           pIpv4Pdu = nwIpv4MsgGetBufHandle(thiz->hIpv4Stack, ulpReq.apiInfo.sendtoInfo.hMsg);
@@ -797,7 +800,7 @@ NwSdpRcT nwSdpProcessGtpv1uStackReqCallback(NwGtpv1uUlpHandleT hUlp,
   return NW_SDP_OK;
 }
 
-static NwRcT
+static NwSdpRcT
 nwSdpProcessGreStackReqCallback(NwGreUlpHandleT hUlp,
                            NwGreUlpApiT *pUlpApi)
 {

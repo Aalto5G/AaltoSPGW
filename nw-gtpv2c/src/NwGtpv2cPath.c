@@ -63,14 +63,14 @@ static NwGtpv2cPathT* gpGtpv2cPathPool = NULL;
   Send Echo request periodically as a keep alive.
 
   @param[in] thiz : Pointer to path
-  @return NW_OK on success.
+  @return NW_GTPV2C_OK on success.
  */
 
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cPathSendPeerRestartToUlp(NwGtpv2cPathT* thiz)
 {
-  NwRcT                 rc;
+  NwGtpv2cRcT                 rc;
   NwGtpv2cUlpApiT ulpApi;
   NwGtpv2cStackT* pStack;
 
@@ -84,10 +84,10 @@ nwGtpv2cPathSendPeerRestartToUlp(NwGtpv2cPathT* thiz)
 }
 
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cPathSendPeerDisconnectedToUlp(NwGtpv2cPathT* thiz)
 {
-  NwRcT                 rc;
+  NwGtpv2cRcT                 rc;
   NwGtpv2cUlpApiT ulpApi;
   NwGtpv2cStackT* pStack;
 
@@ -101,13 +101,13 @@ nwGtpv2cPathSendPeerDisconnectedToUlp(NwGtpv2cPathT* thiz)
 }
 
 /* Forward declaration */
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cPathStartPeerRspWaitTimer(NwGtpv2cPathT* thiz);
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cPathEchoRspWaitTimeout(void* arg)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cPathT* thiz = ((NwGtpv2cPathT*)arg);
   NwGtpv2cStackT* pStack = thiz->pStack;
   NwGtpv2cTrxnT* pTrxn = thiz->pTrxn;
@@ -125,7 +125,7 @@ nwGtpv2cPathEchoRspWaitTimeout(void* arg)
   if(pTrxn->maxRetries)
   {
     rc = nwGtpv2cTrxnSendMsgRetransmission(pTrxn);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GTPV2C_OK == rc);
 
     rc = nwGtpv2cPathStartPeerRspWaitTimer(thiz);
   }
@@ -137,28 +137,28 @@ nwGtpv2cPathEchoRspWaitTimeout(void* arg)
     RB_REMOVE(NwGtpv2cOutstandingTxSeqNumTrxnMap, &(pStack->outstandingTxSeqNumMap), pTrxn);
     rc = nwGtpv2cTrxnDelete(&pTrxn);
     thiz->pTrxn = NULL;
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GTPV2C_OK == rc);
 
     rc = nwGtpv2cPathDelete(&thiz);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GTPV2C_OK == rc);
   }
   return rc;
 }
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cPathStartPeerRspWaitTimer(NwGtpv2cPathT* thiz)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   NwGtpv2cTrxnT* pTrxn = thiz->pTrxn;
   rc = nwGtpv2cStartTimer(pTrxn->pStack, pTrxn->t3Timer, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT, nwGtpv2cPathEchoRspWaitTimeout, thiz, &pTrxn->hRspTmr);
   return rc;
 }
 
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cPathHandleInitialReq( NW_IN  NwGtpv2cPathT* thiz, NW_IN NwGtpv2cUlpApiT *pUlpReq)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   NwGtpv2cTrxnT *pTrxn;
   NwGtpv2cStackT* pStack = thiz->pStack;
 
@@ -170,7 +170,7 @@ nwGtpv2cPathHandleInitialReq( NW_IN  NwGtpv2cPathT* thiz, NW_IN NwGtpv2cUlpApiT 
 
   if(!pTrxn)
   {
-      rc = NW_FAILURE;
+      rc = NW_GTPV2C_FAILURE ;
       return;
   }
 
@@ -188,11 +188,11 @@ nwGtpv2cPathHandleInitialReq( NW_IN  NwGtpv2cPathT* thiz, NW_IN NwGtpv2cUlpApiT 
                                 pTrxn->peerPort,
                                 pTrxn->pMsg);
 
-  if(NW_OK == rc)
+  if(NW_GTPV2C_OK == rc)
   {
     /* Start guard timer */
     rc = nwGtpv2cPathStartPeerRspWaitTimer(thiz);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GTPV2C_OK == rc);
 
     /* Insert into search tree */
     pTrxn = RB_INSERT(NwGtpv2cOutstandingTxSeqNumTrxnMap, &(pStack->outstandingTxSeqNumMap), pTrxn);
@@ -202,7 +202,7 @@ nwGtpv2cPathHandleInitialReq( NW_IN  NwGtpv2cPathT* thiz, NW_IN NwGtpv2cUlpApiT 
   {
     rc = nwGtpv2cTrxnDelete(&pTrxn);
     thiz->pTrxn = NULL;
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GTPV2C_OK == rc);
   }
 
   NW_LEAVE(thiz);
@@ -211,10 +211,10 @@ nwGtpv2cPathHandleInitialReq( NW_IN  NwGtpv2cPathT* thiz, NW_IN NwGtpv2cUlpApiT 
 }
 
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cPathPeriodicEchoReq(NwGtpv2cPathT* thiz)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cUlpApiT ulpReq;
   NwGtpv2cStackT* pStack = thiz->pStack;
 
@@ -238,16 +238,16 @@ nwGtpv2cPathPeriodicEchoReq(NwGtpv2cPathT* thiz)
       0,
       &(ulpReq.hMsg));
 
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_RECOVERY, 0, pStack->restartCounter);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   /* NW_ASSERT(gettimeofday(&tv, NULL) == 0); */
   /* pPeer->sendTimeStamp = (tv.tv_sec * 1000000) + tv.tv_usec; */
 
   rc = nwGtpv2cPathHandleInitialReq(thiz, &ulpReq);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   return rc;
 }
@@ -261,13 +261,13 @@ nwGtpv2cPathPeriodicEchoReq(NwGtpv2cPathT* thiz)
  *
  * @param[in] thiz : Pointer to stack
  * @param[out] ppTrxn : Pointer to pointer to Trxn object.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 NwGtpv2cPathT*
 nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
                  NW_IN  NwU32T ipv4Remote)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cPathT *thiz;
   NwGtpv2cUlpApiT       ulpReq;
 
@@ -309,7 +309,7 @@ nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
   ulpReq.apiInfo.createLocalTunnelInfo.peerIp          = ipv4Remote;
 
   rc = nwGtpv2cProcessUlpReq(thiz->pStack, &ulpReq);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
   thiz->hTunnel = ulpReq.apiInfo.createLocalTunnelInfo.hTunnel;
 
   NW_LOG(pStack, NW_LOG_LEVEL_INFO, "Created Path "NW_IPV4_ADDR,
@@ -321,13 +321,13 @@ nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
  * Destructor
  *
  * @param[out] pthiz : Pointer to pointer to Trxn object.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cPathDelete( NW_INOUT NwGtpv2cPathT **pthiz)
 {
 
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cStackT* pStack;
   NwGtpv2cPathT *thiz = *pthiz;
   NwGtpv2cUlpApiT       ulpReq;
@@ -346,7 +346,7 @@ nwGtpv2cPathDelete( NW_INOUT NwGtpv2cPathT **pthiz)
   ulpReq.apiType = NW_GTPV2C_ULP_DELETE_LOCAL_TUNNEL;
   ulpReq.apiInfo.deleteLocalTunnelInfo.hTunnel = (*pthiz)->hTunnel;
   rc = nwGtpv2cProcessUlpReq(thiz->pStack, &ulpReq);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Purging path ", NW_IPV4_ADDR,
          NW_IPV4_ADDR_FORMAT(thiz->ipv4Address));
@@ -362,12 +362,12 @@ nwGtpv2cPathDelete( NW_INOUT NwGtpv2cPathT **pthiz)
  * and updates the local restart counter
  *
  * @param[out] pthiz : Pointer to pointer to Path object.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cPathCheckRestartCounter(NW_IN NwGtpv2cPathT *thiz, NW_IN NwU8T remoteRestartCounter)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   if(remoteRestartCounter > thiz->restartCounter ||
      (remoteRestartCounter<2 && thiz->restartCounter>254)) /*Overflow*/
   {
@@ -383,7 +383,7 @@ nwGtpv2cPathCheckRestartCounter(NW_IN NwGtpv2cPathT *thiz, NW_IN NwU8T remoteRes
     NW_LOG(thiz->pStack, NW_LOG_LEVEL_ERRO, "Incorrect restart counter from "NW_IPV4_ADDR
            " (received %u < previous %u). Ignoring ",
            NW_IPV4_ADDR_FORMAT(thiz->ipv4Address), remoteRestartCounter, thiz->restartCounter);
-    rc = NW_FAILURE;
+    rc = NW_GTPV2C_FAILURE ;
   }
   return rc;
 }
@@ -393,12 +393,12 @@ nwGtpv2cPathCheckRestartCounter(NW_IN NwGtpv2cPathT *thiz, NW_IN NwU8T remoteRes
  *
  *
  * @param[out] pthiz : Pointer to pointer to Path object.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cPathResetKeepAliveTimer(NW_IN NwGtpv2cPathT *thiz)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
 
 
   uint8_t t = NW_GTPV2C_KEEP_ALIVE_TMR + rand() % 6;
@@ -422,15 +422,15 @@ nwGtpv2cPathResetKeepAliveTimer(NW_IN NwGtpv2cPathT *thiz)
   Send GTPv2c Triggered Echo Response Indication to path
 
   @param[in] hGtpcStackHandle : Stack handle
-  @return NW_OK on success.
+  @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cPathTriggeredEchoRsp( NW_IN NwGtpv2cPathT* thiz,
                               NW_IN NwGtpv2cErrorT *pError,
                               NW_IN NwGtpv2cMsgHandleT hMsg)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwU8T remoteRestartCounter = 0;
 
   rc = nwGtpv2cMsgGetIeTlv(hMsg, NW_GTPV2C_IE_RECOVERY,
@@ -440,7 +440,7 @@ nwGtpv2cPathTriggeredEchoRsp( NW_IN NwGtpv2cPathT* thiz,
   {
     NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Malformed Echo reply message from "
            NW_IPV4_ADDR". Ignoring.", NW_IPV4_ADDR_FORMAT(thiz->ipv4Address));
-    return NW_OK;
+    return NW_GTPV2C_OK;
   }
 
   nwGtpv2cPathCheckRestartCounter(thiz,remoteRestartCounter);

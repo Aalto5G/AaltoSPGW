@@ -248,7 +248,7 @@ typedef struct NwGtpv2cIeTlv
   * @param[out] phMsg : Pointer to message handle.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgNew( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                 NW_IN NwU8T     teidPresent,
                 NW_IN NwU8T     msgType,
@@ -266,7 +266,7 @@ nwGtpv2cMsgNew( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
   * @param[out] phMsg : Pointer to message handle.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgFromBufferNew( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                          NW_IN NwU8T* pBuf,
                          NW_IN NwU32T bufLen,
@@ -279,7 +279,7 @@ nwGtpv2cMsgFromBufferNew( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
   * @param[in] hMsg : Message handle.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgDelete( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                    NW_IN NwGtpv2cMsgHandleT hMsg);
 
@@ -290,7 +290,7 @@ nwGtpv2cMsgDelete( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
   * @param[in] teid: TEID value.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgSetTeid(NW_IN NwGtpv2cMsgHandleT hMsg, NwU32T teid);
 
  /**
@@ -300,7 +300,7 @@ nwGtpv2cMsgSetTeid(NW_IN NwGtpv2cMsgHandleT hMsg, NwU32T teid);
   * @param[in] teidPesent: Flag boolean value.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgSetTeidPresent(NW_IN NwGtpv2cMsgHandleT hMsg, NwBoolT teidPresent);
 
  /**
@@ -310,7 +310,7 @@ nwGtpv2cMsgSetTeidPresent(NW_IN NwGtpv2cMsgHandleT hMsg, NwBoolT teidPresent);
   * @param[in] seqNum: Flag boolean value.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgSetSeqNumber(NW_IN NwGtpv2cMsgHandleT hMsg, NwU32T seqNum);
 
  /**
@@ -358,7 +358,7 @@ nwGtpv2cMsgGetLength(NW_IN NwGtpv2cMsgHandleT hMsg);
   * @param[in] value : IE value.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgAddIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
@@ -374,7 +374,7 @@ nwGtpv2cMsgAddIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[in] value : IE value.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgAddIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
@@ -390,7 +390,7 @@ nwGtpv2cMsgAddIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[in] value : IE value.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgAddIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
@@ -407,7 +407,7 @@ nwGtpv2cMsgAddIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[in] value : IE value.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgAddIe(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
@@ -425,7 +425,7 @@ nwGtpv2cMsgAddIe(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[in] offendingIeInstance: Offending IE instance.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgAddIeCause(NW_IN NwGtpv2cMsgHandleT hMsg,
                       NW_IN NwU8T instance,
                       NW_IN NwU8T causeValue,
@@ -444,7 +444,7 @@ nwGtpv2cMsgAddIeCause(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[in] pIpv6Addr: Pointer to IPv6 Address in Network Byte Order.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgAddIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       instance,
               NW_IN NwU8T       ifType,
@@ -452,12 +452,12 @@ nwGtpv2cMsgAddIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU32T      ipv4Addr,
               NW_IN NwU8T*      pIpv6Addr);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgGroupedIeStart(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgGroupedIeEnd(NW_IN NwGtpv2cMsgHandleT hMsg);
 
 
@@ -483,10 +483,10 @@ nwGtpv2cMsgIsIePresent(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[in] type : IE Type.
   * @param[in] instance : IE instance.
   * @param[out] pVal : Pointer to value buffer.
-  * @return NW_OK on success.
+  * @return NW_GTPV2C_OK on success.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgGetIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
@@ -499,11 +499,11 @@ nwGtpv2cMsgGetIeTV1(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[in] tyep : IE Type.
   * @param[in] instance : IE instance.
   * @param[out] pVal : Pointer to value buffer.
-  * @return NW_OK on success.
+  * @return NW_GTPV2C_OK on success.
   */
 
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgGetIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
@@ -516,11 +516,11 @@ nwGtpv2cMsgGetIeTV2(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[in] tyep : IE Type.
   * @param[in] instance : IE instance.
   * @param[out] pVal : Pointer to value buffer.
-  * @return NW_OK on success.
+  * @return NW_GTPV2C_OK on success.
   */
 
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgGetIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
@@ -533,11 +533,11 @@ nwGtpv2cMsgGetIeTV4(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[in] tyep : IE Type.
   * @param[in] instance : IE instance.
   * @param[out] pVal : Pointer to IE value buffer.
-  * @return NW_OK on success.
+  * @return NW_GTPV2C_OK on success.
   */
 
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgGetIeTV8(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
@@ -552,10 +552,10 @@ nwGtpv2cMsgGetIeTV8(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[in] maxLen : Maximum length of IE.
   * @param[out] pVal : Pointer to IE value buffer.
   * @param[out] pLen : Pointer to IE length buffer.
-  * @return NW_OK on success.
+  * @return NW_GTPV2C_OK on success.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgGetIeTlv(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
@@ -571,10 +571,10 @@ nwGtpv2cMsgGetIeTlv(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[in] instance : IE instance.
   * @param[out] ppVal : Pointer to IE value buffer pointer.
   * @param[out] pLen : Pointer to IE length buffer.
-  * @return NW_OK on success.
+  * @return NW_GTPV2C_OK on success.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgGetIeTlvP(NW_IN NwGtpv2cMsgHandleT hMsg,
                         NW_IN NwU8T type,
                         NW_IN NwU8T instance,
@@ -593,7 +593,7 @@ nwGtpv2cMsgGetIeTlvP(NW_IN NwGtpv2cMsgHandleT hMsg,
   * @param[out] pIpv6Addr: Pointer to IPv6 Address in Network Byte Order.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgGetIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN  NwU8T       instance,
               NW_OUT NwU8T*      ifType,
@@ -601,7 +601,7 @@ nwGtpv2cMsgGetIeFteid(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_OUT NwU32T*     ipv4Addr,
               NW_OUT NwU8T*      pIpv6Addr);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgGetIeCause(NW_IN NwGtpv2cMsgHandleT hMsg,
               NW_IN  NwU8T       instance,
               NW_OUT NwU8T*      causeValue,
@@ -625,7 +625,7 @@ nwGtpv2cMsgGetMsgType(NW_IN NwGtpv2cMsgHandleT hMsg);
  * @param[in] fp: Pointer to output file.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgHexDump(NwGtpv2cMsgHandleT hMsg, FILE* fp);
 
 #ifdef __cplusplus

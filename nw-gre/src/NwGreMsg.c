@@ -49,7 +49,7 @@ extern "C" {
 
 static NwGreMsgT* gpGreMsgPool = NULL;
 
-NwRcT
+NwGreRcT
 nwGreMsgNew( NW_IN NwGreStackHandleT hGreStackHandle,
                 NW_IN NwU8T     keyPresent,
                 NW_IN NwU8T     seqNumPresent,
@@ -97,13 +97,13 @@ nwGreMsgNew( NW_IN NwGreStackHandleT hGreStackHandle,
 
 
     *phMsg = (NwGreMsgHandleT) pMsg;
-    return NW_OK;
+    return NW_GRE_OK;
   }
 
-  return NW_FAILURE;
+  return NW_GRE_FAILURE;
 }
 
-NwRcT
+NwGreRcT
 nwGreGpduMsgNew( NW_IN NwGreStackHandleT hGreStackHandle,
                 NW_IN NwU8T     csumPresent,
                 NW_IN NwU8T     keyPresent,
@@ -151,14 +151,14 @@ nwGreGpduMsgNew( NW_IN NwGreStackHandleT hGreStackHandle,
     pMsg->msgLen        += tpduLength;
 
     *phMsg = (NwGreMsgHandleT) pMsg;
-    return NW_OK;
+    return NW_GRE_OK;
 
   }
 
-  return NW_FAILURE;
+  return NW_GRE_FAILURE;
 }
 
-NwRcT
+NwGreRcT
 nwGreMsgFromBufferNew( NW_IN NwGreStackHandleT hGreStackHandle,
                          NW_IN NwU8T* pBuf,
                          NW_IN NwU32T bufLen,
@@ -213,18 +213,18 @@ nwGreMsgFromBufferNew( NW_IN NwGreStackHandleT hGreStackHandle,
       pBuf += 4;
     }
 
-    return NW_OK;
+    return NW_GRE_OK;
   }
-  return NW_FAILURE;
+  return NW_GRE_FAILURE;
 }
 
-NwRcT
+NwGreRcT
 nwGreMsgDelete( NW_IN NwGreStackHandleT hGreStackHandle,
                    NW_IN NwGreMsgHandleT hMsg)
 {
   ((NwGreMsgT*)hMsg)->next = gpGreMsgPool;
   gpGreMsgPool = (NwGreMsgT*)hMsg;
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
  /**
@@ -234,12 +234,12 @@ nwGreMsgDelete( NW_IN NwGreStackHandleT hGreStackHandle,
   * @param[in] teid: TEID value.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgSetTeid(NW_IN NwGreMsgHandleT hMsg, NwU32T teid)
 {
   NwGreMsgT *thiz = (NwGreMsgT*) hMsg;
   thiz->greKey = teid;
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
  /**
@@ -249,12 +249,12 @@ nwGreMsgSetTeid(NW_IN NwGreMsgHandleT hMsg, NwU32T teid)
   * @param[in] seqNum: Flag boolean value.
   */
 
-NwRcT
+NwGreRcT
 nwGreMsgSetSeqNumber(NW_IN NwGreMsgHandleT hMsg, NwU32T seqNum)
 {
   NwGreMsgT *thiz = (NwGreMsgT*) hMsg;
   thiz->seqNum = seqNum;
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
  /**
@@ -314,10 +314,10 @@ nwGreMsgGetTpdu(NW_IN NwGreMsgHandleT hMsg, NwU8T* pTpduBuf, NwU32T* pTpduLength
 
   *pTpduLength = thiz->msgLen - headerLength;
   memcpy(pTpduBuf, thiz->msgBuf + headerLength, *pTpduLength);
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT
+NwGreRcT
 nwGreMsgAddIeTV1(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU8T       instance,
@@ -335,10 +335,10 @@ nwGreMsgAddIeTV1(NW_IN NwGreMsgHandleT hMsg,
 
   pMsg->msgLen += sizeof(NwGreIeTv1T);
 
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT
+NwGreRcT
 nwGreMsgAddIeTV2(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
@@ -357,10 +357,10 @@ nwGreMsgAddIeTV2(NW_IN NwGreMsgHandleT hMsg,
 
   pMsg->msgLen += sizeof(NwGreIeTv2T);
 
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT
+NwGreRcT
 nwGreMsgAddIeTV4(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
@@ -379,10 +379,10 @@ nwGreMsgAddIeTV4(NW_IN NwGreMsgHandleT hMsg,
 
   pMsg->msgLen += sizeof(NwGreIeTv4T);
 
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT
+NwGreRcT
 nwGreMsgAddIe(NW_IN NwGreMsgHandleT hMsg,
               NW_IN NwU8T       type,
               NW_IN NwU16T      length,
@@ -401,10 +401,10 @@ nwGreMsgAddIe(NW_IN NwGreMsgHandleT hMsg,
   memcpy(pIe + 4, pVal, length);
   pMsg->msgLen += (4 + length);
 
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT
+NwGreRcT
 nwGreMsgHexDump(NwGreMsgHandleT hMsg, FILE* fp)
 {
 
@@ -459,7 +459,7 @@ nwGreMsgHexDump(NwGreMsgHandleT hMsg, FILE* fp)
   }
   fprintf((FILE*)fp, "\n");
 
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
 #ifdef __cplusplus

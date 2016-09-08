@@ -60,14 +60,14 @@ NwMiniLogMgrT* nwMiniLogMgrGetInstance();
  * @param thiz : Pointer to global singleton MiniLogMgr instance
  * @param logLevel : Log Level
  */
-NwRcT nwMiniLogMgrInit(NwMiniLogMgrT* thiz, NwU32T logLevel );
+NwGtpv2cRcT nwMiniLogMgrInit(NwMiniLogMgrT* thiz, NwU32T logLevel );
 
 /**
  * Set MiniLogMgr log level
  * @param thiz : Pointer to global singleton MiniLogMgr instance
  * @param logLevel : Log Level
  */
-NwRcT nwMiniLogMgrSetLogLevel(NwMiniLogMgrT* thiz, NwU32T logLevel);
+NwGtpv2cRcT nwMiniLogMgrSetLogLevel(NwMiniLogMgrT* thiz, NwU32T logLevel);
 
 /**
  * Process log request from stack
@@ -77,7 +77,7 @@ NwRcT nwMiniLogMgrSetLogLevel(NwMiniLogMgrT* thiz, NwU32T logLevel);
  * @param line : Line Number
  * @param logStr : Log string
  */
-NwRcT nwMiniLogMgrLogRequest (NwGtpv2cLogMgrHandleT logMgrHandle,
+NwGtpv2cRcT nwMiniLogMgrLogRequest (NwGtpv2cLogMgrHandleT logMgrHandle,
     NwU32T logLevel,
     NwCharT* file,
     NwU32T line,

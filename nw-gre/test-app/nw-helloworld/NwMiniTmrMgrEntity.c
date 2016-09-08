@@ -33,7 +33,7 @@ extern "C" {
 static void
 NW_TMR_CALLBACK(nwMiniTmrMgrHandleTimeout)
 {
-  NwRcT rc;
+  NwGreRcT rc;
 #ifdef __WITH_LIBEVENT__
   NwMiniTmrMgrEntityT *pTmr = (NwMiniTmrMgrEntityT*) arg;
 
@@ -42,7 +42,7 @@ NW_TMR_CALLBACK(nwMiniTmrMgrHandleTimeout)
    *--------------------------------------------------------------------------*/
 
   rc = nwGreProcessTimeout(pTmr->timeoutArg);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   free(pTmr);
 
@@ -57,14 +57,14 @@ NW_TMR_CALLBACK(nwMiniTmrMgrHandleTimeout)
  * Public functions
  *--------------------------------------------------------------------------*/
 
-NwRcT nwTimerStart( NwGreTimerMgrHandleT tmrMgrHandle,
+NwGreRcT nwTimerStart( NwGreTimerMgrHandleT tmrMgrHandle,
     NwU32T timeoutSec,
     NwU32T timeoutUsec,
     NwU32T tmrType,
     void*  timeoutArg,
     NwGreTimerHandleT* hTmr)
 {
-  NwRcT rc = NW_OK;
+  NwGreRcT rc = NW_GRE_OK;
 #ifdef __WITH_LIBEVENT__
   NwMiniTmrMgrEntityT *pTmr;
   struct timeval tv;
@@ -88,10 +88,10 @@ NwRcT nwTimerStart( NwGreTimerMgrHandleT tmrMgrHandle,
 
   *hTmr = (NwGreTimerHandleT)pTmr;
 
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT nwTimerStop( NwGreTimerMgrHandleT tmrMgrHandle,
+NwGreRcT nwTimerStop( NwGreTimerMgrHandleT tmrMgrHandle,
     NwGreTimerHandleT hTmr)
 {
 #ifdef __WITH_LIBEVENT__
@@ -100,7 +100,7 @@ NwRcT nwTimerStop( NwGreTimerMgrHandleT tmrMgrHandle,
 #else
 #warning "Timer library not defined!"
 #endif
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
 #ifdef __cplusplus

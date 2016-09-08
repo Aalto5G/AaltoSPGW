@@ -64,10 +64,10 @@ nwGreTunnelEndPointNew(struct NwGreStack *pStack);
   Destructor
 
   @param[in] thiz: Pointer to session
-  @return NW_OK on success.
+  @return NW_GRE_OK on success.
  */
 
-NwRcT
+NwGreRcT
 nwGreTunnelEndPointDestroy(struct NwGreStack *pStack, NwGreTunnelEndPointT* thiz);
 
 #ifdef __cplusplus

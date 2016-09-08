@@ -56,10 +56,10 @@ static NwGtpv2cTrxnT* gpGtpv2cTrxnPool = NULL;
  *                   P R I V A T E      F U N C T I O N S                   *
  *--------------------------------------------------------------------------*/
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cTrxnPeerRspWaitTimeout(void* arg)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cTrxnT* thiz;
   NwGtpv2cStackT* pStack;
 
@@ -75,7 +75,7 @@ nwGtpv2cTrxnPeerRspWaitTimeout(void* arg)
   if(thiz->maxRetries)
   {
     rc = nwGtpv2cTrxnSendMsgRetransmission(thiz);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GTPV2C_OK == rc);
 
     rc = nwGtpv2cStartTimer(thiz->pStack, thiz->t3Timer, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT, nwGtpv2cTrxnPeerRspWaitTimeout, thiz, &thiz->hRspTmr);
   }
@@ -98,10 +98,10 @@ nwGtpv2cTrxnPeerRspWaitTimeout(void* arg)
   return rc;
 }
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cTrxnDuplicateRequestWaitTimeout(void* arg)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cTrxnT* thiz;
   NwGtpv2cStackT* pStack;
 
@@ -118,7 +118,7 @@ nwGtpv2cTrxnDuplicateRequestWaitTimeout(void* arg)
 
   RB_REMOVE(NwGtpv2cOutstandingRxSeqNumTrxnMap, &(pStack->outstandingRxSeqNumMap), thiz);
   rc = nwGtpv2cTrxnDelete(&thiz);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   return rc;
 }
@@ -128,10 +128,10 @@ nwGtpv2cTrxnDuplicateRequestWaitTimeout(void* arg)
  * Send msg retransmission to peer via data request to UDP Entity
  *--------------------------------------------------------------------------*/
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTrxnSendMsgRetransmission(NwGtpv2cTrxnT* thiz)
 {
-  NwRcT rc ;
+  NwGtpv2cRcT rc ;
 
   NW_ASSERT(thiz);
 
@@ -153,13 +153,13 @@ nwGtpv2cTrxnSendMsgRetransmission(NwGtpv2cTrxnT* thiz)
  *
  * @param[in] thiz : Pointer to transaction
  * @param[in] timeoutCallbackFunc : Timeout handler callback function.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTrxnStartPeerRspWaitTimer(NwGtpv2cTrxnT* thiz)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   rc = nwGtpv2cStartTimer(thiz->pStack, thiz->t3Timer, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT, nwGtpv2cTrxnPeerRspWaitTimeout, thiz, &thiz->hRspTmr);
   return rc;
 }
@@ -168,13 +168,13 @@ nwGtpv2cTrxnStartPeerRspWaitTimer(NwGtpv2cTrxnT* thiz)
   Start timer to wait before pruginf a req tran for which response has been sent
 
   @param[in] thiz : Pointer to transaction
-  @return NW_OK on success.
+  @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTrxnStartDulpicateRequestWaitTimer(NwGtpv2cTrxnT* thiz)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
 
   rc = nwGtpv2cStartTimer(thiz->pStack, thiz->t3Timer * thiz->maxRetries, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT, nwGtpv2cTrxnDuplicateRequestWaitTimeout, thiz, &thiz->hRspTmr);
 
@@ -185,13 +185,13 @@ nwGtpv2cTrxnStartDulpicateRequestWaitTimer(NwGtpv2cTrxnT* thiz)
   Send timer stop request to TmrMgr Entity.
 
   @param[in] thiz : Pointer to transaction
-  @return NW_OK on success.
+  @return NW_GTPV2C_OK on success.
  */
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cTrxnStopPeerRspTimer(NwGtpv2cTrxnT* thiz)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
 
   NW_ASSERT(thiz->pStack->tmrMgr.tmrStopCallback != NULL);
 
@@ -210,12 +210,12 @@ nwGtpv2cTrxnStopPeerRspTimer(NwGtpv2cTrxnT* thiz)
  *
  * @param[in] thiz : Pointer to stack
  * @param[out] ppTrxn : Pointer to pointer to Trxn object.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 NwGtpv2cTrxnT*
 nwGtpv2cTrxnNew( NW_IN  NwGtpv2cStackT* thiz)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cTrxnT *pTrxn;
 
   if(gpGtpv2cTrxnPool)
@@ -244,7 +244,7 @@ nwGtpv2cTrxnNew( NW_IN  NwGtpv2cStackT* thiz)
   }
   else
   {
-    rc = NW_FAILURE;
+    rc = NW_GTPV2C_FAILURE ;
   }
 
   NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Created transaction 0x%X", (NwU32T) pTrxn);
@@ -263,7 +263,7 @@ NwGtpv2cTrxnT*
 nwGtpv2cTrxnWithSeqNumNew( NW_IN  NwGtpv2cStackT* thiz,
                         NW_IN  NwU32T seqNum)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cTrxnT *pTrxn;
 
   if(gpGtpv2cTrxnPool)
@@ -287,7 +287,7 @@ nwGtpv2cTrxnWithSeqNumNew( NW_IN  NwGtpv2cStackT* thiz,
   }
   else
   {
-    rc = NW_FAILURE;
+    rc = NW_GTPV2C_FAILURE ;
   }
 
   NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Created transaction 0x%X", (NwU32T) pTrxn);
@@ -304,7 +304,7 @@ nwGtpv2cTrxnWithSeqNumNew( NW_IN  NwGtpv2cStackT* thiz,
  * @param[in] peerIp : Peer Ip address.
  * @param[in] peerPort : Peer Ip port.
  * @param[in] seqNum : Seq Number.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 
 NwGtpv2cTrxnT*
@@ -314,7 +314,7 @@ nwGtpv2cTrxnOutstandingRxNew( NW_IN  NwGtpv2cStackT* thiz,
                          NW_IN  NwU32T peerPort,
                          NW_IN  NwU32T seqNum)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   NwGtpv2cTrxnT *pTrxn, *pCollision;
 
   if(gpGtpv2cTrxnPool)
@@ -354,7 +354,7 @@ nwGtpv2cTrxnOutstandingRxNew( NW_IN  NwGtpv2cStackT* thiz,
       }
 
       rc = nwGtpv2cTrxnDelete(&pTrxn);
-      NW_ASSERT(NW_OK == rc);
+      NW_ASSERT(NW_GTPV2C_OK == rc);
       pTrxn = NULL;
     }
   }
@@ -369,12 +369,12 @@ nwGtpv2cTrxnOutstandingRxNew( NW_IN  NwGtpv2cStackT* thiz,
  * Destructor
  *
  * @param[out] pthiz : Pointer to pointer to Trxn object.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTrxnDelete( NW_INOUT NwGtpv2cTrxnT **pthiz)
 {
-  NwRcT rc = NW_OK;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cStackT* pStack;
   NwGtpv2cTrxnT *thiz = *pthiz;
 
@@ -383,13 +383,13 @@ nwGtpv2cTrxnDelete( NW_INOUT NwGtpv2cTrxnT **pthiz)
   if(thiz->hRspTmr)
   {
     rc = nwGtpv2cTrxnStopPeerRspTimer(thiz);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GTPV2C_OK == rc);
   }
 
   if(thiz->pMsg)
   {
     rc = nwGtpv2cMsgDelete((NwGtpv2cStackHandleT)pStack, (NwGtpv2cMsgHandleT)thiz->pMsg);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GTPV2C_OK == rc);
   }
 
   NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Purging  transaction 0x%X", (NwU32T) thiz);

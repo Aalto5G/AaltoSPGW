@@ -71,7 +71,7 @@ nwGtpv2cTrxnWithSeqNumNew( NW_IN  NwGtpv2cStackT* pStack,
  * @param[in] peerIp : Peer Ip address.
  * @param[in] peerPort : Peer Ip port.
  * @param[in] seqNum : Seq Number.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 
 NwGtpv2cTrxnT*
@@ -81,17 +81,17 @@ nwGtpv2cTrxnOutstandingRxNew( NW_IN  NwGtpv2cStackT* pStack,
                          NW_IN  NwU32T peerPort,
                          NW_IN  NwU32T seqNum);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTrxnDelete( NW_INOUT NwGtpv2cTrxnT **ppTrxn);
 
 /**
  * Start timer to wait before pruginf a req tran for which response has been sent
  *
  * @param[in] thiz : Pointer to transaction
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTrxnStartDulpicateRequestWaitTimer(NwGtpv2cTrxnT* thiz);
 
 /**
@@ -99,14 +99,14 @@ nwGtpv2cTrxnStartDulpicateRequestWaitTimer(NwGtpv2cTrxnT* thiz);
  *
  * @param[in] thiz : Pointer to transaction
  * @param[in] timeoutCallbackFunc : Timeout handler callback function.
- * @return NW_OK on success.
+ * @return NW_GTPV2C_OK on success.
  */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTrxnStartPeerRspWaitTimer(NwGtpv2cTrxnT* thiz);
 
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cTrxnSendMsgRetransmission(NwGtpv2cTrxnT* thiz);
 
 #ifdef __cplusplus

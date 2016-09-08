@@ -38,21 +38,21 @@ NwCharT* gLogLevelStr[] = {"EMER", "ALER", "CRIT",  "ERRO", "WARN", "NOTI", "INF
  * Public Functions
  *--------------------------------------------------------------------------*/
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpInit(NwGtpv2cNodeUlpT* thiz, NwGtpv2cStackHandleT hGtpv2cStack, char* peerIpStr)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   thiz->hGtpv2cStack = hGtpv2cStack;
   strcpy(thiz->peerIpStr, peerIpStr);
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpDestroy(NwGtpv2cNodeUlpT* thiz)
 {
   NW_ASSERT(thiz);
   memset(thiz, 0, sizeof(NwGtpv2cNodeUlpT));
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
 typedef struct NwGtpv2cPeerS
@@ -70,7 +70,7 @@ typedef struct NwGtpv2cPeerS
 NwGtpv2cPeerT*
 nwGtpv2cUlpCreatePeerContext(NwGtpv2cNodeUlpT* thiz, NwU32T peerIp)
 {
-  NwRcT                 rc;
+  NwGtpv2cRcT                 rc;
   NwGtpv2cUlpApiT       ulpReq;
   NwGtpv2cPeerT         *pPeer = (NwGtpv2cPeerT*) malloc(sizeof(NwGtpv2cPeerT));
 
@@ -90,17 +90,17 @@ nwGtpv2cUlpCreatePeerContext(NwGtpv2cNodeUlpT* thiz, NwU32T peerIp)
     ulpReq.apiInfo.createLocalTunnelInfo.peerIp          = htonl(peerIp);
 
     rc = nwGtpv2cProcessUlpReq(thiz->hGtpv2cStack, &ulpReq);
-    NW_ASSERT(NW_OK == rc);
+    NW_ASSERT(NW_GTPV2C_OK == rc);
     pPeer->hTunnel = ulpReq.apiInfo.createLocalTunnelInfo.hTunnel;
   }
   return pPeer;
 
 }
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpSendEchoRequestToPeer(NwGtpv2cNodeUlpT* thiz, NwGtpv2cPeerT *pPeer)
 {
-  NwRcT                 rc;
+  NwGtpv2cRcT                 rc;
   struct timeval        tv;
   NwGtpv2cUlpApiT       ulpReq;
   /*
@@ -120,21 +120,21 @@ nwGtpv2cUlpSendEchoRequestToPeer(NwGtpv2cNodeUlpT* thiz, NwGtpv2cPeerT *pPeer)
       0,
       &(ulpReq.hMsg));
 
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cMsgAddIeTV1((ulpReq.hMsg), NW_GTPV2C_IE_RECOVERY, 0, thiz->restartCounter);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   NW_ASSERT(gettimeofday(&tv, NULL) == 0);
   pPeer->sendTimeStamp = (tv.tv_sec * 1000000) + tv.tv_usec;
 
   rc = nwGtpv2cProcessUlpReq(thiz->hGtpv2cStack, &ulpReq);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpPing(NwGtpv2cNodeUlpT* thiz,
                 NwU32T peerIp,
                 NwU32T pingCount,
@@ -142,7 +142,7 @@ nwGtpv2cUlpPing(NwGtpv2cNodeUlpT* thiz,
                 NwU32T t3Time,
                 NwU32T n3Count)
 {
-  NwRcT                 rc;
+  NwGtpv2cRcT                 rc;
   NwGtpv2cPeerT         *pPeer;
   NwGtpv2cUlpApiT       ulpReq;
 
@@ -161,11 +161,11 @@ nwGtpv2cUlpPing(NwGtpv2cNodeUlpT* thiz,
   return rc;
 }
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
                        NwGtpv2cUlpApiT *pUlpApi)
 {
-  NwRcT                 rc;
+  NwGtpv2cRcT                 rc;
   NwU32T                seqNum;
   NwU32T                len;
   NwU32T                recvTimeStamp;
@@ -213,7 +213,7 @@ nwGtpv2cUlpProcessStackReqCallback (NwGtpv2cUlpHandleT hUlp,
     default:
       NW_LOG(NW_LOG_LEVEL_WARN, "Received undefined UlpApi from gtpv2c stack!");
   }
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
 #ifdef __cplusplus

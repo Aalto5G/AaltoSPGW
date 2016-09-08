@@ -165,12 +165,12 @@ typedef enum
  * Ipv4 Stack API information elements definitions
  *--------------------------------------------------------------------------*/
 
-typedef NwPtrT NwIpv4StackSessionHandleT;                      /**< Ipv4 Stack session Handle                  */
-typedef NwPtrT NwIpv4TrxnHandleT;                              /**< Ipv4 Transaction Handle                    */
-typedef NwPtrT NwIpv4UlpTrxnHandleT;                           /**< Ipv4 Ulp Transaction Handle                */
-typedef NwPtrT NwIpv4UlpSessionHandleT;                        /**< Ipv4 Ulp session Handle                    */
+typedef NwHandleT NwIpv4StackSessionHandleT;       /**< Ipv4 Stack session Handle                  */
+typedef NwHandleT NwIpv4TrxnHandleT;               /**< Ipv4 Transaction Handle                    */
+typedef NwHandleT NwIpv4UlpTrxnHandleT;            /**< Ipv4 Ulp Transaction Handle                */
+typedef NwHandleT NwIpv4UlpSessionHandleT;         /**< Ipv4 Ulp session Handle                    */
 
-typedef NwU8T   NwIpv4MsgTypeT;                                 /**< Ipv4 Msg Type                              */
+typedef NwU8T   NwIpv4MsgTypeT;                    /**< Ipv4 Msg Type                              */
 
 /**
  * API information elements between ULP and Stack for

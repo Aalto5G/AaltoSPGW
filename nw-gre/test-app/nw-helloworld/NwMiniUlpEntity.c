@@ -35,10 +35,10 @@ extern "C" {
 
 #define MAX_UDP_PAYLOAD_LEN                     (4096)
 
-NwRcT
+NwGreRcT
 nwMiniUlpSendEchoRequestToPeer(NwMiniUlpEntityT* thiz)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreUlpApiT           ulpReq;
 
   /*
@@ -59,22 +59,22 @@ nwMiniUlpSendEchoRequestToPeer(NwMiniUlpEntityT* thiz)
       0,
       &(ulpReq.apiInfo.initialReqInfo.hMsg));
 
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   rc = nwGreMsgAddIeTV1((ulpReq.apiInfo.initialReqInfo.hMsg), NW_GRE_IE_RECOVERY, 0, thiz->restartCounter);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   rc = nwGreProcessUlpReq(thiz->hGreStack, &ulpReq);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
 static
 void NW_TMR_CALLBACK(nwMiniUlpDataIndicationCallbackData)
 {
   NwMiniUlpEntityT* thiz = (NwMiniUlpEntityT*) arg;
-  NwRcT         rc;
+  NwGreRcT         rc;
   NwU8T         udpBuf[MAX_UDP_PAYLOAD_LEN];
   NwS32T        bytesRead;
   NwU32T        peerLen;
@@ -98,27 +98,27 @@ void NW_TMR_CALLBACK(nwMiniUlpDataIndicationCallbackData)
  * Public Functions
  *--------------------------------------------------------------------------*/
 
-NwRcT
+NwGreRcT
 nwMiniUlpInit(NwMiniUlpEntityT* thiz, NwGreStackHandleT hGreStack)
 {
-  NwRcT rc;
+  NwGreRcT rc;
  thiz->hGreStack = hGreStack;
 
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT
+NwGreRcT
 nwMiniUlpDestroy(NwMiniUlpEntityT* thiz)
 {
   NW_ASSERT(thiz);
   memset(thiz, 0, sizeof(NwMiniUlpEntityT));
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT
+NwGreRcT
 nwMiniUlpCreateConn(NwMiniUlpEntityT* thiz, char* localIpStr, NwU16T localport, char* peerIpStr)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   int sd;
   struct sockaddr_in addr;
   NwGreUlpApiT           ulpReq;
@@ -135,7 +135,7 @@ nwMiniUlpCreateConn(NwMiniUlpEntityT* thiz, char* localIpStr, NwU16T localport, 
   ulpReq.apiInfo.createTunnelEndPointInfo.hUlpSession   = (NwGreUlpSessionHandleT)thiz;
 
   rc = nwGreProcessUlpReq(thiz->hGreStack, &ulpReq);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   thiz->hGreConn = ulpReq.apiInfo.createTunnelEndPointInfo.hStackSession;
 
@@ -180,13 +180,13 @@ nwMiniUlpCreateConn(NwMiniUlpEntityT* thiz, char* localIpStr, NwU16T localport, 
 
 
   thiz->hSocket = sd;
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT
+NwGreRcT
 nwMiniUlpDestroyConn(NwMiniUlpEntityT* thiz)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreUlpApiT           ulpReq;
   /*---------------------------------------------------------------------------
    *  Send Destroy Session Request to GRE Stack Instance
@@ -196,18 +196,18 @@ nwMiniUlpDestroyConn(NwMiniUlpEntityT* thiz)
   ulpReq.apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle = thiz->hGreConn;
 
   rc = nwGreProcessUlpReq(thiz->hGreStack, &ulpReq);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   thiz->hGreConn = 0;
 
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
 
-NwRcT
+NwGreRcT
 nwMiniUlpTpduSend(NwMiniUlpEntityT* thiz, NwU8T* tpduBuf, NwU32T tpduLen , NwU16T fromPort)
 {
-  NwRcT rc;
+  NwGreRcT rc;
   NwGreUlpApiT           ulpReq;
 
   /*
@@ -228,18 +228,18 @@ nwMiniUlpTpduSend(NwMiniUlpEntityT* thiz, NwU8T* tpduBuf, NwU32T tpduLen , NwU16
       tpduLen,
       &(ulpReq.apiInfo.sendtoInfo.hMsg));
 
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   rc = nwGreProcessUlpReq(thiz->hGreStack, &ulpReq);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
   rc = nwGreMsgDelete(thiz->hGreStack, (ulpReq.apiInfo.sendtoInfo.hMsg));
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GRE_OK == rc );
 
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT
+NwGreRcT
 nwMiniUlpProcessStackReqCallback (NwGreUlpHandleT hUlp,
                        NwGreUlpApiT *pUlpApi)
 {
@@ -258,7 +258,7 @@ nwMiniUlpProcessStackReqCallback (NwGreUlpHandleT hUlp,
         NwU32T dataSize;
         NwU32T peerIpAddr = (inet_addr(thiz->peerIpStr));
 
-        NW_ASSERT( NW_OK == nwGreMsgGetTpdu(pUlpApi->apiInfo.recvMsgInfo.hMsg, dataBuf, &dataSize) );
+        NW_ASSERT( NW_GRE_OK == nwGreMsgGetTpdu(pUlpApi->apiInfo.recvMsgInfo.hMsg, dataBuf, &dataSize) );
 
         NW_LOG(NW_LOG_LEVEL_DEBG, "Received TPDU from GRE stack %u!", pUlpApi->apiInfo.recvMsgInfo.greKey);
 
@@ -283,14 +283,14 @@ nwMiniUlpProcessStackReqCallback (NwGreUlpHandleT hUlp,
               (peerIpAddr & 0xff000000) >> 24);
         }
 
-        NW_ASSERT(nwGreMsgDelete(thiz->hGreStack, (pUlpApi->apiInfo.recvMsgInfo.hMsg)) == NW_OK);
+        NW_ASSERT(nwGreMsgDelete(thiz->hGreStack, (pUlpApi->apiInfo.recvMsgInfo.hMsg)) == NW_GRE_OK);
 
       }
       break;
     default:
       NW_LOG(NW_LOG_LEVEL_WARN, "Received undefined UlpApi from gre stack!");
   }
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
 #ifdef __cplusplus

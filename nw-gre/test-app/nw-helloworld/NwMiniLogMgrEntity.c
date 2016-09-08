@@ -28,18 +28,18 @@ NwU32T g_log_level = NW_LOG_LEVEL_INFO;
  * Public functions
  *--------------------------------------------------------------------------*/
 
-NwRcT nwMiniLogMgrInit(NwMiniLogMgrT* thiz, NwU32T logLevel )
+NwGreRcT nwMiniLogMgrInit(NwMiniLogMgrT* thiz, NwU32T logLevel )
 {
   thiz->logLevel = logLevel;
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT nwMiniLogMgrSetLogLevel(NwMiniLogMgrT* thiz, NwU32T logLevel)
+NwGreRcT nwMiniLogMgrSetLogLevel(NwMiniLogMgrT* thiz, NwU32T logLevel)
 {
   thiz->logLevel = logLevel;
 }
 
-NwRcT nwMiniLogMgrLogRequest (NwGreLogMgrHandleT hLogMgr,
+NwGreRcT nwMiniLogMgrLogRequest (NwGreLogMgrHandleT hLogMgr,
     NwU32T logLevel,
     NwCharT* file,
     NwU32T line,
@@ -48,7 +48,7 @@ NwRcT nwMiniLogMgrLogRequest (NwGreLogMgrHandleT hLogMgr,
   NwMiniLogMgrT* thiz = (NwMiniLogMgrT*) hLogMgr;
   if(thiz->logLevel >= logLevel)
     printf("NWGREU-STK  %s - %s <%s,%u>\n", greLogLevelStr[logLevel], logStr, basename(file), line);
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
 #ifdef __cplusplus

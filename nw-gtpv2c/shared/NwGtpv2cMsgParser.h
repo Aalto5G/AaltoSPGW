@@ -49,12 +49,12 @@ typedef struct
   NwU16T                msgType;
   NwU16T                mandatoryIeCount;
   NwGtpv2cStackHandleT  hStack;
-  NwRcT (*ieReadCallback) (NwU8T ieType, NwU8T ieLength, NwU8T ieInstance,  NwU8T* ieValue, void* ieReadCallbackArg);
+  NwGtpv2cRcT (*ieReadCallback) (NwU8T ieType, NwU8T ieLength, NwU8T ieInstance,  NwU8T* ieValue, void* ieReadCallbackArg);
   void* ieReadCallbackArg;
 
   struct {
     NwU8T iePresence;
-    NwRcT (*ieReadCallback) (NwU8T ieType, NwU8T ieLength, NwU8T ieInstance,  NwU8T* ieValue, void* ieReadCallbackArg);
+    NwGtpv2cRcT (*ieReadCallback) (NwU8T ieType, NwU8T ieLength, NwU8T ieInstance,  NwU8T* ieValue, void* ieReadCallbackArg);
     void* ieReadCallbackArg;
   } ieParseInfo[NW_GTPV2C_IE_TYPE_MAXIMUM][NW_GTPV2C_IE_INSTANCE_MAXIMUM];
 
@@ -73,10 +73,10 @@ extern "C" {
   * @param[out] pthiz : Pointer to message parser handle.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgParserNew( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                       NW_IN NwU8T     msgType,
-                      NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                      NW_IN NwGtpv2cRcT (*ieReadCallback) (NwU8T ieType,
                                                        NwU8T ieLength,
                                                        NwU8T ieInstance,
                                                        NwU8T* ieValue,
@@ -92,16 +92,16 @@ nwGtpv2cMsgParserNew( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
   * @param[in] thiz : Message parser handle.
   */
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgParserDelete( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                           NW_IN NwGtpv2cMsgParserT* thiz);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgParserUpdateIe( NW_IN NwGtpv2cMsgParserT* thiz,
                         NW_IN NwU8T ieType,
                         NW_IN NwU8T ieInstance,
                         NW_IN NwU8T iePresence,
-                        NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                        NW_IN NwGtpv2cRcT (*ieReadCallback) (NwU8T ieType,
                                                        NwU8T ieLength,
                                                        NwU8T ieInstance,
                                                        NwU8T* ieValue,
@@ -109,25 +109,25 @@ nwGtpv2cMsgParserUpdateIe( NW_IN NwGtpv2cMsgParserT* thiz,
                         NW_IN void* ieReadCallbackArg);
 
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgParserUpdateIeReadCallback( NW_IN NwGtpv2cMsgParserT* thiz,
-                                       NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                                       NW_IN NwGtpv2cRcT (*ieReadCallback) (NwU8T ieType,
                                                        NwU8T ieLength,
                                                        NwU8T ieInstance,
                                                        NwU8T* ieValue,
                                                        void* ieReadCallbackArg));
 
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgParserUpdateIeReadCallbackArg( NW_IN NwGtpv2cMsgParserT* thiz,
                                           NW_IN void* ieReadCallbackArg);
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgParserAddIe( NW_IN NwGtpv2cMsgParserT* thiz,
                         NW_IN NwU8T ieType,
                         NW_IN NwU8T ieInstance,
                         NW_IN NwU8T iePresence,
-                        NW_IN NwRcT (*ieReadCallback) (NwU8T ieType,
+                        NW_IN NwGtpv2cRcT (*ieReadCallback) (NwU8T ieType,
                                                        NwU8T ieLength,
                                                        NwU8T ieInstance,
                                                        NwU8T* ieValue,
@@ -135,7 +135,7 @@ nwGtpv2cMsgParserAddIe( NW_IN NwGtpv2cMsgParserT* thiz,
                         NW_IN void* ieReadCallbackArg);
 
 
-NwRcT
+NwGtpv2cRcT
 nwGtpv2cMsgParserRun( NW_IN NwGtpv2cMsgParserT* thiz,
                       NW_IN NwGtpv2cMsgHandleT hMsg,
                       NW_OUT NwU8T *pOffendingIeType,

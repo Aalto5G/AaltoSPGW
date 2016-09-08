@@ -1816,6 +1816,9 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_PGW)
   {
+    /* TODO Instead of removing and creating a flow, the existing flow should be modified as above
+     * This case afects Handover with S-GW relocation.
+     */
     if(pUe->epsBearer[ebi].hPgwDownlink)
     {
       rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,

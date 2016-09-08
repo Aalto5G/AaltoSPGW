@@ -42,7 +42,7 @@ extern "C" {
 static
 void NW_EVT_CALLBACK(nwGreDataIndicationCallbackData)
 {
-  NwRcT         rc;
+  NwGreRcT         rc;
   NwU8T         udpBuf[MAX_UDP_PAYLOAD_LEN];
   NwS32T        bytesRead;
   NwU32T        peerLen;
@@ -68,7 +68,7 @@ void NW_EVT_CALLBACK(nwGreDataIndicationCallbackData)
  * Public functions
  *--------------------------------------------------------------------------*/
 
-NwRcT nwMiniUdpInit(NwMiniUdpEntityT* thiz, NwGreStackHandleT hGreStack, NwU8T* ipAddr)
+NwGreRcT nwMiniUdpInit(NwMiniUdpEntityT* thiz, NwGreStackHandleT hGreStack, NwU8T* ipAddr)
 {
   int sd;
   struct sockaddr_in addr;
@@ -99,15 +99,15 @@ NwRcT nwMiniUdpInit(NwMiniUdpEntityT* thiz, NwGreStackHandleT hGreStack, NwU8T* 
   thiz->hSocket = sd;
   thiz->hGreStack = hGreStack;
 
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
-NwRcT nwMiniUdpDestroy(NwMiniUdpEntityT* thiz)
+NwGreRcT nwMiniUdpDestroy(NwMiniUdpEntityT* thiz)
 {
   close(thiz->hSocket);
 }
 
-NwRcT nwMiniUdpDataReq(NwGreUdpHandleT udpHandle,
+NwGreRcT nwMiniUdpDataReq(NwGreUdpHandleT udpHandle,
     NwU8T* dataBuf,
     NwU32T dataSize,
     NwU32T peerIpAddr,
@@ -135,7 +135,7 @@ NwRcT nwMiniUdpDataReq(NwGreUdpHandleT udpHandle,
         (peerIpAddr & 0xff000000) >> 24);
 
   }
-  return NW_OK;
+  return NW_GRE_OK;
 }
 
 
