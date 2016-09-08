@@ -90,7 +90,9 @@ NwRcT nwGtpv1uIfDataReq(NwGtpv1uUdpHandleT udpHandle,
     NwU32T peerPort)
 {
   struct sockaddr_in peerAddr;
+  NwRcT rc;
   NwS32T bytesSent;
+  NwS32T iptos;
   NwGtpv1uIfT* thiz = (NwGtpv1uIfT*) udpHandle;
 
   NW_GTPV1U_IF_LOG(NW_LOG_LEVEL_DEBG, "Sending buf of size %u for on handle %x to peer "NW_IPV4_ADDR, dataSize, udpHandle,
@@ -102,6 +104,10 @@ NwRcT nwGtpv1uIfDataReq(NwGtpv1uUdpHandleT udpHandle,
   memset(peerAddr.sin_zero, '\0', sizeof (peerAddr.sin_zero));
 
   nwLogHexDump(dataBuf, dataSize);
+  /* Propagate IP ToS from user to transport*/
+  iptos = (NwU32T)dataBuf[9]; /* GTP header lengh (8) + IP ToS (1)*/
+  rc = setsockopt(thiz->hSocket, IPPROTO_IP, IP_TOS,  &iptos, sizeof(iptos));
+  NW_ASSERT(rc==0);
 
   bytesSent = sendto (thiz->hSocket, dataBuf, dataSize, 0, (struct sockaddr *) &peerAddr, sizeof(peerAddr));
 
