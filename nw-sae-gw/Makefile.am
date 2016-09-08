@@ -84,16 +84,16 @@ nwLteSaeGw_LDADD =  $(top_builddir)/nw-gtpv2c/src/libNwGtpv2c.a $(top_builddir)/
 ###############################################################################
 
 systemddir = /lib/systemd/system
-systemd_DATA = ../init/sgw.service ../init/pgw.service
+systemd_DATA = ../init/sgw.service ../init/pgw.service ../init/spgw.service
 
 systemdnetdir = /etc/systemd/network
-systemdnet_DATA = ../init/sgi0s.network ../init/sgi0.network ../init/sgi0.netdev
+systemdnet_DATA = ../init/sgi0.network ../init/sgi0.netdev
 
 iproutedir = /etc/conf.d/iproute2/
 iproute_DATA = ../init/pgw.iproute2.start ../init/pgw.iproute2.stop
 
 confdir = /etc/cumucore
-conf_DATA = ../init/sgw.cfg.template ../init/pgw.cfg.template
+conf_DATA = ../init/sgw.cfg.template ../init/pgw.cfg.template ../init/spgw.cfg.template
 
 EXTRA_DIST = $(systemd_DATA) $(systemdnet_DATA) $(iproute_DATA) $(conf_DATA)
 
