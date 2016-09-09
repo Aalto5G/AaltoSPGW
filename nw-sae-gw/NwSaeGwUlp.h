@@ -179,6 +179,9 @@ NwRcT
 nwSaeGwUlpRemoveDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
 
 NwRcT
+nwSaeGwUlpReleaseDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi);
+
+NwRcT
 nwSaeGwUlpPgwSetPCO(NwHandleT hPgw, NwSaeGwUeT *pUe);
 
 #ifdef __cplusplus

@@ -326,9 +326,7 @@ nwSaeGwDpeModifyIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
   ulpReq.apiInfo.updateFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
   ulpReq.apiInfo.updateFlowInfo.hSdpSession   = (NwSdpSessionHandleT) hBearer;
 
-  ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowType                = NW_FLOW_TYPE_IPv4;
-  ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowKey.ipv4Addr        = ipv4Ingress;
-
+  ulpReq.apiInfo.updateFlowInfo.egressFlow.isValid                  = NW_TRUE;
   ulpReq.apiInfo.updateFlowInfo.egressFlow.ipv4Addr                 = ipv4Egress;
   ulpReq.apiInfo.updateFlowInfo.egressFlow.flowType                 = NW_FLOW_TYPE_GTPU;
   ulpReq.apiInfo.updateFlowInfo.egressFlow.flowKey.gtpuTeid         = teidEgress;
@@ -381,17 +379,14 @@ nwSaeGwDpeCreateGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
 }
 
 /**
- * Create Gtpu to Gtpu flow with Soft Data Plane
+ * Modify Gtpu to Gtpu flow with Soft Data Plane
  */
 
 NwRcT
 nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
                          NwU32T         hSession,
-                         NwU32T         teidIngress,
                          NwU32T         teidEgress,
                          NwU32T         ipv4Egress,
-                         NwU32T         *pTeidIngress,
-                         NwU32T         *pIpv4Ingress,
                          NwU32T         hBearer)
 {
   /* Check*/
@@ -402,10 +397,7 @@ nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
   ulpReq.apiInfo.updateFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
   ulpReq.apiInfo.updateFlowInfo.hSdpSession   = (NwSdpSessionHandleT) hBearer;
 
-  ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowType                = NW_FLOW_TYPE_GTPU;
-  ulpReq.apiInfo.updateFlowInfo.ingressFlow.ipv4Addr                = thiz->gtpuIf.ipAddr;
-  ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowKey.gtpuTeid        = teidIngress;
-
+  ulpReq.apiInfo.updateFlowInfo.egressFlow.isValid                  = NW_TRUE;
   ulpReq.apiInfo.updateFlowInfo.egressFlow.flowType                 = NW_FLOW_TYPE_GTPU;
   ulpReq.apiInfo.updateFlowInfo.egressFlow.ipv4Addr                 = ipv4Egress;
   ulpReq.apiInfo.updateFlowInfo.egressFlow.flowKey.gtpuTeid         = teidEgress;
@@ -414,8 +406,30 @@ nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
   rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
   NW_ASSERT( NW_OK == rc );
 
-  *pTeidIngress  = ulpReq.apiInfo.updateFlowInfo.ingressFlow.flowKey.gtpuTeid;
-  *pIpv4Ingress  = ulpReq.apiInfo.updateFlowInfo.ingressFlow.ipv4Addr;
+  return rc;
+}
+
+/**
+ * Release Gtpu Endpoint flow with Soft Data Plane
+ */
+
+NwRcT
+nwSaeGwDpeReleaseEndpointFlow(NwSaeGwDpeT*   thiz,
+                              NwU32T         hSession,
+                              NwU32T         hBearer)
+{
+  /* Check*/
+  NwRcT                 rc;
+  NwSdpUlpApiT          ulpReq = {0};
+
+  ulpReq.apiType                              = NW_SDP_ULP_API_UPDATE_FLOW;
+  ulpReq.apiInfo.updateFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
+  ulpReq.apiInfo.updateFlowInfo.hSdpSession   = (NwSdpSessionHandleT) hBearer;
+
+  ulpReq.apiInfo.updateFlowInfo.egressFlow.isValid                  = NW_FALSE;
+
+  rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
+  NW_ASSERT( NW_OK == rc );
 
   return rc;
 }

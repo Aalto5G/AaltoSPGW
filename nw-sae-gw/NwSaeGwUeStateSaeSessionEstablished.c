@@ -674,7 +674,7 @@ nwSaeGwUeHandleSgwS11ReleaseAccessBearersRequest(NwSaeGwUeT* thiz, NwSaeGwUeEven
   }
 
   /* Remove downlink data flows on Data Plane*/
-  rc = nwSaeGwUlpRemoveDownlinkEpsBearer(thiz->hSgw, thiz, 5);
+  rc = nwSaeGwUlpReleaseDownlinkEpsBearer(thiz->hSgw, thiz, 5);
   NW_ASSERT( NW_OK == rc );
 
   error.cause = NW_GTPV2C_CAUSE_REQUEST_ACCEPTED;

@@ -360,7 +360,6 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
 static NwSdpRcT
 nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
     NW_IN NwSdpFlowContextT* pFlowContext,
-    NW_IN NwSdpFlowEndPointT* pFlowEndPoint,
     NW_IN NwSdpFlowEndPointT* pNewFlowEndPoint)
 {
   NwGtpv1uUlpApiT ulpReq;
@@ -369,85 +368,92 @@ nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
   {
     return NW_SDP_FAILURE;
   }
-  /* Send End Marker */
-  NW_ASSERT(pFlowContext->egressEndPoint.ipv4Addr != 0);
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending End Marker over GTPU teid 0x%x to "
-         NW_IPV4_ADDR, pFlowContext->egressEndPoint.flowKey.gtpuTeid,
-         NW_IPV4_ADDR_FORMAT(htonl(pFlowContext->egressEndPoint.ipv4Addr)));
 
-  ulpReq.apiType                        = NW_GTPV1U_ULP_API_SEND_TPDU;
-  ulpReq.apiInfo.sendtoInfo.teid        = pFlowContext->egressEndPoint.flowKey.gtpuTeid;
-  ulpReq.apiInfo.sendtoInfo.ipAddr      = pFlowContext->egressEndPoint.ipv4Addr;
-
-  rc = nwGtpv1uMsgNew( thiz->hGtpv1uStack,
-            0, 0, 0,
-            NW_GTP_END_MARKER,
-            pFlowContext->egressEndPoint.flowKey.gtpuTeid,      /* TEID   */
-            0, 0, 0,
-            (NwGtpv1uMsgHandleT*)&(ulpReq.apiInfo.sendtoInfo.hMsg));
-
-  NW_ASSERT( rc == NW_SDP_OK );
-
-  rc = nwGtpv1uProcessUlpReq(thiz->hGtpv1uStack, &ulpReq);
-  NW_ASSERT( rc == NW_SDP_OK );
-
-  rc = nwGtpv1uMsgDelete(thiz->hGtpv1uStack, (ulpReq.apiInfo.sendtoInfo.hMsg));
-  NW_ASSERT( rc == NW_SDP_OK );
-
-  switch(pFlowEndPoint->flowType)
+  if(pFlowContext->egressEndPoint.isValid == NW_TRUE)
   {
-    case NW_FLOW_TYPE_IPv4:
-      {
-        if(!(thiz->hIpv4Stack))
-        {
-          return NW_SDP_FAILURE;
-        }
-        if(!(pFlowEndPoint->hTunnelEndPoint.ipv4))
-        {
-          NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "IPv4 end point does not exist on data plane!");
-          return NW_SDP_FAILURE;
-        }
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Modifying IPv4 tunnel endpoint with teid "NW_IPV4_ADDR,
-               NW_IPV4_ADDR_FORMAT(pFlowEndPoint->flowKey.ipv4Addr));
-        pFlowContext->egressEndPoint = *pNewFlowEndPoint;
-      }
-      break;
+    /* Send End Marker */
+    NW_ASSERT(pFlowContext->egressEndPoint.ipv4Addr != 0);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending GTP-U End Marker to IP "NW_IPV4_ADDR" TEID 0x%x",
+           NW_IPV4_ADDR_FORMAT(htonl(pFlowContext->egressEndPoint.ipv4Addr)),
+           pFlowContext->egressEndPoint.flowKey.gtpuTeid);
 
-    case NW_FLOW_TYPE_GTPU:
-      {
-        if(!(pFlowEndPoint->hTunnelEndPoint.gtpu))
-        {
-          return NW_SDP_FAILURE;
-        }
-        NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Modifying GTPU tunnel endpoint with teid 0x%x for handle 0x%x",
-               pFlowEndPoint->flowKey.gtpuTeid, (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu);
-        pFlowContext->egressEndPoint.flowKey.gtpuTeid = pNewFlowEndPoint->flowKey.gtpuTeid;
-        pFlowContext->egressEndPoint.ipv4Addr = pNewFlowEndPoint->ipv4Addr;
-      }
-      break;
+    ulpReq.apiType                        = NW_GTPV1U_ULP_API_SEND_TPDU;
+    ulpReq.apiInfo.sendtoInfo.teid        = pFlowContext->egressEndPoint.flowKey.gtpuTeid;
+    ulpReq.apiInfo.sendtoInfo.ipAddr      = pFlowContext->egressEndPoint.ipv4Addr;
 
-    case NW_FLOW_TYPE_GRE:
-      {
-        if(!(thiz->hGreStack))
-        {
-          return NW_SDP_FAILURE;
-        }
-        if(!(pFlowEndPoint->hTunnelEndPoint.gre))
-        {
-          return NW_SDP_FAILURE;
-        }
-        NW_LOG(thiz, NW_LOG_LEVEL_NOTI, "Modifying GRE tunnel endpoint with key %d",
-               pFlowEndPoint->flowKey.greKey);
-        pFlowContext->egressEndPoint.flowKey.gtpuTeid = pNewFlowEndPoint->flowKey.gtpuTeid;
-        pFlowContext->egressEndPoint.ipv4Addr = pNewFlowEndPoint->ipv4Addr;
-      }
-      break;
-    default:
-      {
-        NW_LOG(thiz, NW_LOG_LEVEL_NOTI, "Unsupported encapsulation type %u", pFlowEndPoint->flowType);
-        return NW_SDP_FAILURE;
-      }
+    rc = nwGtpv1uMsgNew( thiz->hGtpv1uStack,
+                         0, 0, 0,
+                         NW_GTP_END_MARKER,
+                         pFlowContext->egressEndPoint.flowKey.gtpuTeid,      /* TEID   */
+                         0, 0, 0,
+                         (NwGtpv1uMsgHandleT*)&(ulpReq.apiInfo.sendtoInfo.hMsg));
+
+    NW_ASSERT( rc == NW_SDP_OK );
+
+    rc = nwGtpv1uProcessUlpReq(thiz->hGtpv1uStack, &ulpReq);
+    NW_ASSERT( rc == NW_SDP_OK );
+
+    rc = nwGtpv1uMsgDelete(thiz->hGtpv1uStack, (ulpReq.apiInfo.sendtoInfo.hMsg));
+    NW_ASSERT( rc == NW_SDP_OK );
   }
+
+  pFlowContext->egressEndPoint = *pNewFlowEndPoint;
+
+  /* switch(pFlowContext->ingressEndPoint.flowType) */
+  /* { */
+  /*   case NW_FLOW_TYPE_IPv4: */
+  /*     { */
+  /*       if(!(thiz->hIpv4Stack)) */
+  /*       { */
+  /*         return NW_SDP_FAILURE; */
+  /*       } */
+  /*       if(!(pFlowContext->ingressEndPoint.hTunnelEndPoint.ipv4)) */
+  /*       { */
+  /*         NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "IPv4 end point does not exist on data plane!"); */
+  /*         return NW_SDP_FAILURE; */
+  /*       } */
+  /*       NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Modifying IPv4 tunnel endpoint with teid "NW_IPV4_ADDR, */
+  /*              NW_IPV4_ADDR_FORMAT(pFlowContext->ingressEndPoint.flowKey.ipv4Addr)); */
+  /*       pFlowContext->egressEndPoint = *pNewFlowEndPoint; */
+  /*     } */
+  /*     break; */
+
+  /*   case NW_FLOW_TYPE_GTPU: */
+  /*     { */
+  /*       if(!(pFlowContext->ingressEndPoint.hTunnelEndPoint.gtpu)) */
+  /*       { */
+  /*         return NW_SDP_FAILURE; */
+  /*       } */
+  /*       NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Modifying GTPU tunnel endpoint with teid 0x%x for handle 0x%x", */
+  /*              pFlowContext->ingressEndPoint.flowKey.gtpuTeid, */
+  /*              (NwGtpv1uUlpSessionHandleT)pFlowContext->ingressEndPoint.hTunnelEndPoint.gtpu); */
+  /*       pFlowContext->egressEndPoint.flowKey.gtpuTeid = pFlowContext->ingressEndPoint.flowKey.gtpuTeid; */
+  /*       pFlowContext->egressEndPoint.ipv4Addr = pFlowContext->ingressEndPoint.ipv4Addr; */
+  /*     } */
+  /*     break; */
+
+  /*   case NW_FLOW_TYPE_GRE: */
+  /*     { */
+  /*       if(!(thiz->hGreStack)) */
+  /*       { */
+  /*         return NW_SDP_FAILURE; */
+  /*       } */
+  /*       if(!(pFlowContext->ingressEndPoint.hTunnelEndPoint.gre)) */
+  /*       { */
+  /*         return NW_SDP_FAILURE; */
+  /*       } */
+  /*       NW_LOG(thiz, NW_LOG_LEVEL_NOTI, "Modifying GRE tunnel endpoint with key %d", */
+  /*              pFlowContext->egressEndPoint.flowKey.greKey); */
+  /*       pFlowContext->egressEndPoint.flowKey.gtpuTeid = pNewFlowEndPoint->flowKey.gtpuTeid; */
+  /*       pFlowContext->egressEndPoint.ipv4Addr = pNewFlowEndPoint->ipv4Addr; */
+  /*     } */
+  /*     break; */
+  /*   default: */
+  /*     { */
+  /*       NW_LOG(thiz, NW_LOG_LEVEL_NOTI, "Unsupported encapsulation type %u", pFlowContext->ingressEndPoint.flowType); */
+  /*       return NW_SDP_FAILURE; */
+  /*     } */
+  /* } */
 
   return rc;
 }
@@ -480,7 +486,9 @@ nwSdpCreateFlow( NW_IN  NwSdpT* thiz,
     pCreateFlowInfo = &(pUlpReq->apiInfo.createFlowInfo);
 
     pFlowContext->ingressEndPoint = pCreateFlowInfo->ingressEndPoint;
+    pFlowContext->ingressEndPoint.isValid = NW_TRUE;
     pFlowContext->egressEndPoint  = pCreateFlowInfo->egressEndPoint;
+    pFlowContext->egressEndPoint.isValid = NW_TRUE;
 
     if(pFlowContext->egressEndPoint.flowType == NW_FLOW_TYPE_GTPU)
     {
@@ -519,8 +527,7 @@ nwSdpDestroyFlow( NwSdpT* thiz,  NW_IN NwSdpUlpApiT *pUlpReq)
   rc = nwSdpDestroyFlowEndPoint(thiz, pFlowContext, &pFlowContext->ingressEndPoint);
   NW_ASSERT(rc == NW_SDP_OK);
 
-  rc = nwSdpDestroyFlowEndPoint(thiz, pFlowContext, &pFlowContext->egressEndPoint);
-  NW_ASSERT(rc == NW_SDP_OK);
+  /* egressEndPoint is only used as storage. The handle is NULL, no need to destroy it */
 
   rc = nwSdpFlowContextDelete(thiz, pFlowContext);
   NW_ASSERT(rc == NW_SDP_OK);
@@ -552,17 +559,9 @@ nwSdpUpdateFlow( NW_IN NwSdpT* thiz,
   {
     return NW_SDP_FAILURE;
   }
-  if(pFlowContext->ingressEndPoint.flowKey.gtpuTeid != pUpdateFlowInfo->ingressFlow.flowKey.gtpuTeid)
-  {
-    return NW_SDP_FAILURE;
-  }
-  if(pFlowContext->egressEndPoint.flowType != NW_FLOW_TYPE_GTPU)
-  {
-    return NW_SDP_FAILURE;
-  }
 
-  rc = nwSdpUpdateFlowEndPoint(thiz, pFlowContext,
-                               &pFlowContext->ingressEndPoint,
+  rc = nwSdpUpdateFlowEndPoint(thiz,
+                               pFlowContext,
                                &pUpdateFlowInfo->egressFlow);
   NW_ASSERT(rc == NW_SDP_OK);
 

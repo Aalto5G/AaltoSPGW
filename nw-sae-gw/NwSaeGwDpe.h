@@ -117,6 +117,26 @@ nwSaeGwDpeCreateGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
                          NwU32T         *phBearer);
 
 /**
+ * Modify Gtpu to Gtpu flow with Soft Data Plane
+ */
+
+extern NwRcT
+nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
+                             NwU32T         hSession,
+                             NwU32T         teidEgress,
+                             NwU32T         ipv4Egress,
+                             NwU32T         hBearer);
+
+/**
+ * Release Gtpu Endpoint flow with Soft Data Plane
+ */
+
+extern NwRcT
+nwSaeGwDpeReleaseEndpointFlow(NwSaeGwDpeT*   thiz,
+                              NwU32T         hSession,
+                              NwU32T         hBearer);
+
+/**
  * Destroy a flow with Soft Data Plane
  */
 

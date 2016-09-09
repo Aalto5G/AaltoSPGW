@@ -1603,7 +1603,6 @@ nwSaeGwUlpAllocateTeidOrGreKeys(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   {
     /* Allocate PGW-GTPU uplink user plane flow GRE key */
     pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey = (NwU32T)&pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey;
-
     pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.ipv4Addr = thiz->pDpe->gtpuIf.ipAddr;
   }
   else
@@ -1847,11 +1846,8 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
      */
     rc = nwSaeGwDpeModifyGtpuGtpuFlow(thiz->pDpe,
         (NwU32T)thiz,
-        (NwU32T)&pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
-        &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
-        &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr,
         pUe->epsBearer[ebi].hSgwDownlink);
     NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
                   "Modified S-GW Downlink Bearer for EBI %u ingress IP "NW_IPV4_ADDR
@@ -1893,6 +1889,16 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   NW_ASSERT( NW_OK == rc );
 
   return rc;
+}
+
+
+NwRcT
+nwSaeGwUlpReleaseDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi){
+  NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
+
+  return nwSaeGwDpeReleaseEndpointFlow(thiz->pDpe,
+                                       (NwU32T)thiz,
+                                       &pUe->epsBearer[ebi].hSgwDownlink);
 }
 
 NwRcT

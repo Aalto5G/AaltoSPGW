@@ -151,6 +151,7 @@ typedef enum
 
 typedef struct
 {
+  NwBoolT         isValid;
   NwU32T          ipv4Addr;
   NwSdpFlowEndPointTypeT  flowType;
 
@@ -203,7 +204,6 @@ typedef struct
 
 typedef struct
 {
-  NW_IN   NwSdpFlowEndPointT            ingressFlow;
   NW_IN   NwSdpFlowEndPointT            egressFlow;
   NW_IN   NwSdpUlpSessionHandleT        hUlpSession;
   NW_IN   NwSdpSessionHandleT           hSdpSession;
