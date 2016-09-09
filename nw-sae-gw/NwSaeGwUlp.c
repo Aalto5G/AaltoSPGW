@@ -1634,15 +1634,13 @@ nwSaeGwUlpInstallUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         &pUe->epsBearer[ebi].s1uTunnel.fteidSgw.ipv4Addr,
         &pUe->epsBearer[ebi].hSgwUplink);
 
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,"Creating SGW Uplink Bearer for EBI %u ingress TIED 0x%x IP "NW_IPV4_ADDR, ebi, pUe->epsBearer[ebi].s1uTunnel.fteidSgw.teidOrGreKey, NW_IPV4_ADDR_FORMAT(htonl(pUe->epsBearer[ebi].s1uTunnel.fteidSgw.ipv4Addr)));
-
-    rc = nwSaeGwDpeCreateGtpuIpv4Flow(thiz->pDpe,
-        (NwU32T)pUe,
-        (NwU32T)&pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey,
-        &pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey,
-        &pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.ipv4Addr,
-        &pUe->epsBearer[ebi].hPgwUplink);
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,"Creating PGW Uplink Bearer for EBI %u ingress TIED 0x%x IP "NW_IPV4_ADDR, ebi, pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey, NW_IPV4_ADDR_FORMAT(htonl(pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.ipv4Addr)));
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                  "Created S/P-GW Uplink Bearer for EBI %u ingress IP "NW_IPV4_ADDR" TEID 0x%x "
+                  "to egress IPue " NW_IPV4_ADDR,
+                  ebi,
+                  NW_IPV4_ADDR_FORMAT(htonl(pUe->epsBearer[ebi].s1uTunnel.fteidSgw.ipv4Addr)),
+                  pUe->epsBearer[ebi].s1uTunnel.fteidSgw.teidOrGreKey,
+                  NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_SGW)
   {
@@ -1654,8 +1652,15 @@ nwSaeGwUlpInstallUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         &pUe->epsBearer[ebi].s1uTunnel.fteidSgw.teidOrGreKey,
         &pUe->epsBearer[ebi].s1uTunnel.fteidSgw.ipv4Addr,
         &pUe->epsBearer[ebi].hSgwUplink);
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,"Creating SGW Uplink Bearer for EBI %u egress TIED 0x%x IP "NW_IPV4_ADDR, ebi, pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey, NW_IPV4_ADDR_FORMAT(htonl(pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.ipv4Addr)));
-
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                  "Created S-GW Uplink Bearer for EBI %u ingress IP "NW_IPV4_ADDR
+                  " TEID 0x%x to egress IP "NW_IPV4_ADDR" TEID 0x%x for IPue "NW_IPV4_ADDR,
+                  ebi,
+                  NW_IPV4_ADDR_FORMAT(htonl(pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.ipv4Addr)),
+                  pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey,
+                  NW_IPV4_ADDR_FORMAT(htonl(pUe->epsBearer[ebi].s1uTunnel.fteidSgw.ipv4Addr)),
+                  pUe->epsBearer[ebi].s1uTunnel.fteidSgw.teidOrGreKey,
+                  NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_PGW)
   {
@@ -1665,7 +1670,13 @@ nwSaeGwUlpInstallUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey,
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.ipv4Addr,
         &pUe->epsBearer[ebi].hPgwUplink);
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,"Creating PGW Uplink Bearer for EBI %u ingress TIED 0x%x and IP "NW_IPV4_ADDR, ebi, pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey, NW_IPV4_ADDR_FORMAT(htonl(pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.ipv4Addr)));
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                  "Created P-GW Uplink Bearer for EBI %u ingress IP "NW_IPV4_ADDR" TEID 0x%x "
+                  "to egress IPue "NW_IPV4_ADDR,
+                  ebi,
+                  NW_IPV4_ADDR_FORMAT(htonl(pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.ipv4Addr)),
+                  pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey,
+                  NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
   }
   else
   {
@@ -1692,14 +1703,18 @@ nwSaeGwUlpRemoveUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   {
     if(pUe->epsBearer[ebi].hSgwUplink)
     {
-      NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,"Destroying Uplink Bearer for EBI 0x%x", ebi);
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                    "Destroying S-GW Uplink Bearer EBI %u for IPue "NW_IPV4_ADDR,
+                    ebi, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
       rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
           pUe->epsBearer[ebi].hSgwUplink);
     }
 
     if(pUe->epsBearer[ebi].hPgwUplink)
     {
-      NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,"Destroying Uplink Bearer for EBI 0x%x", ebi);
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                    "Destroying P-GW Uplink Bearer EBI %u for IPue "NW_IPV4_ADDR,
+                    ebi, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
       rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
           pUe->epsBearer[ebi].hPgwUplink);
     }
@@ -1729,7 +1744,13 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
         *((NwU32T*)(pUe->paa.ipv4Addr)),
         &(pUe->epsBearer[ebi].hSgwDownlink));
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Creating Downlink Bearer for egress TIED 0x%x IP "NW_IPV4_ADDR, pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                  "Created S/P-GW Downlink Bearer for EBI %u ingress IPue "NW_IPV4_ADDR
+                  " to egress IP "NW_IPV4_ADDR" TEID 0x%x",
+                  ebi,
+                  NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr),
+                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
+                  pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey);
 
     /*
      * No need to install a GTPU to GTPU tunnel for SGW-Only case
@@ -1750,7 +1771,15 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr,
         &pUe->epsBearer[ebi].hSgwDownlink);
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Creating SGW Downlink Bearer for EBI %u ingress to egress TIED 0x%x IP "NW_IPV4_ADDR, ebi, pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey, NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr));
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                  "Created S-GW Downlink Bearer for EBI %u ingress IP "NW_IPV4_ADDR
+                  " TEID 0x%x to egress IP "NW_IPV4_ADDR" TEID 0x%x for IPue "NW_IPV4_ADDR,
+                  ebi,
+                  NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr),
+                  pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
+                  NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr),
+                  pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
+                  NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_PGW)
   {
@@ -1765,7 +1794,13 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         *((NwU32T*)(pUe->paa.ipv4Addr)),
         &pUe->epsBearer[ebi].hPgwDownlink);
 
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Creating PGW Downlink Bearer for EBI %u ingress IP "NW_IPV4_ADDR" to egress TIED 0x%x IP " NW_IPV4_ADDR, ebi, NW_IPV4_ADDR_FORMAT(*((NwU32T*)(pUe->paa.ipv4Addr))), pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey, NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr)));
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                  "Created P-GW Downlink Bearer for EBI %u ingress IPue "NW_IPV4_ADDR
+                  " to egress IP "NW_IPV4_ADDR" TEID 0x%x",
+                  ebi,
+                  NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr),
+                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr)),
+                  pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey);
   }
   else
   {
@@ -1797,7 +1832,13 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
         *((NwU32T*)(pUe->paa.ipv4Addr)),
         pUe->epsBearer[ebi].hSgwDownlink);
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Modifying Downlink Bearer for egress TIED 0x%x IP "NW_IPV4_ADDR, pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                  "Modified S/P-GW Downlink Bearer for EBI %u ingress IPue "NW_IPV4_ADDR
+                  " to IP "NW_IPV4_ADDR" TEID 0x%x",
+                  ebi,
+                  NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr),
+                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
+                  pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey);
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_SGW)
   {
@@ -1812,7 +1853,15 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr,
         pUe->epsBearer[ebi].hSgwDownlink);
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Modifying SGW Downlink Bearer for EBI %u ingress to egress TIED 0x%x IP "NW_IPV4_ADDR, ebi, pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey, NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr));
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                  "Modified S-GW Downlink Bearer for EBI %u ingress IP "NW_IPV4_ADDR
+                  " TEID 0x%x to egress IP "NW_IPV4_ADDR" TEID 0x%x for IPue "NW_IPV4_ADDR,
+                  ebi,
+                  NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr),
+                  pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
+                  NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr),
+                  pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
+                  NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_PGW)
   {
@@ -1834,7 +1883,7 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         *((NwU32T*)(pUe->paa.ipv4Addr)),
         &pUe->epsBearer[ebi].hPgwDownlink);
 
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Creating PGW Downlink Bearer for EBI %u ingress IP "NW_IPV4_ADDR" to egress TIED 0x%x IP " NW_IPV4_ADDR, ebi, NW_IPV4_ADDR_FORMAT(*((NwU32T*)(pUe->paa.ipv4Addr))), pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey, NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr)));
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Creating PGW Downlink Bearer for EBI %u ingress IP "NW_IPV4_ADDR" to egress TEID 0x%x IP " NW_IPV4_ADDR, ebi, NW_IPV4_ADDR_FORMAT(*((NwU32T*)(pUe->paa.ipv4Addr))), pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey, NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr)));
   }
   else
   {
@@ -1862,17 +1911,19 @@ nwSaeGwUlpRemoveDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   {
     if(pUe->epsBearer[ebi].hSgwDownlink)
     {
-      NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,"Destroying SGW Downlink Bearer for ebi id 0x%x", ebi);
-      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
-          pUe->epsBearer[ebi].hSgwDownlink);
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                    "Destroying S-GW Downlink Bearer EBI %u for IPue "NW_IPV4_ADDR,
+                    ebi, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
+      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe, pUe->epsBearer[ebi].hSgwDownlink);
       pUe->epsBearer[ebi].hSgwDownlink = NULL;
     }
 
     if(pUe->epsBearer[ebi].hPgwDownlink)
     {
-      NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,"Destroying PGW Downlink Bearer for ebi id 0x%x", ebi);
-      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
-          pUe->epsBearer[ebi].hPgwDownlink);
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                    "Destroying P-GW Downlink Bearer EBI %u for IPue "NW_IPV4_ADDR,
+                    ebi, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
+      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe, pUe->epsBearer[ebi].hPgwDownlink);
       pUe->epsBearer[ebi].hPgwDownlink = NULL;
     }
   }
