@@ -231,7 +231,7 @@ nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz,
   ulpReq.apiInfo.triggeredRspInfo.hTrxn         = hTrxn;
 
   rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackSgwS11,
-      NW_TRUE,                                                          /* TIED present*/
+      NW_TRUE,                                                          /* TEID present*/
       NW_GTP_CREATE_SESSION_RSP,                                        /* Msg Type    */
       0,                                                                /* TEID        */
       0,                                                                /* Seq Number  */

@@ -310,7 +310,7 @@ nwSaeGwUeSgwSendModifyBearerResponseToMme(NwSaeGwUeT* thiz,
   NwGtpv2cUlpApiT       ulpReq;
 
   rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackSgwS11,
-      NW_TRUE,                                                          /* TIED present*/
+      NW_TRUE,                                                          /* TEID present*/
       NW_GTP_MODIFY_BEARER_RSP,                                         /* Msg Type    */
       thiz->s11cTunnel.fteidMme.teidOrGreKey,                           /* TEID        */
       0,                                                                /* Seq Number  */
@@ -367,7 +367,7 @@ nwSaeGwUeSgwSendDeleteSessionResponseToMme(NwSaeGwUeT* thiz,
   NwGtpv2cUlpApiT       ulpReq;
 
   rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackSgwS11,
-      NW_TRUE,                                                          /* TIED present*/
+      NW_TRUE,                                                          /* TEID present*/
       NW_GTP_DELETE_SESSION_RSP,                                        /* Msg Type    */
       thiz->s11cTunnel.fteidMme.teidOrGreKey,                           /* TEID        */
       0,                                                                /* Seq Number  */
@@ -503,7 +503,7 @@ nwSaeGwUeSgwSendReleaseAccessBearersResponseToMme(NwSaeGwUeT* thiz,
   NwGtpv2cUlpApiT       ulpReq;
 
   rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackSgwS11,
-      NW_TRUE,                                                          /* TIED present*/
+      NW_TRUE,                                                          /* TEID present*/
       NW_GTP_RELEASE_ACCESS_BEARERS_RSP,                                /* Msg Type    */
       thiz->s11cTunnel.fteidMme.teidOrGreKey,                           /* TEID        */
       0,                                                                /* Seq Number  */

@@ -81,7 +81,7 @@ nwSaeGwUePgwSendDeleteSessionResponseToSgw(NwSaeGwUeT* thiz,
   NwGtpv2cUlpApiT       ulpReq;
 
   rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackPgwS5,
-      NW_TRUE,                                                          /* TIED present*/
+      NW_TRUE,                                                          /* TEID present*/
       NW_GTP_DELETE_SESSION_RSP,                                        /* Msg Type    */
       thiz->s5s8cTunnel.fteidSgw.teidOrGreKey,                          /* TEID        */
       0,                                                                /* Seq Number  */

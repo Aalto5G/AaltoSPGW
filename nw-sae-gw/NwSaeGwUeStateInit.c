@@ -263,7 +263,7 @@ nwSaeGwUeSgwSendCreateSessionRequestToPgw(NwSaeGwUeT* thiz, NwGtpv2cUlpTrxnHandl
   NwU8T restart = 0;
 
   rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackSgwS5,
-      NW_TRUE,                                          /* TIED present*/
+      NW_TRUE,                                          /* TEID present*/
       NW_GTP_CREATE_SESSION_REQ,                        /* Msg Type    */
       0,                                                /* TEID        */
       0,                                                /* Seq Number  */
@@ -398,7 +398,7 @@ nwSaeGwUeSgwSendModifyBearerRequestToPgw(NwSaeGwUeT* thiz, NwSaeGwUeSgwCreateSes
   NwGtpv2cUlpApiT       ulpReq;
 
   rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackSgwS5,
-      NW_TRUE,                                          /* TIED present*/
+      NW_TRUE,                                          /* TEID present*/
       NW_GTP_MODIFY_BEARER_REQ,                         /* Msg Type    */
       thiz->s5s8cTunnel.fteidPgw.teidOrGreKey,          /* TEID        */
       0,                                                /* Seq Number  */
@@ -478,7 +478,7 @@ nwSaeGwUePgwSendCreateSessionResponseToSgw(NwSaeGwUeT* thiz,
   ulpReq.apiInfo.triggeredRspInfo.hTrxn         = hTrxn;
 
   rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackPgwS5,
-      NW_TRUE,                                                          /* TIED present*/
+      NW_TRUE,                                                          /* TEID present*/
       NW_GTP_CREATE_SESSION_RSP,                                        /* Msg Type    */
       thiz->s5s8cTunnel.fteidSgw.teidOrGreKey,                          /* TEID        */
       0,                                                                /* Seq Number  */
@@ -582,7 +582,7 @@ nwSaeGwUeSgwSendCreateSessionResponseToMme(NwSaeGwUeT* thiz,
   ulpReq.apiInfo.triggeredRspInfo.hTrxn         = hTrxn;
 
   rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackSgwS11,
-      NW_TRUE,                                                          /* TIED present         */
+      NW_TRUE,                                                          /* TEID present         */
       NW_GTP_CREATE_SESSION_RSP,                                        /* Msg Type             */
       thiz->s11cTunnel.fteidMme.teidOrGreKey,                           /* TEID                 */
       0,                                                                /* SeqNum               */
