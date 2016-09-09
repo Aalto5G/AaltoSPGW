@@ -254,7 +254,7 @@ nwSaeGwDpeCreateGtpuIpv4Flow(NwSaeGwDpeT*   thiz,
                          NwU32T         *phBearer)
 {
   NwRcT rc;
-  NwSdpUlpApiT           ulpReq;
+  NwSdpUlpApiT           ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_CREATE_FLOW;
   ulpReq.apiInfo.createFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
@@ -287,7 +287,7 @@ nwSaeGwDpeCreateIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
                          NwU32T         *phBearer)
 {
   NwRcT rc;
-  NwSdpUlpApiT           ulpReq;
+  NwSdpUlpApiT           ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_CREATE_FLOW;
   ulpReq.apiInfo.createFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
@@ -320,7 +320,7 @@ nwSaeGwDpeModifyIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
                          NwU32T         hBearer)
 {
   NwRcT rc;
-  NwSdpUlpApiT           ulpReq;
+  NwSdpUlpApiT           ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_UPDATE_FLOW;
   ulpReq.apiInfo.updateFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
@@ -355,7 +355,7 @@ nwSaeGwDpeCreateGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
                          NwU32T         *phBearer)
 {
   NwRcT                 rc;
-  NwSdpUlpApiT          ulpReq;
+  NwSdpUlpApiT          ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_CREATE_FLOW;
   ulpReq.apiInfo.createFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
@@ -396,7 +396,7 @@ nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
 {
   /* Check*/
   NwRcT                 rc;
-  NwSdpUlpApiT          ulpReq;
+  NwSdpUlpApiT          ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_UPDATE_FLOW;
   ulpReq.apiInfo.updateFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
@@ -429,7 +429,7 @@ nwSaeGwDpeDestroyFlow(NwSaeGwDpeT*   thiz,
                       NwU32T         hBearer)
 {
   NwRcT rc;
-  NwSdpUlpApiT           ulpReq;
+  NwSdpUlpApiT           ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_DESTROY_FLOW;
   ulpReq.apiInfo.destroyFlowInfo.hSdpSession  = (NwSdpSessionHandleT) hBearer;
