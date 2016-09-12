@@ -135,7 +135,7 @@ nwMiniUlpCreateConn(NwMiniUlpEntityT* thiz, char* localIpStr, NwU16T localport, 
    * Create local tunnel endpoint
    */
 
-  NW_LOG(NW_LOG_LEVEL_NOTI, "Creating tunnel endpoint with teid %d", localport);
+  NW_LOG(NW_LOG_LEVEL_NOTI, "Creating tunnel endpoint with TEID %d", localport);
   ulpReq.apiType                                        = NW_GTPV1U_ULP_API_CREATE_TUNNEL_ENDPOINT;
   ulpReq.apiInfo.createTunnelEndPointInfo.teid          = localport;
   ulpReq.apiInfo.createTunnelEndPointInfo.hUlpSession   = (NwGtpv1uUlpSessionHandleT)thiz;

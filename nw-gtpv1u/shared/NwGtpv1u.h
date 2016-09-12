@@ -152,12 +152,12 @@ typedef enum
 {
   /* APIs from ULP to stack */
 
-  NW_GTPV1U_ULP_API_CREATE_TUNNEL_ENDPOINT = 0x00000000,        /**< Create a local teid context on stack       */
-  NW_GTPV1U_ULP_API_DESTROY_TUNNEL_ENDPOINT,                    /**< Delete a local teid context on stack       */
+  NW_GTPV1U_ULP_API_CREATE_TUNNEL_ENDPOINT = 0x00000000,        /**< Create a local TEID context on stack       */
+  NW_GTPV1U_ULP_API_DESTROY_TUNNEL_ENDPOINT,                    /**< Delete a local TEID context on stack       */
   NW_GTPV1U_ULP_API_INITIAL_REQ,                                /**< Send a Initial Request over a session      */
   NW_GTPV1U_ULP_API_TRIGGERED_REQ,                              /**< Send a Initial Request over a session      */
   NW_GTPV1U_ULP_API_TRIGGERED_RSP,                              /**< Send a Trigger Response over a session     */
-  NW_GTPV1U_ULP_API_SEND_TPDU,                                  /**< Send a T-PDU message over teid context     */
+  NW_GTPV1U_ULP_API_SEND_TPDU,                                  /**< Send a T-PDU message over TEID context     */
 
   /* APIs from stack to ULP */
 

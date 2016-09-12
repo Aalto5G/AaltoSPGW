@@ -245,7 +245,7 @@ NwGreCreateTunnelEndPoint( NW_IN  NwGreStackT* thiz,
   if(pTunnelEndPoint)
   {
 
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel end-point '0x%x' creation successful for GRE Key 0x%x", pTunnelEndPoint, greKey);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel endpoint '0x%x' creation successful for GRE key 0x%08x", pTunnelEndPoint, greKey);
 
     pTunnelEndPoint->greKey             = greKey;
     pTunnelEndPoint->pStack             = thiz;
@@ -255,7 +255,7 @@ NwGreCreateTunnelEndPoint( NW_IN  NwGreStackT* thiz,
 
     if(pCollision)
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Tunnel end-point cannot be created for GRE Key 0x%x. GRE Key already exists", pTunnelEndPoint, greKey);
+      NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Tunnel endpoint '0x%x' cannot be created for GRE key 0x%08x. GRE key already exists", pTunnelEndPoint, greKey);
       rc = nwGreTunnelEndPointDestroy(thiz, pTunnelEndPoint);
       NW_ASSERT(NW_GRE_OK == rc);
       rc = NW_GRE_FAILURE;
@@ -289,7 +289,7 @@ nwGreDestroyTunnelEndPoint( NwGreStackT* thiz,  NW_IN NwGreUlpApiT *pUlpReq)
   NwGreRcT rc = NW_GRE_OK;
   NwGreTunnelEndPointT *pRemovedTunnel;
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destroying Tunnel end-point '%x'", pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destroying tunnel endpoint '0x%x'", pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
   pRemovedTunnel = RB_REMOVE(NwGreTunnelEndPointIdentifierMap, &(thiz->teidMap), (NwGreTunnelEndPointT*)(pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle));
 
   NW_ASSERT(pRemovedTunnel == (NwGreTunnelEndPointT*)(pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle));
@@ -448,13 +448,13 @@ nwGreProcessGpdu( NwGreStackT* thiz,
       if(NW_GRE_OK == rc)
       {
         NwGreMsgT* pMsg = (NwGreMsgT*) hMsg;
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received T-PDU over tunnel end-point '%x' of size %u", tunnelEndPointKey.greKey, pMsg->msgLen);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received T-PDU over tunnel endpoint 0x%08x of size %u", tunnelEndPointKey.greKey, pMsg->msgLen);
         rc = nwGreSessionSendMsgApiToUlpEntity(pTunnelEndPoint, pMsg);
       }
     }
     else
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Received T-PDU over non-existent tunnel end-point '%x' from 0x%x", tunnelEndPointKey.greKey, ntohl(peerIp));
+      NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Received T-PDU over non-existent tunnel endpoint 0x%08x from 0x%x", tunnelEndPointKey.greKey, ntohl(peerIp));
     }
   }
   else

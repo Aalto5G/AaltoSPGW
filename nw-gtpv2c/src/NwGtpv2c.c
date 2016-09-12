@@ -508,7 +508,7 @@ nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
   NW_ENTER(thiz);
 
   NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
-         "Creating local tunnel with teid '%#x' and peer IP "NW_IPV4_ADDR,
+         "Creating local tunnel with TEID 0x%08x and peer IP "NW_IPV4_ADDR,
          teid, NW_IPV4_ADDR_FORMAT(ipv4Remote));
 
   pTunnel = nwGtpv2cTunnelNew(thiz, teid, ipv4Remote, hUlpTunnel);
@@ -524,7 +524,7 @@ nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
 
     *phTunnel = (NwGtpv2cTunnelHandleT) 0;
     NW_LOG(thiz, NW_LOG_LEVEL_WARN,
-           "Local tunnel creation failed for teid '%#x' and peer IP "
+           "Local tunnel creation failed for TEID 0x%08x and peer IP "
            NW_IPV4_ADDR". Tunnel already exists!",
            teid, NW_IPV4_ADDR_FORMAT(ipv4Remote));
 
@@ -576,7 +576,7 @@ nwGtpv2cDeleteLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
   NW_ASSERT(pTunnel == (NwGtpv2cTunnelT*)hTunnel);
 
   NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
-         "Deleting local tunnel with teid '%#x' and peer IP "NW_IPV4_ADDR,
+         "Deleting local tunnel with TEID 0x%08x and peer IP "NW_IPV4_ADDR,
          pTunnel->teid, NW_IPV4_ADDR_FORMAT(pTunnel->ipv4AddrRemote));
 
   rc = nwGtpv2cTunnelDelete(thiz, pTunnel);
@@ -756,7 +756,7 @@ nwGtpv2cHandleUlpTriggeredRsp( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUlpApiT
     ((NwGtpv2cMsgT*) pUlpRsp->hMsg)->seqNum = pReqTrxn->seqNum;
 
   NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
-         "Sending response message over seq '%#x'", pReqTrxn->seqNum);
+         "Sending response message over seq '0x%08x'", pReqTrxn->seqNum);
 
   rc = nwGtpv2cCreateAndSendMsg(thiz,
       pReqTrxn->seqNum,
@@ -1105,7 +1105,7 @@ nwGtpv2cHandleInitialReq(NW_IN NwGtpv2cStackT *thiz,
     if(!pLocalTunnel)
     {
       NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
-             "Request message received on non-existent TEID %#x from peer "
+             "Request message received on non-existent TEID 0x%08x from peer "
              NW_IPV4_ADDR" received!",
              ntohl(teidLocal), NW_IPV4_ADDR_FORMAT(peerIp));
 
@@ -1138,7 +1138,7 @@ nwGtpv2cHandleInitialReq(NW_IN NwGtpv2cStackT *thiz,
     if(rc != NW_GTPV2C_OK)
     {
       NW_LOG(thiz, NW_LOG_LEVEL_WARN,
-             "Malformed request message received on TEID %#x from peer "
+             "Malformed request message received on TEID 0x%08x from peer "
              NW_IPV4_ADDR" . Notifying ULP.",
              ntohl(teidLocal), NW_IPV4_ADDR_FORMAT(peerIp));
     }
@@ -1205,7 +1205,7 @@ nwGtpv2cHandleTriggeredRsp(NW_IN NwGtpv2cStackT *thiz,
   if(rc != NW_GTPV2C_OK)
   {
     NW_LOG(thiz, NW_LOG_LEVEL_WARN,
-           "Malformed message received on TEID %#x from peer "NW_IPV4_ADDR
+           "Malformed message received on TEID 0x%08x from peer "NW_IPV4_ADDR
            ". Notifying ULP.",
            ntohl((*((NwU32T*)(msgBuf + 4)))),
            NW_IPV4_ADDR_FORMAT(peerIp));
@@ -1661,7 +1661,7 @@ nwGtpv2cProcessUlpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
     default:
       {
         NW_LOG(thiz, NW_LOG_LEVEL_WARN,
-               "Received unhandled API %#x from ULP! Ignoring.",
+               "Received unhandled API 0x%08x from ULP! Ignoring.",
                pUlpReq->apiType);
         rc = NW_GTPV2C_FAILURE ;
       }

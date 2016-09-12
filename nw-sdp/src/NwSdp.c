@@ -154,7 +154,7 @@ nwSdpCreateFlowEndPoint( NW_IN  NwSdpT* thiz,
     case NW_FLOW_TYPE_IPv4:
       {
         NwIpv4UlpApiT         ulpReq;
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Creating IPv4 tunnel endpoint with teid "NW_IPV4_ADDR, NW_IPV4_ADDR_FORMAT(pFlowEndPoint->flowKey.ipv4Addr));
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Creating IPv4 tunnel endpoint with peer IP "NW_IPV4_ADDR, NW_IPV4_ADDR_FORMAT(pFlowEndPoint->flowKey.ipv4Addr));
         if(thiz->hIpv4Stack)
         {
           ulpReq.apiType                                        = NW_IPv4_ULP_API_CREATE_TUNNEL_ENDPOINT;
@@ -176,7 +176,7 @@ nwSdpCreateFlowEndPoint( NW_IN  NwSdpT* thiz,
     case NW_FLOW_TYPE_GTPU:
       {
         NwGtpv1uUlpApiT         ulpReq;
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Creating GTPU tunnel endpoint with teid 0x%x", pFlowEndPoint->flowKey.gtpuTeid);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Creating GTPU tunnel endpoint with TEID 0x%08x", pFlowEndPoint->flowKey.gtpuTeid);
         if(thiz->hGtpv1uStack)
         {
           ulpReq.apiType                                        = NW_GTPV1U_ULP_API_CREATE_TUNNEL_ENDPOINT;
@@ -277,7 +277,7 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
     case NW_FLOW_TYPE_IPv4:
       {
         NwIpv4UlpApiT         ulpReq;
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destroying IPv4 tunnel endpoint with teid 0x%x", pFlowEndPoint->flowKey.ipv4Addr);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destroying IPv4 tunnel endpoint with TEID 0x%08x", pFlowEndPoint->flowKey.ipv4Addr);
         if(thiz->hIpv4Stack && pFlowEndPoint->hTunnelEndPoint.ipv4)
         {
           ulpReq.apiType                                        = NW_IPv4_ULP_API_DESTROY_TUNNEL_ENDPOINT;
@@ -295,7 +295,7 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
     case NW_FLOW_TYPE_GTPU:
       {
         NwGtpv1uUlpApiT         ulpReq;
-        NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Destroying GTPU tunnel endpoint with teid 0x%x for handle 0x%x", pFlowEndPoint->flowKey.gtpuTeid, (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu);
+        NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Destroying GTPU tunnel endpoint with TEID 0x%08x for handle 0x%x", pFlowEndPoint->flowKey.gtpuTeid, (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu);
         if(thiz->hGtpv1uStack && pFlowEndPoint->hTunnelEndPoint.gtpu)
         {
           ulpReq.apiType                                        = NW_GTPV1U_ULP_API_DESTROY_TUNNEL_ENDPOINT;
@@ -373,7 +373,7 @@ nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
   {
     /* Send End Marker */
     NW_ASSERT(pFlowContext->egressEndPoint.ipv4Addr != 0);
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending GTP-U End Marker to IP "NW_IPV4_ADDR" TEID 0x%x",
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending GTP-U End Marker to IP "NW_IPV4_ADDR" TEID 0x%08x",
            NW_IPV4_ADDR_FORMAT(htonl(pFlowContext->egressEndPoint.ipv4Addr)),
            pFlowContext->egressEndPoint.flowKey.gtpuTeid);
 
@@ -412,7 +412,7 @@ nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
   /*         NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "IPv4 end point does not exist on data plane!"); */
   /*         return NW_SDP_FAILURE; */
   /*       } */
-  /*       NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Modifying IPv4 tunnel endpoint with teid "NW_IPV4_ADDR, */
+  /*       NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Modifying IPv4 tunnel endpoint with peer IP "NW_IPV4_ADDR, */
   /*              NW_IPV4_ADDR_FORMAT(pFlowContext->ingressEndPoint.flowKey.ipv4Addr)); */
   /*       pFlowContext->egressEndPoint = *pNewFlowEndPoint; */
   /*     } */
@@ -424,7 +424,7 @@ nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
   /*       { */
   /*         return NW_SDP_FAILURE; */
   /*       } */
-  /*       NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Modifying GTPU tunnel endpoint with teid 0x%x for handle 0x%x", */
+  /*       NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Modifying GTPU tunnel endpoint with TEID 0x%08x for handle 0x%x", */
   /*              pFlowContext->ingressEndPoint.flowKey.gtpuTeid, */
   /*              (NwGtpv1uUlpSessionHandleT)pFlowContext->ingressEndPoint.hTunnelEndPoint.gtpu); */
   /*       pFlowContext->egressEndPoint.flowKey.gtpuTeid = pFlowContext->ingressEndPoint.flowKey.gtpuTeid; */
@@ -586,7 +586,7 @@ nwSdpProcessIpv4DataIndication(NwSdpT* thiz,
       {
         NwGtpv1uUlpApiT           ulpReq;
         NW_ASSERT(pFlowContext->egressEndPoint.ipv4Addr != 0);
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending IP PDU over GTPU teid 0x%x to "NW_IPV4_ADDR, pFlowContext->egressEndPoint.flowKey.gtpuTeid, NW_IPV4_ADDR_FORMAT(htonl(pFlowContext->egressEndPoint.ipv4Addr)));
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending IP PDU over GTPU TEID 0x%08x to "NW_IPV4_ADDR, pFlowContext->egressEndPoint.flowKey.gtpuTeid, NW_IPV4_ADDR_FORMAT(htonl(pFlowContext->egressEndPoint.ipv4Addr)));
         ulpReq.apiType                        = NW_GTPV1U_ULP_API_SEND_TPDU;
         ulpReq.apiInfo.sendtoInfo.teid        = pFlowContext->egressEndPoint.flowKey.gtpuTeid;
         ulpReq.apiInfo.sendtoInfo.ipAddr      = pFlowContext->egressEndPoint.ipv4Addr;
@@ -749,7 +749,7 @@ nwSdpProcessGtpuDataIndication(NwSdpT* thiz,
 
           rc = nwGtpv1uMsgDelete(thiz->hGtpv1uStack, (ulpReq.apiInfo.sendtoInfo.hMsg));
           NW_ASSERT( rc == NW_SDP_OK );
-          NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending GTPU PDU over teid 0x%x "NW_IPV4_ADDR, ulpReq.apiInfo.sendtoInfo.teid, NW_IPV4_ADDR_FORMAT(ntohl(ulpReq.apiInfo.sendtoInfo.ipAddr)));
+          NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending GTPU PDU over TEID 0x%08x "NW_IPV4_ADDR, ulpReq.apiInfo.sendtoInfo.teid, NW_IPV4_ADDR_FORMAT(ntohl(ulpReq.apiInfo.sendtoInfo.ipAddr)));
         }
         else
         {

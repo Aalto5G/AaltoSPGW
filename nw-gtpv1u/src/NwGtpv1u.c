@@ -310,7 +310,7 @@ NwGtpv1uCreateTunnelEndPoint( NW_IN  NwGtpv1uStackT* thiz,
 
     if(pCollision)
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Tunnel end-point cannot be created for teid 0x%x. Tunnel already exists", teid);
+      NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Tunnel endpoint cannot be created for TEID 0x%08x. Tunnel already exists", teid);
       rc = nwGtpTunnelEndPointDestroy(thiz, pTunnelEndPoint);
       NW_ASSERT(rc == NW_GTPV1U_OK);
       *phStackSession = (NwGtpv1uStackSessionHandleT) 0;
@@ -322,7 +322,7 @@ NwGtpv1uCreateTunnelEndPoint( NW_IN  NwGtpv1uStackT* thiz,
       *phStackSession = (NwGtpv1uStackSessionHandleT) pTunnelEndPoint;
       pTunnelEndPoint = RB_FIND(NwGtpv1uTunnelEndPointIdentifierMap, &(thiz->teidMap), pTunnelEndPoint);
       NW_ASSERT(pTunnelEndPoint);
-      NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel end-point 0x%x creation successful for teid 0x%x", pTunnelEndPoint, teid);
+      NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel endpoint 0x%x creation successful for TEID 0x%08x", pTunnelEndPoint, teid);
     }
 
   }
@@ -352,7 +352,7 @@ nwGtpv1uDestroyTunnelEndPoint( NwGtpv1uStackT* thiz,  NW_IN NwGtpv1uUlpApiT *pUl
 
   if(pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle)
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destroying Tunnel end-point '%x'", pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destroying tunnel endpoint handle '0x%x'", pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
     pRemovedTeid = RB_REMOVE(NwGtpv1uTunnelEndPointIdentifierMap, &(thiz->teidMap), (NwGtpv1uTunnelEndPointT*)(pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle));
 
     NW_ASSERT(pRemovedTeid == (NwGtpv1uTunnelEndPointT*)(pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle));
@@ -361,7 +361,7 @@ nwGtpv1uDestroyTunnelEndPoint( NwGtpv1uStackT* thiz,  NW_IN NwGtpv1uUlpApiT *pUl
   }
   else
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Non-existent Tunnel end-point handle '%x'", pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Non-existent tunnel endpoint handle '0x%x'", pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
   }
 
   return rc;
@@ -477,7 +477,8 @@ nwGtpv1uProcessGpdu( NwGtpv1uStackT* thiz,
     if(NW_GTPV1U_OK == rc)
     {
       NwGtpv1uMsgT* pMsg = (NwGtpv1uMsgT*) hMsg;
-      NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received T-PDU over tunnel end-point '%x' of size %u from "NW_IPV4_ADDR, ntohl(msgHdr->teid), pMsg->msgLen, NW_IPV4_ADDR_FORMAT((peerIp)));
+      NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received T-PDU over tunnel endpoint from IP "NW_IPV4_ADDR,
+	  " TEID 0x%08x of size %u", NW_IPV4_ADDR_FORMAT(peerIp), tunnelEndPointKey.teid, pMsg->msgLen);
       rc = nwGtpSessionSendMsgApiToUlpEntity(pTunnelEndPoint, pMsg);
     }
   }
