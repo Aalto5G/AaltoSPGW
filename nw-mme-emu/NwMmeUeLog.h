@@ -46,10 +46,12 @@
 #define NW_UE_LOG( _logLevel, ...)                                      \
   do {                                                                  \
     char _logStr[1024];                                                 \
+    NwU64T _imsi;                                                       \
     if(_gLogMgr.logLevel >= _logLevel)                                  \
     {                                                                   \
       snprintf(_logStr, 1024, __VA_ARGS__);                             \
-      snprintf(_logStr + strlen(_logStr), 1024, " ( imsi: %llx )", NW_NTOHLL(*((NwU64T*) (thiz->imsi))));\
+      memcpy(&_imsi, thiz->imsi, sizeof(NwU64T));                       \
+      snprintf(_logStr + strlen(_logStr), 1024, " ( imsi: %llx )", NW_NTOHLL(_imsi)); \
       nwLogMgrLog(&_gLogMgr, "NWMME-UE ", _logLevel, (char*)basename(__FILE__), __LINE__, _logStr);\
     }                                                                   \
   } while(0)

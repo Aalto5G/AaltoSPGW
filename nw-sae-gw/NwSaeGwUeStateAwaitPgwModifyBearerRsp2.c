@@ -95,7 +95,7 @@ nwSaeGwDecodeBearerContextToBeCreated(NwSaeGwUeT* thiz, NwGtpv2cMsgHandleT hReqM
   NwU16T epsBearerContextLength;
 
   NwBoolT ebiFlag = NW_FALSE;
-  NwBoolT bearerQosFlag = NW_FALSE;
+  /* NwBoolT bearerQosFlag = NW_FALSE; */
 
   rc = nwGtpv2cMsgGetIeTlvP(hReqMsg,
       NW_GTPV2C_IE_BEARER_CONTEXT,
@@ -149,7 +149,7 @@ nwSaeGwDecodeBearerContextToBeCreated(NwSaeGwUeT* thiz, NwGtpv2cMsgHandleT hReqM
         break;
       case NW_GTPV2C_IE_BEARER_LEVEL_QOS:
         {
-          bearerQosFlag = NW_TRUE;
+          /* bearerQosFlag = NW_TRUE; */
         }
       default:
         rc = NW_OK;
@@ -166,7 +166,7 @@ static NwRcT
 nwSaeGwDecodeBearerContextToBeRemoved(NwU8T ieType, NwU8T ieLength, NwU8T ieInstance, NwU8T* ieValue, void* arg)
 {
   NwU8T* ieEnd;
-  NwU8T t, l, i, *v;
+  NwU8T t, l, *v;
   NwSaeGwEpsBearerT *pEpsBearer = (NwSaeGwEpsBearerT*) arg;
   ieEnd = ieValue + ieLength;
 
@@ -180,7 +180,6 @@ nwSaeGwDecodeBearerContextToBeRemoved(NwU8T ieType, NwU8T ieLength, NwU8T ieInst
     if(l > ieLength + 4)
       return NW_FAILURE;
 
-    i = *(NwU8T*)(ieValue + 3);
     v = (NwU8T*)(ieValue + 4);
     switch(t)
     {
@@ -507,7 +506,7 @@ nwSaeGwUeSgwParseModifyBearerResponse(NwSaeGwUeT* thiz,
 static NwRcT
 nwSaeGwUeHandlePgwModifyBearerRsp2(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   NwGtpv2cErrorT        error;
   NwSaeGwUePgwModifyBearerRsp2T createSessRsp;
 
@@ -522,7 +521,7 @@ nwSaeGwUeHandlePgwModifyBearerRsp2(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
   }
   /* Check if all conditional IEs have been received properly. */
   rc = nwSaeGwUeSgwParseModifyBearerResponse(thiz, pUlpApi->hMsg, &error, &createSessRsp);
-  if( rc != NW_OK )
+  if( rc != NW_GTPV2C_OK )
   {
     switch(rc)
     {
@@ -552,7 +551,7 @@ nwSaeGwUeHandlePgwModifyBearerRsp2(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 
   /* Install uplink data flows on Data Plane*/
   rc = nwSaeGwUlpInstallUplinkEpsBearer(thiz->hSgw, thiz, createSessRsp.epsBearerCreated.ebi);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT( NW_GTPV2C_OK == rc );
 
   thiz->state = NW_SAE_GW_UE_STATE_SGW_SESSION_ESTABLISHED;
 
@@ -574,8 +573,8 @@ nwSaeGwUeHandlePgwModifyBearerRsp2Nack(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pE
 static NwRcT
 nwSaeGwUeHandlePgwLLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
-  NwRcT                 rc;
-  NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
+  NwRcT                 rc = NW_OK;
+  /* NwGtpv2cUlpApiT       *pUlpApi = pEv->arg; */
 
   /* rc = nwSaeGwUeSgwSendModifyBearerResponseToMme(thiz, pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn, NW_GTPV2C_CAUSE_REMOTE_PEER_NOT_RESPONDING, 5, 0); */
   /* TODO */

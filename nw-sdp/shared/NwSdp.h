@@ -168,7 +168,7 @@ typedef struct
   union {
     NwGtpv1uUlpSessionHandleT gtpu;
     NwGreStackSessionHandleT gre;
-    NwU32T udp;
+    NwPtrT udp;
     NwIpv4StackSessionHandleT ipv4;
   } hTunnelEndPoint;
 
@@ -404,7 +404,7 @@ nwSdpFinalize( NW_IN  NwSdpHandleT hSdp);
 
 NwSdpRcT
 nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
-                        NW_IN NwU32T hGtpuTlInterface,
+                        NW_IN NwGtpv1uUdpHandleT hGtpuTlInterface,
                         NW_IN NwSdpRcT (*pGtpuTlDataReqCb)( NwGtpv1uUdpHandleT hUdp,
                                                         NwU8T* dataBuf,
                                                         NwU32T dataSize,
@@ -427,10 +427,10 @@ nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
 NwSdpRcT
 nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
                         NW_IN NwU32T            mode,
-                        NW_IN NwU32T            hIpv4TlInterface,
-                        NW_IN NwSdpRcT          (*pIpv4TlDataReqCb)( NwU32T udpHandle,
-                                                        NwU8T* dataBuf,
-                                                        NwU32T dataSize),
+                        NW_IN NwIpv4LlpHandleT  hIpv4TlInterface,
+                        NW_IN NwSdpRcT          (*pIpv4TlDataReqCb)( NwIpv4LlpHandleT udpHandle,
+                                                                     NwU8T* dataBuf,
+                                                                     NwU32T dataSize),
                         NW_IN NwSdpServiceHandleT* phSdpService);
 
 /**

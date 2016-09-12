@@ -956,8 +956,8 @@ nwSdpCreateGreService1( NW_IN NwSdpHandleT hSdp,
 NwSdpRcT
 nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
                         NW_IN NwU32T            mode,
-                        NW_IN NwU32T            hIpv4TlInterface,
-                        NW_IN NwSdpRcT          (*pIpv4TlDataReqCb)( NwU32T udpHandle,
+                        NW_IN NwIpv4LlpHandleT  hIpv4TlInterface,
+                        NW_IN NwSdpRcT          (*pIpv4TlDataReqCb)( NwIpv4LlpHandleT udpHandle,
                                                         NwU8T* dataBuf,
                                                         NwU32T dataSize),
                         NW_IN NwSdpServiceHandleT* phSdpService)
@@ -1043,7 +1043,7 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
    * Set LLP Entity
    *--------------------------------------------------------------------------*/
 
-  ipv4Llp.hLlp = (NwIpv4LlpHandleT) hIpv4TlInterface;
+  ipv4Llp.hLlp = hIpv4TlInterface;
   ipv4Llp.llpDataReqCallback    = pIpv4TlDataReqCb;
 
   rc = nwIpv4SetLlpEntity(thiz->hIpv4Stack, &ipv4Llp);
@@ -1068,7 +1068,7 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
 
 NwSdpRcT
 nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
-                        NW_IN NwU32T hGtpuTlInterface,
+                        NW_IN NwGtpv1uUdpHandleT hGtpuTlInterface,
                         NW_IN NwSdpRcT (*pGtpuTlDataReqCb)( NwGtpv1uUdpHandleT hUdp,
                                                         NwU8T* dataBuf,
                                                         NwU32T dataSize,
@@ -1151,7 +1151,7 @@ nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
    * Set UDP Entity
    *--------------------------------------------------------------------------*/
 
-  gtpuUdp.hUdp = (NwGtpv1uUdpHandleT) hGtpuTlInterface;
+  gtpuUdp.hUdp = hGtpuTlInterface;
   gtpuUdp.udpDataReqCallback = pGtpuTlDataReqCb;
 
   rc = nwGtpv1uSetUdpEntity(thiz->hGtpv1uStack, &gtpuUdp);
