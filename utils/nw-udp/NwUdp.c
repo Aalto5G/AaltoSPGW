@@ -51,12 +51,11 @@ NwRcT nwUdpDataReq(NwGtpv2cUdpHandleT udpHandle,
   NwS32T bytesSent;
   NwUdpT* thiz = (NwUdpT*) udpHandle;
 
-  NW_UDP_LOG(NW_LOG_LEVEL_DEBG, "Sending buf of size %u for on handle %x to peer %u.%u.%u.%u:%u", dataSize, udpHandle,
-      (peerIpAddr & 0x000000ff),
-      (peerIpAddr & 0x0000ff00) >> 8,
-      (peerIpAddr & 0x00ff0000) >> 16,
-      (peerIpAddr & 0xff000000) >> 24,
-      peerPort);
+  NW_UDP_LOG(NW_LOG_LEVEL_DEBG, "Sending buf of size %u for on handle %p to peer "NW_IPV4_ADDR":%u",
+             dataSize,
+             (void*)udpHandle,
+             NW_IPV4_ADDR_FORMAT(peerIpAddr),
+             peerPort);
 
   peerAddr.sin_family       = AF_INET;
   peerAddr.sin_port         = htons(peerPort);

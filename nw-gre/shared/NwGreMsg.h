@@ -190,6 +190,15 @@ NwGreRcT
 nwGreMsgSetSeqNumber(NW_IN NwGreMsgHandleT hMsg, NwU32T seqNum);
 
  /**
+  * Get msg type for gre message.
+  *
+  * @param[in] hMsg : Message handle.
+  */
+
+NwU32T
+nwGreMsgGetMsgType(NW_IN NwGreMsgHandleT hMsg);
+
+ /**
   * Get TEID present for gre message.
   *
   * @param[in] hMsg : Message handle.

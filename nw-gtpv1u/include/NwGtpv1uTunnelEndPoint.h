@@ -70,6 +70,11 @@ nwGtpTunnelEndPointNew(struct NwGtpv1uStack* pStack);
 NwGtpv1uRcT
 nwGtpTunnelEndPointDestroy(struct NwGtpv1uStack* pStack, NwGtpv1uTunnelEndPointT* thiz);
 
+
+NwGtpv1uRcT
+nwGtpSessionSendMsgApiToUlpEntity(NwGtpv1uTunnelEndPointT* thiz,
+                                  NwGtpv1uMsgT *pMsg);
+
 #ifdef __cplusplus
 }
 #endif

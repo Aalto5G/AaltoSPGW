@@ -78,6 +78,7 @@ nwIpv4TunnelEndPointNew(struct NwIpv4Stack *pStack)
   {
     NW_IPv4_MALLOC(pStack, sizeof(NwIpv4TunnelEndPointT), thiz, NwIpv4TunnelEndPointT*);
   }
+  bzero(thiz, sizeof(NwIpv4TunnelEndPointT));
   return thiz;
 }
 

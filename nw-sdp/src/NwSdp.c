@@ -258,11 +258,11 @@ nwSdpCreateFlowEndPoint( NW_IN  NwSdpT* thiz,
     default:
       {
         NW_LOG(thiz, NW_LOG_LEVEL_NOTI, "Unsupported encapsulation type %u", pFlowEndPoint->flowType);
-        return NW_SDP_FAILURE;
+        rc = NW_SDP_FAILURE;
       }
   }
 
-  return NW_SDP_OK;
+  return rc;
 }
 
 static NwSdpRcT
@@ -295,7 +295,7 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
     case NW_FLOW_TYPE_GTPU:
       {
         NwGtpv1uUlpApiT         ulpReq;
-        NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Destroying GTPU tunnel endpoint with TEID 0x%08x for handle 0x%x", pFlowEndPoint->flowKey.gtpuTeid, (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu);
+        NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Destroying GTPU tunnel endpoint with TEID 0x%08x for handle %p", pFlowEndPoint->flowKey.gtpuTeid, (NwGtpv1uUlpSessionHandleT)pFlowEndPoint->hTunnelEndPoint.gtpu);
         if(thiz->hGtpv1uStack && pFlowEndPoint->hTunnelEndPoint.gtpu)
         {
           ulpReq.apiType                                        = NW_GTPV1U_ULP_API_DESTROY_TUNNEL_ENDPOINT;
@@ -313,7 +313,7 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
     case NW_FLOW_TYPE_GRE:
       {
         NwGreUlpApiT            ulpReq;
-        NW_LOG(thiz, NW_LOG_LEVEL_NOTI, "Destroying GRE tunnel endpoint with key %d", pFlowEndPoint->flowKey.greKey);
+        NW_LOG(thiz, NW_LOG_LEVEL_NOTI, "Destroying GRE tunnel endpoint with key 0x%08x", pFlowEndPoint->flowKey.greKey);
         if(thiz->hGreStack && pFlowEndPoint->hTunnelEndPoint.gre)
         {
           ulpReq.apiType                                        = NW_GRE_ULP_API_DESTROY_TUNNEL_ENDPOINT;
@@ -353,7 +353,7 @@ nwSdpDestroyFlowEndPoint( NW_IN  NwSdpT* thiz,
       }
   }
 
-  return NW_SDP_OK;
+  return rc;
 }
 
 
@@ -672,18 +672,20 @@ nwSdpProcessGtpuDataIndication(NwSdpT* thiz,
     case NW_FLOW_TYPE_IPv4:
       {
         NwIpv4UlpApiT           ulpReq;
-        NwU8T*                  pIpv4Pdu;
 
         if(thiz->hIpv4Stack)
         {
           /* Send over IP*/
-          rc = nwIpv4MsgFromBufferNew(thiz->hIpv4Stack,
+          NwIpv4RcT rc4;
+          rc4 = nwIpv4MsgFromBufferNew(thiz->hIpv4Stack,
               nwGtpv1uMsgGetTpduHandle(hMsg),
               nwGtpv1uMsgGetTpduLength(hMsg),
               &(ulpReq.apiInfo.sendtoInfo.hMsg));
-          NW_ASSERT(NW_IPv4_OK == rc);
+          NW_ASSERT(NW_IPv4_OK == rc4);
 
 #ifdef NW_SDP_RESPOND_ICMP_PING
+          NwU8T*                  pIpv4Pdu;
+
           pIpv4Pdu = nwIpv4MsgGetBufHandle(thiz->hIpv4Stack, ulpReq.apiInfo.sendtoInfo.hMsg);
           if(*(pIpv4Pdu + 20) == 0x08)
           {
@@ -799,11 +801,11 @@ NwSdpRcT nwSdpProcessGtpv1uStackReqCallback(NwGtpv1uUlpHandleT hUlp,
   return NW_SDP_OK;
 }
 
-static NwSdpRcT
+static NwGreRcT
 nwSdpProcessGreStackReqCallback(NwGreUlpHandleT hUlp,
                            NwGreUlpApiT *pUlpApi)
 {
-  return NW_SDP_OK;
+  return NW_GRE_OK;
 }
 
 static
@@ -812,7 +814,7 @@ NwSdpRcT nwSdpProcessIpv4StackReqCallback(NwGreUlpHandleT hUlp,
 {
   NwSdpRcT rc;
   NwSdpT* thiz = (NwSdpT*)hUlp;
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received API request from IPv4 Stack for ULP session 0x%x", pUlpApi->apiInfo.recvMsgInfo.hUlpSession);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received API request from IPv4 Stack for ULP session %p", (void*)pUlpApi->apiInfo.recvMsgInfo.hUlpSession);
 
   switch(pUlpApi->apiType)
   {
@@ -921,7 +923,7 @@ nwSdpCreateGreService1( NW_IN NwSdpHandleT hSdp,
     NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Failed to create SDP instance. Error '%u' occured", rc);
     exit(1);
   }
-  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Gre Stack Handle '%X' Creation Successful!", hGreStack);
+  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Gre Stack Handle '%p' Creation Successful!", (void*)hGreStack);
 
   greUlp.hUlp                   = (NwGreUlpHandleT) thiz;
   greUlp.ulpReqCallback         = nwSdpProcessGreStackReqCallback;
@@ -982,7 +984,7 @@ nwSdpCreateIpv4Service( NW_IN NwSdpHandleT      hSdp,
     NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Failed to create IPv4 stack instance. Error '%u' occured", rc);
     exit(1);
   }
-  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "IPv4 Stack Handle '%X' Creation Successful!", thiz->hIpv4Stack);
+  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "IPv4 Stack Handle '%p' Creation Successful!", (void*)thiz->hIpv4Stack);
 
   /*---------------------------------------------------------------------------
    * Set up mode uplink or downlink.
@@ -1096,7 +1098,7 @@ nwSdpCreateGtpuService( NW_IN NwSdpHandleT hSdp,
     NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Failed to create GTPU stack instance. Error '%u' occured", rc);
     exit(1);
   }
-  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "GTPU Stack Handle '%X' Creation Successful!", thiz->hGtpv1uStack);
+  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "GTPU Stack Handle '%p' Creation Successful!", (void*)thiz->hGtpv1uStack);
 
   /*---------------------------------------------------------------------------
    * Set up Mem Manager
@@ -1199,7 +1201,7 @@ nwSdpCreateGreService(  NW_IN NwSdpHandleT hSdp,
     NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Failed to create SDP instance. Error '%u' occured", rc);
     exit(1);
   }
-  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Gre Stack Handle '%X' Creation Successful!", hGreStack);
+  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "GRE Stack Handle '%p' Creation Successful!", (void*)hGreStack);
 
   greUlp.hUlp                   = (NwGreUlpHandleT) thiz;
   greUlp.ulpReqCallback         = nwSdpProcessGreStackReqCallback;
@@ -1238,7 +1240,6 @@ nwSdpSetGreServiceTransportInterface( NW_IN NwSdpHandleT hSdp,
   NwSdpRcT rc;
   NwGreLlpEntityT greLlp;
   NwGreStackHandleT hGreStack = (NwGreStackHandleT) hSdpService;
-  NwSdpT* thiz = (NwSdpT*) hSdp;
 
   greLlp.hUdp = (NwGreUdpHandleT) hGreTlInterface;
   greLlp.udpDataReqCallback = pGreTlDataReqCb;
@@ -1383,7 +1384,7 @@ nwSdpSetServiceLogLevel( NW_IN NwSdpHandleT hSdp,
                   NW_IN NwSdpServiceHandleT hService,
                   NW_IN NwU32T logLevel)
 {
-  NwSdpT* thiz = (NwSdpT*) hSdp;
+  /* NwSdpT* thiz = (NwSdpT*) hSdp; */
 
   return NW_SDP_OK;
 }
@@ -1433,7 +1434,6 @@ nwSdpProcessGtpuDataInd( NW_IN NwSdpHandleT hSdp,
 {
   NwSdpRcT                 rc;
   NwSdpT*          thiz;
-  NwU16T                msgType;
 
   thiz = (NwSdpT*) hSdp;
 
@@ -1451,7 +1451,7 @@ nwSdpProcessUdpDataInd( NW_IN NwSdpHandleT hSdp,
                     NW_IN NwU16T peerPort,
                     NW_IN NwU32T peerIp)
 {
-  NwSdpRcT              rc;
+  NwSdpRcT              rc = NW_SDP_OK;
   NwSdpT*               thiz;
 
   thiz = (NwSdpT*) hSdp;
@@ -1531,7 +1531,7 @@ nwSdpProcessTimeout(void* timeoutInfo)
   NW_ASSERT(thiz != NULL);
 
   NW_ENTER(thiz);
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received timeout event from ULP with timeoutInfo 0x%x!", (NwU32T)timeoutInfo);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received timeout event from ULP with timeoutInfo %p!", (void*)timeoutInfo);
 
   rc = (((NwSdpTimeoutInfoT*) timeoutInfo)->timeoutCallbackFunc) (timeoutInfo);
 

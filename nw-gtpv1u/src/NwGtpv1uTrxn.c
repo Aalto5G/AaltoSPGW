@@ -39,6 +39,7 @@
 #include "NwUtils.h"
 #include "NwGtpv1uLog.h"
 #include "NwGtpv1u.h"
+#include "NwGtpv1uMsg.h"
 #include "NwGtpv1uPrivate.h"
 #include "NwGtpv1uTrxn.h"
 
@@ -90,7 +91,7 @@ nwGtpv1uTrxnPeerRspTimeout(void* arg)
 
   NW_ASSERT(pStack);
 
-  NW_LOG(pStack, NW_LOG_LEVEL_WARN, "T3 timer expired for transaction 0x%X", thiz);
+  NW_LOG(pStack, NW_LOG_LEVEL_WARN, "T3 timer expired for transaction %p", thiz);
 
   rc = nwGtpv1uTrxnSendMsgRetransmission(thiz);
 
@@ -103,7 +104,7 @@ nwGtpv1uTrxnPeerRspTimeout(void* arg)
   {
     NwGtpv1uUlpApiT ulpApi;
     ulpApi.apiType                      = NW_GTPV1U_ULP_API_RSP_FAILURE;
-    ulpApi.apiInfo.recvMsgInfo.msgType  = nwGtpv1uMsgGetMsgType(thiz->pMsg);
+    ulpApi.apiInfo.recvMsgInfo.msgType  = nwGtpv1uMsgGetMsgType((NwGtpv1uMsgHandleT)thiz->pMsg);
     ulpApi.apiInfo.recvMsgInfo.hUlpTrxn = thiz->hUlpTrxn;
     ulpApi.apiInfo.recvMsgInfo.peerIp   = thiz->peerIp;
     ulpApi.apiInfo.recvMsgInfo.peerPort = thiz->peerPort;
@@ -211,7 +212,7 @@ nwGtpv1uTrxnNew( NW_IN  NwGtpv1uStackT* thiz,
     rc = NW_GTPV1U_FAILURE;
   }
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Created transaction 0x%X", pTrxn);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Created transaction %p", pTrxn);
 
   *ppTrxn = pTrxn;
 
@@ -258,7 +259,7 @@ nwGtpv1uTrxnWithSeqNew( NW_IN  NwGtpv1uStackT* thiz,
     rc = NW_GTPV1U_FAILURE;
   }
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Created transaction 0x%X", pTrxn);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Created transaction %p", pTrxn);
 
   *ppTrxn = pTrxn;
 
@@ -295,7 +296,7 @@ nwGtpv1uTrxnDelete( NW_INOUT NwGtpv1uTrxnT **pthiz)
   thiz->next = gpGtpv1uTrxnPool;
   gpGtpv1uTrxnPool = thiz;
 
-  NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Purged transaction 0x%X", thiz);
+  NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Purged transaction %p", thiz);
 
   *pthiz = NULL;
   return rc;

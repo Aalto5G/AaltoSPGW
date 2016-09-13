@@ -89,14 +89,16 @@ NwRcT nwGtpv1uIfDataReq(NwGtpv1uUdpHandleT udpHandle,
     NwU32T peerIpAddr,
     NwU32T peerPort)
 {
-  struct sockaddr_in peerAddr;
+  struct sockaddr_in peerAddr = {0};
   NwRcT rc;
   NwS32T bytesSent;
   NwS32T iptos;
   NwGtpv1uIfT* thiz = (NwGtpv1uIfT*) udpHandle;
 
-  NW_GTPV1U_IF_LOG(NW_LOG_LEVEL_DEBG, "Sending buf of size %u for on handle %x to peer "NW_IPV4_ADDR, dataSize, udpHandle,
-      NW_IPV4_ADDR_FORMAT(ntohl(peerIpAddr)));
+  NW_GTPV1U_IF_LOG(NW_LOG_LEVEL_DEBG, "Sending buf of size %u for on handle %p to peer "NW_IPV4_ADDR,
+                   dataSize,
+                   (void*)udpHandle,
+                   NW_IPV4_ADDR_FORMAT(ntohl(peerIpAddr)));
 
   peerAddr.sin_family       = AF_INET;
   peerAddr.sin_port         = htons(peerPort);

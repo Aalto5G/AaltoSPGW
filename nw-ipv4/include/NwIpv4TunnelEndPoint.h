@@ -70,6 +70,12 @@ nwIpv4TunnelEndPointNew(struct NwIpv4Stack *pStack);
 NwIpv4RcT
 nwIpv4TunnelEndPointDestroy(struct NwIpv4Stack *pStack, NwIpv4TunnelEndPointT* thiz);
 
+
+NwIpv4RcT
+nwIpv4SessionSendMsgApiToUlpEntity(NwIpv4TunnelEndPointT* thiz,
+                                   NwU8T* pIpPdu,
+                                   NwU32T ipPduLen);
+
 #ifdef __cplusplus
 }
 #endif

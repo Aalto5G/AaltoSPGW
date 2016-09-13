@@ -70,6 +70,10 @@ nwGreTunnelEndPointNew(struct NwGreStack *pStack);
 NwGreRcT
 nwGreTunnelEndPointDestroy(struct NwGreStack *pStack, NwGreTunnelEndPointT* thiz);
 
+NwGreRcT
+nwGreSessionSendMsgApiToUlpEntity(NwGreTunnelEndPointT* thiz,
+                                  NwGreMsgT *pMsg);
+
 #ifdef __cplusplus
 }
 #endif

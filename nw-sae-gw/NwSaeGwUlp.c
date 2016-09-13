@@ -53,6 +53,7 @@
 #include "NwSaeGwLog.h"
 #include "NwLogMgr.h"
 #include "NwGtpv2c.h"
+#include "NwGtpv2cMsg.h"
 #include "NwSaeGwUe.h"
 #include "NwSaeGwUlp.h"
 #include "NwGtpv2cIf.h"
@@ -626,7 +627,7 @@ nwSaeGwUlpCreateUeSession(NwSaeGwUlpT* thiz, NwSaeGwUeT **ppUe)
 static NwRcT
 nwSaeGwUlpDestroyUeSession(NwSaeGwUlpT* thiz, NwSaeGwUeT **ppUe)
 {
-  NwRcT rc;
+  NwRcT rc = NW_OK;
   NwSaeGwUeT *pUe = *ppUe;
   if(pUe->sessionType & NW_SAE_GW_UE_SESSION_TYPE_PGW)
   {
@@ -637,7 +638,7 @@ nwSaeGwUlpDestroyUeSession(NwSaeGwUlpT* thiz, NwSaeGwUeT **ppUe)
     rc = nwSaeGwUlpSgwDeregisterUeSession(pUe->hSgw, pUe);
   }
   rc = nwSaeGwUeDelete(pUe);
-  return NW_OK;
+  return rc;
 }
 
 static NwRcT
@@ -653,33 +654,38 @@ nwSaeGwUlpFreeIpv4Address(NwSaeGwUlpT* thiz, NwU32T ipv4Addr)
 }
 
 static NwRcT
-nwSaeGwUlpSgwDeregisterAllUeSessionFromPeer(NwHandleT hSaeGw, NwGtpv2cUlpApiT *pUlpApi)
+nwSaeGwUlpSgwDeregisterAllUeSessionFromPeer(NwSaeGwUlpT* hSaeGw, NwGtpv2cUlpApiT *pUlpApi)
 {
   NwRcT                         rc = NW_OK;
-  NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
+  NwSaeGwUlpT* thiz = hSaeGw;
   NwSaeGwUeT *pUe = NULL, *nxt = NULL;
   NwUeStateT                    ueState;
   NwSaeGwUeEventInfoT           eventInfo;
-  NwU32T peerAddr = pUlpApi->apiInfo.peerChangeInfo.peerIp;
+  NwU32T peerAddr;
+  NwU64T imsi;
 
-  NW_ASSERT( thiz-> saeGwType == NW_SAE_GW_TYPE_SGW);
+  NW_ASSERT( thiz->saeGwType == NW_SAE_GW_TYPE_SGW);
 
-  eventInfo.event =  NW_SAE_GW_UE_EVENT_LOW_LAYER_ERROR;
+  peerAddr = pUlpApi->apiInfo.peerChangeInfo.peerIp;
+  memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+
+  eventInfo.event = NW_SAE_GW_UE_EVENT_LOW_LAYER_ERROR;
   eventInfo.arg   = pUlpApi;
 
   for (pUe = RB_MIN(NwUeSgwSessionRbtT, &thiz->ueSgwSessionRbt); pUe != NULL; pUe =	nxt) {
     nxt = RB_NEXT(NwUeSgwSessionRbtT, &thiz->ueSgwSessionRbt, pUe);
     NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,
-                  "Checking if UE (IMSI %llx) should be removed, peer %u, node peer %u",
-                  NW_NTOHLL(((*(NwU64T*)pUe->imsi))),
-                  pUe->s11cTunnel.fteidMme.ipv4Addr,
-                  peerAddr);
+                  "Checking if UE (IMSI %llx) should be removed, peer "NW_IPV4_ADDR
+                  ", node peer "NW_IPV4_ADDR,
+                  NW_NTOHLL(imsi),
+                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->s11cTunnel.fteidMme.ipv4Addr)),
+                  NW_IPV4_ADDR_FORMAT(peerAddr));
     if(pUe->s11cTunnel.fteidMme.ipv4Addr == peerAddr)
     {
       /* TODO Tell PGW*/
       NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,
                     "UE (IMSI %llx) should be removed, MME down/restarted",
-                    NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+                    NW_NTOHLL(imsi));
 
       rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
     }
@@ -687,20 +693,20 @@ nwSaeGwUlpSgwDeregisterAllUeSessionFromPeer(NwHandleT hSaeGw, NwGtpv2cUlpApiT *p
     {
       NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,
                     "UE (IMSI %llx) should be removed, PGW down/restarted",
-                    NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+                    NW_NTOHLL(imsi));
 
       rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
     }
   }
-  return NW_OK;
+  return rc;
 }
 
 
 static NwRcT
-nwSaeGwUlpPgwDeregisterAllUeSessionFromPeer(NwHandleT hSaeGw, NwGtpv2cUlpApiT *pUlpApi)
+nwSaeGwUlpPgwDeregisterAllUeSessionFromPeer(NwSaeGwUlpT* hSaeGw, NwGtpv2cUlpApiT *pUlpApi)
 {
   NwRcT                         rc = NW_OK;
-  NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
+  NwSaeGwUlpT* thiz = hSaeGw;
   NwSaeGwUeT *pUe, *nxt;
   NwUeStateT                    ueState;
   NwSaeGwUeEventInfoT           eventInfo;
@@ -718,7 +724,7 @@ nwSaeGwUlpPgwDeregisterAllUeSessionFromPeer(NwHandleT hSaeGw, NwGtpv2cUlpApiT *p
         rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
     }
   }
-  return NW_OK;
+  return rc;
 }
 
 static NwRcT
@@ -730,7 +736,7 @@ nwSaeGwUlpSgwS11GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
   NwUeStateT                    ueState;
   NwSaeGwUeT                    *pUe = NULL;
   NwSaeGwUeEventInfoT           eventInfo;
-
+  NwU64T imsi;
   NW_ASSERT(pUlpApi != NULL);
 
   thiz = (NwSaeGwUlpT*) hUlp;
@@ -767,7 +773,8 @@ nwSaeGwUlpSgwS11GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
           rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
           if(ueState == NW_SAE_GW_UE_STATE_END)
           {
-            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+            memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(imsi));
             rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
           }
         }
@@ -794,7 +801,8 @@ nwSaeGwUlpSgwS11GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
           rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
           if(ueState == NW_SAE_GW_UE_STATE_END)
           {
-            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+            memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(imsi));
             rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
           }
         }
@@ -816,9 +824,9 @@ nwSaeGwUlpSgwS11GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
       {
         eventInfo.event   = NW_SAE_GW_UE_EVENT_NACK;
         eventInfo.arg     = pUlpApi;
-        NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Received NW_GTPV2C_ULP_API_RSP_FAILURE from S11 GTPv2c stack for session 0x%x and transaction 0x%x!",
-            pUlpApi->apiInfo.rspFailureInfo.hUlpTunnel,
-            pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn);
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Received NW_GTPV2C_ULP_API_RSP_FAILURE from S11 GTPv2c stack for session %p and transaction %p!",
+                      (void*)pUlpApi->apiInfo.rspFailureInfo.hUlpTunnel,
+                      (void*)pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn);
 
         if((NwSaeGwUeT*)pUlpApi->apiInfo.rspFailureInfo.hUlpTunnel)
         {
@@ -835,7 +843,8 @@ nwSaeGwUlpSgwS11GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
           rc = nwSaeGwUeFsmRun(thiz->pUeFsm, (NwSaeGwUeT*)pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn, &eventInfo, &ueState);
           if(ueState == NW_SAE_GW_UE_STATE_END)
           {
-            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE context with IMSI %llx!",*((NwU64T*)(pUe->imsi)) );
+            memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE context with IMSI %llx!", NW_NTOHLL(imsi));
             rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
           }
         }
@@ -873,6 +882,7 @@ nwSaeGwUlpSgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
   NwUeStateT                    ueState;
   NwSaeGwUeT                    *pUe = NULL;
   NwSaeGwUeEventInfoT           eventInfo;
+  NwU64T     imsi;
 
   NW_ASSERT(pUlpApi != NULL);
 
@@ -908,7 +918,8 @@ nwSaeGwUlpSgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
           rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
           if(ueState == NW_SAE_GW_UE_STATE_END)
           {
-            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+            memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(imsi));
             rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
           }
         }
@@ -936,7 +947,8 @@ nwSaeGwUlpSgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
           rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
           if(ueState == NW_SAE_GW_UE_STATE_END)
           {
-            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+            memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(imsi));
             rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
           }
         }
@@ -959,9 +971,9 @@ nwSaeGwUlpSgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
       {
         eventInfo.event   = NW_SAE_GW_UE_EVENT_NACK;
         eventInfo.arg     = pUlpApi;
-        NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Received NW_GTPV2C_ULP_API_RSP_FAILURE from SGW S5 GTPv2c stack for session 0x%x and transaction 0x%x!",
-            pUlpApi->apiInfo.rspFailureInfo.hUlpTunnel,
-            pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn);
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Received NW_GTPV2C_ULP_API_RSP_FAILURE from SGW S5 GTPv2c stack for session %p and transaction %p!",
+                      (void*)pUlpApi->apiInfo.rspFailureInfo.hUlpTunnel,
+                      (void*)pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn);
 
         pUe = (NwSaeGwUeT*)pUlpApi->apiInfo.rspFailureInfo.hUlpTunnel;
         if(pUe)
@@ -969,7 +981,8 @@ nwSaeGwUlpSgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
           rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
           if(ueState == NW_SAE_GW_UE_STATE_END)
           {
-            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE context with IMSI %llx!",(*((NwU64T*)(pUe->imsi))) );
+            memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE context with IMSI %llx!",NW_NTOHLL(imsi));
             rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
           }
         }
@@ -1007,7 +1020,7 @@ nwSaeGwUlpPgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
   NwUeStateT                    ueState;
   NwSaeGwUeT                    *pUe = NULL;
   NwSaeGwUeEventInfoT           eventInfo;
-
+  NwU64T                        imsi;
   NW_ASSERT(pUlpApi != NULL);
 
   thiz = (NwSaeGwUlpT*) hUlp;
@@ -1043,7 +1056,8 @@ nwSaeGwUlpPgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
           rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
           if(ueState == NW_SAE_GW_UE_STATE_END)
           {
-            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+            memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(imsi));
             rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
           }
         }
@@ -1070,7 +1084,8 @@ nwSaeGwUlpPgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
           rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
           if(ueState == NW_SAE_GW_UE_STATE_END)
           {
-            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+            memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(imsi));
             rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
           }
         }
@@ -1092,9 +1107,9 @@ nwSaeGwUlpPgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
       {
         eventInfo.event   = NW_SAE_GW_UE_EVENT_NACK;
         eventInfo.arg     = pUlpApi;
-        NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Received NW_GTPV2C_ULP_API_RSP_FAILURE from PGW S5 GTPv2c stack for session 0x%x and transaction 0x%x!",
-            pUlpApi->apiInfo.rspFailureInfo.hUlpTunnel,
-            pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn);
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Received NW_GTPV2C_ULP_API_RSP_FAILURE from PGW S5 GTPv2c stack for session %p and transaction %p!",
+                      (void*)pUlpApi->apiInfo.rspFailureInfo.hUlpTunnel,
+                      (void*)pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn);
 
         pUe = (NwSaeGwUeT*)pUlpApi->apiInfo.rspFailureInfo.hUlpTunnel;
 
@@ -1103,7 +1118,8 @@ nwSaeGwUlpPgwS5GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
           rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
           if(ueState == NW_SAE_GW_UE_STATE_END)
           {
-            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE context with IMSI %llx!",*((NwU64T*)(pUe->imsi)) );
+            memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+            NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE context with IMSI %llx!",NW_NTOHLL(imsi));
             rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
           }
         }
@@ -1199,7 +1215,7 @@ nwSaeGwUlpCreateGtpv2cStackInstance(NwSaeGwUlpT               *thiz,
     exit(1);
   }
 
-  NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO, "GTP-Cv2 Stack Handle 0x%x Creation Successful!", hGtpv2cStack);
+  NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO, "GTP-Cv2 Stack Handle %p Creation Successful!", (void*)hGtpv2cStack);
 
   /* Set up Log Entity for GTPv2C Stack */
 
@@ -1339,7 +1355,7 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
     rc = nwSaeGwUlpCreateGtpv2cStackInstance(thiz, &thiz->sgw.s11c.hGtpv2cStack);
     NW_ASSERT( NW_OK == rc );
 
-    rc = nwSaeGwGetRestartCounter(pCfg->stateDir, thiz->sgw.s11c.ipv4Addr, &restartCounter);
+    rc = nwSaeGwGetRestartCounter((const char *)pCfg->stateDir, thiz->sgw.s11c.ipv4Addr, &restartCounter);
     NW_ASSERT( NW_OK == rc );
     rc = nwGtpv2cSetRestartCounter(thiz->sgw.s11c.hGtpv2cStack, restartCounter);
     NW_ASSERT( NW_OK == rc );
@@ -1371,7 +1387,7 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
     rc = nwSaeGwUlpCreateGtpv2cStackInstance(thiz, &thiz->sgw.s5c.hGtpv2cStack);
     NW_ASSERT( NW_OK == rc );
 
-    rc = nwSaeGwGetRestartCounter(pCfg->stateDir, thiz->sgw.s5c.ipv4Addr, &restartCounter);
+    rc = nwSaeGwGetRestartCounter((const char *)pCfg->stateDir, thiz->sgw.s5c.ipv4Addr, &restartCounter);
     NW_ASSERT( NW_OK == rc );
     rc = nwGtpv2cSetRestartCounter(thiz->sgw.s5c.hGtpv2cStack, restartCounter);
     NW_ASSERT( NW_OK == rc );
@@ -1399,8 +1415,8 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
   }
   else if(thiz->saeGwType == NW_SAE_GW_TYPE_PGW)
   {
-    strncpy(thiz->ue_dns1, pCfg->ue_dns1, INET6_ADDRSTRLEN);
-    strncpy(thiz->ue_dns2, pCfg->ue_dns2, INET6_ADDRSTRLEN);
+    strncpy((char *)thiz->ue_dns1, (const char *)pCfg->ue_dns1, INET6_ADDRSTRLEN);
+    strncpy((char *)thiz->ue_dns2, (const char *)pCfg->ue_dns2, INET6_ADDRSTRLEN);
     thiz->mtu = pCfg->mtu;
 
     /* Create PGW-S5 Gtpv2c Service Access Point*/
@@ -1408,7 +1424,7 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
     rc = nwSaeGwUlpCreateGtpv2cStackInstance(thiz, &thiz->pgw.s5c.hGtpv2cStack);
     NW_ASSERT( NW_OK == rc );
 
-    rc = nwSaeGwGetRestartCounter(pCfg->stateDir, thiz->pgw.s5c.ipv4Addr, &restartCounter);
+    rc = nwSaeGwGetRestartCounter((const char *)pCfg->stateDir, thiz->pgw.s5c.ipv4Addr, &restartCounter);
     NW_ASSERT( NW_OK == rc );
     rc = nwGtpv2cSetRestartCounter(thiz->pgw.s5c.hGtpv2cStack, restartCounter);
     NW_ASSERT( NW_OK == rc );
@@ -1474,7 +1490,7 @@ nwSaeGwUlpRegisterCollocatedPgw(NwSaeGwUlpT* thiz, NwSaeGwUlpT* pCollocatedPgw)
 {
   NW_ASSERT(thiz);
   NW_ASSERT(pCollocatedPgw);
-  NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO, "Registering Collocated PGW 0x%x with IPv4 address %x", (NwHandleT) pCollocatedPgw, pCollocatedPgw->pgw.s5c.ipv4Addr);
+  NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO, "Registering Collocated PGW %p with IPv4 address "NW_IPV4_ADDR , (void*) pCollocatedPgw, NW_IPV4_ADDR_FORMAT(ntohl(pCollocatedPgw->pgw.s5c.ipv4Addr)));
   TAILQ_INSERT_TAIL(&thiz->collocatedPgwList, pCollocatedPgw, collocatedPgwListNode);
   return NW_OK;
 }
@@ -1484,7 +1500,7 @@ nwSaeGwUlpDeregisterCollocatedPgw(NwSaeGwUlpT* thiz, NwSaeGwUlpT* pCollocatedPgw
 {
   NW_ASSERT(thiz);
   NW_ASSERT(pCollocatedPgw);
-  NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO, "De-registering Collocated PGW with IPv4 address %x", pCollocatedPgw->pgw.s5c.ipv4Addr);
+  NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO, "De-registering Collocated PGW with IPv4 address "NW_IPV4_ADDR , NW_IPV4_ADDR_FORMAT(ntohl(pCollocatedPgw->pgw.s5c.ipv4Addr)));
   TAILQ_REMOVE(&thiz->collocatedPgwList, pCollocatedPgw, collocatedPgwListNode);
   return NW_OK;
 }
@@ -1495,16 +1511,19 @@ nwSaeGwUlpRegisterSgwUeSession(NwHandleT hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Ad
   NwSaeGwUlpT *pPgwListIter;
   NwSaeGwUlpT *thiz = (NwSaeGwUlpT*) hSgw;
   NwSaeGwUeT *pCollision;
+  NwU64T      imsi;
 
   NW_ASSERT(hSgw);
-  NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO, "Registering SGW 0x%x UE with IMSI %llx", hSgw, NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+  memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+
+  NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO, "Registering SGW %p UE with IMSI %llx", (void*)hSgw, NW_NTOHLL(imsi));
 
   pCollision = RB_INSERT(NwUeSgwSessionRbtT, &thiz->ueSgwSessionRbt, pUe);
   if(pCollision)
   {
     NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
                   "UE with IMSI %llx was already registered. Rewriting",
-                  NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+                  NW_NTOHLL(imsi));
     nwSaeGwUeDestroyUeSessionTransport(pCollision);
     nwSaeGwUlpDestroyUeSession(thiz, &pCollision);
     pCollision = RB_INSERT(NwUeSgwSessionRbtT, &thiz->ueSgwSessionRbt, pUe);
@@ -1515,7 +1534,7 @@ nwSaeGwUlpRegisterSgwUeSession(NwHandleT hSgw, NwSaeGwUeT *pUe, NwU32T pgwIpv4Ad
   {
     if(pPgwListIter->pgw.s5c.ipv4Addr == pgwIpv4Addr)
     {
-      NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Collocated PGW 0x%x found!", (NwHandleT) pPgwListIter);
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Collocated PGW %p found!", (void*) pPgwListIter);
       break;
     }
   }
@@ -1534,13 +1553,15 @@ nwSaeGwUlpRegisterPgwUeSession(NwHandleT hPgw, NwSaeGwUeT *pUe)
 {
   NwSaeGwUlpT *thiz = (NwSaeGwUlpT*) hPgw;
   NwSaeGwUeT *pCollision;
+  NwU64T     imsi;
+  memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
 
   pCollision = RB_INSERT(NwUePgwSessionRbtT, &thiz->uePgwSessionRbt, pUe);
   if(pCollision)
   {
     NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
                   "UE with IMSI %llx was already registered. Rewriting",
-                  NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+                  NW_NTOHLL(imsi));
     nwSaeGwUeDestroyUeSessionTransport(pCollision);
     nwSaeGwUlpDestroyUeSession(thiz, &pCollision);
     pCollision = RB_INSERT(NwUePgwSessionRbtT, &thiz->uePgwSessionRbt, pUe);
@@ -1560,8 +1581,10 @@ nwSaeGwUlpSgwDeregisterUeSession(NwHandleT hSaeGw, NwSaeGwUeT *pUe)
 {
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
   NwSaeGwUeT *pCollision;
+  NwU64T     imsi;
+  memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
 
-  NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Deregistering SGW UE session with IMSI %llx", NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+  NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Deregistering SGW UE session with IMSI %llx", NW_NTOHLL(imsi));
   pCollision = RB_REMOVE(NwUeSgwSessionRbtT, &thiz->ueSgwSessionRbt, pUe);
   NW_ASSERT(pCollision == pUe);
 
@@ -1575,14 +1598,18 @@ nwSaeGwUlpPgwDeregisterUeSession(NwHandleT hSaeGw, NwSaeGwUeT *pUe)
 {
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
   NwSaeGwUeT *pCollision;
+  NwU64T     imsi;
+  NwU32T     ipv4Addr;
+  memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
 
-  NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Deregistering PGW UE session with IMSI %llx", NW_NTOHLL(((*(NwU64T*)pUe->imsi))));
+  NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Deregistering PGW UE session with IMSI %llx", NW_NTOHLL(imsi));
   pCollision = RB_REMOVE(NwUePgwSessionRbtT, &thiz->uePgwSessionRbt, pUe);
   NW_ASSERT(pCollision == pUe);
 
   pUe->sessionType &= (~NW_SAE_GW_UE_SESSION_TYPE_PGW);
 
-  return nwSaeGwUlpFreeIpv4Address(thiz, *((NwU32T*)pUe->paa.ipv4Addr));
+  memcpy(&ipv4Addr, pUe->paa.ipv4Addr, sizeof(NwU32T));
+  return nwSaeGwUlpFreeIpv4Address(thiz, ipv4Addr);
 }
 
 NwRcT
@@ -1627,7 +1654,7 @@ nwSaeGwUlpInstallUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_SAE)
   {
     rc = nwSaeGwDpeCreateGtpuIpv4Flow(thiz->pDpe,
-        (NwU32T)pUe,
+        (NwSdpUlpSessionHandleT)pUe,
         (NwU32T)&pUe->epsBearer[ebi].s1uTunnel.fteidSgw.teidOrGreKey,
         &pUe->epsBearer[ebi].s1uTunnel.fteidSgw.teidOrGreKey,
         &pUe->epsBearer[ebi].s1uTunnel.fteidSgw.ipv4Addr,
@@ -1644,7 +1671,7 @@ nwSaeGwUlpInstallUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_SGW)
   {
     rc = nwSaeGwDpeCreateGtpuGtpuFlow(thiz->pDpe,
-        (NwU32T)pUe,
+        (NwSdpUlpSessionHandleT)pUe,
         (NwU32T)&pUe->epsBearer[ebi].s1uTunnel.fteidSgw.teidOrGreKey,
         pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey,
         pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.ipv4Addr,
@@ -1664,7 +1691,7 @@ nwSaeGwUlpInstallUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_PGW)
   {
     rc = nwSaeGwDpeCreateGtpuIpv4Flow(thiz->pDpe,
-        (NwU32T)pUe,
+        (NwSdpUlpSessionHandleT)pUe,
         (NwU32T)&pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey,
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.teidOrGreKey,
         &pUe->epsBearer[ebi].s5s8uTunnel.fteidPgw.ipv4Addr,
@@ -1727,6 +1754,7 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 {
   NwRcT                 rc;
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
+  NwU32T ipv4Addr;
 
   /*
    * Create downlink user plane flow
@@ -1737,17 +1765,19 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
     /*
      * Create PGW-IPv4 to eNodeB-GTPU downlink user plane flow
      */
+    memcpy(&ipv4Addr, pUe->paa.ipv4Addr, sizeof(NwU32T));
+
     rc = nwSaeGwDpeCreateIpv4GtpuFlow(thiz->pDpe,
-        (NwU32T)thiz,
+        (NwSdpUlpSessionHandleT)thiz,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
-        *((NwU32T*)(pUe->paa.ipv4Addr)),
+        ipv4Addr,
         &(pUe->epsBearer[ebi].hSgwDownlink));
     NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
                   "Created S/P-GW Downlink Bearer for EBI %u ingress IPue "NW_IPV4_ADDR
                   " to egress IP "NW_IPV4_ADDR" TEID 0x%08x",
                   ebi,
-                  NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr),
+                  NW_IPV4_ADDR_FORMAT(ipv4Addr),
                   NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
                   pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey);
 
@@ -1763,7 +1793,7 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
      * Create SGW-GTPU to eNodeB-GTPU downlink user plane flow
      */
     rc = nwSaeGwDpeCreateGtpuGtpuFlow(thiz->pDpe,
-        (NwU32T)thiz,
+        (NwSdpUlpSessionHandleT)thiz,
         (NwU32T)&pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
@@ -1774,9 +1804,9 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
                   "Created S-GW Downlink Bearer for EBI %u ingress IP "NW_IPV4_ADDR
                   " TEID 0x%08x to egress IP "NW_IPV4_ADDR" TEID 0x%08x for IPue "NW_IPV4_ADDR,
                   ebi,
-                  NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr),
+                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr)),
                   pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
-                  NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr),
+                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
                   pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
                   NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
   }
@@ -1786,11 +1816,12 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
     /*
      * Create PGW-IPv4 to SGW-GTPU downlink user plane flow
      */
+    memcpy(&ipv4Addr, pUe->paa.ipv4Addr, sizeof(NwU32T));
     rc = nwSaeGwDpeCreateIpv4GtpuFlow(thiz->pDpe,
-        (NwU32T)thiz,
+        (NwSdpUlpSessionHandleT)thiz,
         pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr,
-        *((NwU32T*)(pUe->paa.ipv4Addr)),
+        ipv4Addr,
         &pUe->epsBearer[ebi].hPgwDownlink);
 
     NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
@@ -1816,6 +1847,7 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 {
   NwRcT                 rc;
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
+  NwU32T ipv4Addr;
 
   /*
    * Create downlink user plane flow
@@ -1825,17 +1857,18 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
     /*
      * Create PGW-IPv4 to eNodeB-GTPU downlink user plane flow
      */
+    memcpy(&ipv4Addr, pUe->paa.ipv4Addr, sizeof(NwU32T));
     rc = nwSaeGwDpeModifyIpv4GtpuFlow(thiz->pDpe,
-        (NwU32T)thiz,
+        (NwSdpUlpSessionHandleT)thiz,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
-        *((NwU32T*)(pUe->paa.ipv4Addr)),
+        ipv4Addr,
         pUe->epsBearer[ebi].hSgwDownlink);
     NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
                   "Modified S/P-GW Downlink Bearer for EBI %u ingress IPue "NW_IPV4_ADDR
                   " to IP "NW_IPV4_ADDR" TEID 0x%08x",
                   ebi,
-                  NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr),
+                  NW_IPV4_ADDR_FORMAT(ipv4Addr),
                   NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
                   pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey);
   }
@@ -1845,7 +1878,7 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
      * Create SGW-GTPU to eNodeB-GTPU downlink user plane flow
      */
     rc = nwSaeGwDpeModifyGtpuGtpuFlow(thiz->pDpe,
-        (NwU32T)thiz,
+        (NwSdpUlpSessionHandleT)thiz,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
         pUe->epsBearer[ebi].hSgwDownlink);
@@ -1853,9 +1886,9 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
                   "Modified S-GW Downlink Bearer for EBI %u ingress IP "NW_IPV4_ADDR
                   " TEID 0x%08x to egress IP "NW_IPV4_ADDR" TEID 0x%08x for IPue "NW_IPV4_ADDR,
                   ebi,
-                  NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr),
+                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr)),
                   pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
-                  NW_IPV4_ADDR_FORMAT(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr),
+                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
                   pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
                   NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
   }
@@ -1872,14 +1905,21 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
     /*
      * Create PGW-IPv4 to SGW-GTPU downlink user plane flow
      */
+    memcpy(&ipv4Addr, pUe->paa.ipv4Addr, sizeof(NwU32T));
     rc = nwSaeGwDpeCreateIpv4GtpuFlow(thiz->pDpe,
-        (NwU32T)thiz,
+        (NwSdpUlpSessionHandleT)thiz,
         pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr,
-        *((NwU32T*)(pUe->paa.ipv4Addr)),
+        ipv4Addr,
         &pUe->epsBearer[ebi].hPgwDownlink);
 
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,"Creating PGW Downlink Bearer for EBI %u ingress IP "NW_IPV4_ADDR" to egress TEID 0x%08x IP " NW_IPV4_ADDR, ebi, NW_IPV4_ADDR_FORMAT(*((NwU32T*)(pUe->paa.ipv4Addr))), pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey, NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr)));
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG,
+                  "Creating PGW Downlink Bearer for EBI %u ingress IP "NW_IPV4_ADDR
+                  " to egress TEID 0x%08x IP " NW_IPV4_ADDR,
+                  ebi,
+                  NW_IPV4_ADDR_FORMAT(ipv4Addr),
+                  pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
+                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr)));
   }
   else
   {
@@ -1897,8 +1937,8 @@ nwSaeGwUlpReleaseDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
 
   return nwSaeGwDpeReleaseEndpointFlow(thiz->pDpe,
-                                       (NwU32T)thiz,
-                                       &pUe->epsBearer[ebi].hSgwDownlink);
+                                       (NwSdpUlpSessionHandleT)thiz,
+                                       (NwSdpSessionHandleT)&pUe->epsBearer[ebi].hSgwDownlink);
 }
 
 NwRcT
@@ -1921,7 +1961,7 @@ nwSaeGwUlpRemoveDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
                     "Destroying S-GW Downlink Bearer EBI %u for IPue "NW_IPV4_ADDR,
                     ebi, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
       rc = nwSaeGwDpeDestroyFlow(thiz->pDpe, pUe->epsBearer[ebi].hSgwDownlink);
-      pUe->epsBearer[ebi].hSgwDownlink = NULL;
+      pUe->epsBearer[ebi].hSgwDownlink = (NwDpeBearerHandleT)NULL;
     }
 
     if(pUe->epsBearer[ebi].hPgwDownlink)

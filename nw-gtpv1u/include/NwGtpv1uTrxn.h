@@ -62,6 +62,22 @@ nwGtpv1uTrxnWithSeqNew( NW_IN  NwGtpv1uStackT* thiz,
 NwGtpv1uRcT
 nwGtpv1uTrxnDelete( NW_INOUT NwGtpv1uTrxnT **ppTrxn);
 
+/**
+ * Send msg to peer via data request to UDP Entity
+ *
+ * @param[in] thiz : Pointer to stack.
+ * @param[in] pTrxn : Pointer to Trxn object.
+ * @param[in] peerIp : Peer Ip address.
+ * @param[in] peerPort : Peer Ip port.
+ * @param[in] pMsg : Message to be sent.
+ * @return NW_GTPV1U_OK on success.
+ */
+NwGtpv1uRcT
+nwGtpv1uTrxnCreateAndSendMsg( NW_IN  NwGtpv1uStackT* thiz,
+                              NW_IN  NwGtpv1uTrxnT *pTrxn,
+                              NW_IN  NwU32T peerIp,
+                              NW_IN  NwU32T peerPort,
+                              NW_IN  NwGtpv1uMsgT *pMsg);
 
 #ifdef __cplusplus
 }

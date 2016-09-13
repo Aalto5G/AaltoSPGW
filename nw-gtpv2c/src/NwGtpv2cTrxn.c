@@ -68,7 +68,7 @@ nwGtpv2cTrxnPeerRspWaitTimeout(void* arg)
 
   NW_ASSERT(pStack);
 
-  NW_LOG(pStack, NW_LOG_LEVEL_WARN, "T3 Response timer expired for transaction 0x%X", (NwU32T) thiz);
+  NW_LOG(pStack, NW_LOG_LEVEL_WARN, "T3 Response timer expired for transaction %p", thiz);
 
   thiz->hRspTmr = 0;
 
@@ -89,7 +89,7 @@ nwGtpv2cTrxnPeerRspWaitTimeout(void* arg)
     ulpApi.apiInfo.rspFailureInfo.hUlpTrxn   = thiz->hUlpTrxn;
     ulpApi.apiInfo.rspFailureInfo.hUlpTunnel = ( (thiz->hTunnel) ? ((NwGtpv2cTunnelT*)(thiz->hTunnel))->hUlpTunnel : 0 );
 
-    NW_LOG(pStack, NW_LOG_LEVEL_ERRO, "N3 retries expired for transaction 0x%X", (NwU32T) thiz);
+    NW_LOG(pStack, NW_LOG_LEVEL_ERRO, "N3 retries expired for transaction %p", thiz);
     RB_REMOVE(NwGtpv2cOutstandingTxSeqNumTrxnMap, &(pStack->outstandingTxSeqNumMap), thiz);
     rc = nwGtpv2cTrxnDelete(&thiz);
 
@@ -112,7 +112,7 @@ nwGtpv2cTrxnDuplicateRequestWaitTimeout(void* arg)
 
   NW_ASSERT(pStack);
 
-  NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Duplicate request hold timer expired for transaction 0x%X", (NwU32T) thiz);
+  NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Duplicate request hold timer expired for transaction %p", thiz);
 
   thiz->hRspTmr = 0;
 
@@ -215,7 +215,7 @@ nwGtpv2cTrxnStopPeerRspTimer(NwGtpv2cTrxnT* thiz)
 NwGtpv2cTrxnT*
 nwGtpv2cTrxnNew( NW_IN  NwGtpv2cStackT* thiz)
 {
-  NwGtpv2cRcT rc = NW_GTPV2C_OK;
+  /* NwGtpv2cRcT rc = NW_GTPV2C_OK; */
   NwGtpv2cTrxnT *pTrxn;
 
   if(gpGtpv2cTrxnPool)
@@ -244,10 +244,10 @@ nwGtpv2cTrxnNew( NW_IN  NwGtpv2cStackT* thiz)
   }
   else
   {
-    rc = NW_GTPV2C_FAILURE ;
+    /* rc = NW_GTPV2C_FAILURE ; */
   }
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Created transaction 0x%X", (NwU32T) pTrxn);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Created transaction %p", pTrxn);
 
   return pTrxn;
 }
@@ -263,7 +263,7 @@ NwGtpv2cTrxnT*
 nwGtpv2cTrxnWithSeqNumNew( NW_IN  NwGtpv2cStackT* thiz,
                         NW_IN  NwU32T seqNum)
 {
-  NwGtpv2cRcT rc = NW_GTPV2C_OK;
+  /* NwGtpv2cRcT rc = NW_GTPV2C_OK; */
   NwGtpv2cTrxnT *pTrxn;
 
   if(gpGtpv2cTrxnPool)
@@ -287,10 +287,10 @@ nwGtpv2cTrxnWithSeqNumNew( NW_IN  NwGtpv2cStackT* thiz,
   }
   else
   {
-    rc = NW_GTPV2C_FAILURE ;
+    /* rc = NW_GTPV2C_FAILURE ; */
   }
 
-  NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Created transaction 0x%X", (NwU32T) pTrxn);
+  NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Created transaction %p", pTrxn);
 
   return pTrxn;
 }
@@ -360,7 +360,7 @@ nwGtpv2cTrxnOutstandingRxNew( NW_IN  NwGtpv2cStackT* thiz,
   }
 
   if(pTrxn)
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Created outstanding RX transaction 0x%X", (NwU32T) pTrxn);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Created outstanding RX transaction %p", pTrxn);
 
   return (pTrxn);
 }
@@ -392,7 +392,7 @@ nwGtpv2cTrxnDelete( NW_INOUT NwGtpv2cTrxnT **pthiz)
     NW_ASSERT(NW_GTPV2C_OK == rc);
   }
 
-  NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Purging  transaction 0x%X", (NwU32T) thiz);
+  NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Purging  transaction %p", thiz);
 
   thiz->next = gpGtpv2cTrxnPool;
   gpGtpv2cTrxnPool = thiz;

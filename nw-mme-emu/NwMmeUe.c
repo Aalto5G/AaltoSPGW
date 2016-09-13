@@ -79,7 +79,7 @@ NW_TMR_CALLBACK(nwMmeUeHandleSessionTimeout)
   return;
 }
 
-NwRcT
+NwGtpv2cRcT
 nwMmeDecodeFteid(NwU8T ieType, NwU8T ieLength, NwU8T ieInstance, NwU8T* ieValue, void* arg)
 {
   NwMmeFteidT *pFteid = (NwMmeFteidT*) arg;
@@ -100,22 +100,22 @@ nwMmeDecodeFteid(NwU8T ieType, NwU8T ieLength, NwU8T ieInstance, NwU8T* ieValue,
   {
     memcpy(pFteid->ipv6Addr, ieValue, 16);
   }
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-NwRcT
+NwGtpv2cRcT
 nwMmeDecodePaa(NwU8T ieType, NwU8T ieLength, NwU8T ieInstance, NwU8T* ieValue, void* arg)
 {
   NwU32T* pIpv4Addr = (NwU32T*) arg;
   *pIpv4Addr = *((NwU32T*) (ieValue + 1));
   //printf("\nReceived UE IP Addr " NW_IPV4_ADDR "\n", NW_IPV4_ADDR_FORMAT(*pIpv4Addr));
-  return NW_OK;
+  return NW_GTPV2C_OK;
 }
 
-static NwRcT
+static NwGtpv2cRcT
 nwMmeDecodeBearerContextToBeCreated(NwU8T ieType, NwU8T ieLength, NwU8T ieInstance, NwU8T* ieValue, void* arg)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   NwU8T* ieEnd;
   NwU8T t, l, i, *v;
   NwMmeEpsBearerT *pEpsBearer = (NwMmeEpsBearerT*) arg;
@@ -130,7 +130,7 @@ nwMmeDecodeBearerContextToBeCreated(NwU8T ieType, NwU8T ieLength, NwU8T ieInstan
     l = ntohs(*(NwU16T*)(ieValue + 1));
 
     if(l > ieLength + 4)
-      return NW_FAILURE;
+      return NW_GTPV2C_FAILURE;
 
     i = *(NwU8T*)(ieValue + 3);
     v = (NwU8T*)(ieValue + 4);
@@ -168,20 +168,20 @@ nwMmeDecodeBearerContextToBeCreated(NwU8T ieType, NwU8T ieLength, NwU8T ieInstan
           bearerQosFlag = NW_TRUE;
         }
       default:
-        rc = NW_OK;
+        rc = NW_GTPV2C_OK;
     }
     ieValue += (l + 4);
   }
 
   if(ebiFlag)
-    return NW_OK;
-  return NW_FAILURE;
+    return NW_GTPV2C_OK;
+  return NW_GTPV2C_FAILURE;
 }
 
-static NwRcT
+static NwGtpv2cRcT
 nwGtpv2cCreateSessionRequestIeIndication(NwU8T ieType, NwU8T ieLength, NwU8T ieInstance, NwU8T* ieValue, void* arg)
 {
-  NwRcT rc;
+  NwGtpv2cRcT rc;
   switch(ieType)
   {
     case NW_GTPV2C_IE_CAUSE:
@@ -198,7 +198,7 @@ nwGtpv2cCreateSessionRequestIeIndication(NwU8T ieType, NwU8T ieLength, NwU8T ieI
       }
       break;
     default:
-      rc = NW_OK;
+      rc = NW_GTPV2C_OK;
   }
   return rc;
 }
@@ -463,6 +463,7 @@ nwMmeUeSetImsi(NwMmeUeT* thiz, NwU8T* imsi)
 static NwRcT
 nwMmeUeHandleCreateSessionResponse(NwMmeUeT* thiz, NwGtpv2cUlpApiT *pUlpApi)
 {
+  NwGtpv2cRcT           rc2;
   NwRcT                 rc;
   NwGtpv2cUlpApiT       ulpReq;
   NwU8T                 causeValue;
@@ -472,27 +473,27 @@ nwMmeUeHandleCreateSessionResponse(NwMmeUeT* thiz, NwGtpv2cUlpApiT *pUlpApi)
 
   NW_UE_LOG(NW_LOG_LEVEL_DEBG, "Create Session Response received from peer!");
 
-  rc = nwGtpv2cMsgParserUpdateIeReadCallbackArg(gpMsgParser->pCreateSessionResponseParser, thiz);
-  NW_ASSERT(NW_OK == rc);
+  rc2 = nwGtpv2cMsgParserUpdateIeReadCallbackArg(gpMsgParser->pCreateSessionResponseParser, thiz);
+  NW_ASSERT(NW_GTPV2C_OK == rc2);
 
-  rc = nwGtpv2cMsgParserUpdateIe(gpMsgParser->pCreateSessionResponseParser, NW_GTPV2C_IE_CAUSE, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY, nwGtpv2cCreateSessionRequestIeIndication, &causeValue);
-  NW_ASSERT(NW_OK == rc);
+  rc2 = nwGtpv2cMsgParserUpdateIe(gpMsgParser->pCreateSessionResponseParser, NW_GTPV2C_IE_CAUSE, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY, nwGtpv2cCreateSessionRequestIeIndication, &causeValue);
+  NW_ASSERT(NW_GTPV2C_OK == rc2);
 
-  rc = nwGtpv2cMsgParserUpdateIe(gpMsgParser->pCreateSessionResponseParser, NW_GTPV2C_IE_FTEID, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwMmeDecodeFteid, &thiz->fteidControlPeer);
-  NW_ASSERT(NW_OK == rc);
+  rc2 = nwGtpv2cMsgParserUpdateIe(gpMsgParser->pCreateSessionResponseParser, NW_GTPV2C_IE_FTEID, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwMmeDecodeFteid, &thiz->fteidControlPeer);
+  NW_ASSERT(NW_GTPV2C_OK == rc2);
 
-  rc = nwGtpv2cMsgParserUpdateIe(gpMsgParser->pCreateSessionResponseParser, NW_GTPV2C_IE_PAA, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwMmeDecodePaa, &thiz->pdnIpv4Addr);
-  NW_ASSERT(NW_OK == rc);
+  rc2 = nwGtpv2cMsgParserUpdateIe(gpMsgParser->pCreateSessionResponseParser, NW_GTPV2C_IE_PAA, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwMmeDecodePaa, &thiz->pdnIpv4Addr);
+  NW_ASSERT(NW_GTPV2C_OK == rc2);
 
-  rc = nwGtpv2cMsgParserUpdateIe(gpMsgParser->pCreateSessionResponseParser, NW_GTPV2C_IE_BEARER_CONTEXT, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwMmeDecodeBearerContextToBeCreated, &epsBearerTobeCreated);
-  NW_ASSERT(NW_OK == rc);
+  rc2 = nwGtpv2cMsgParserUpdateIe(gpMsgParser->pCreateSessionResponseParser, NW_GTPV2C_IE_BEARER_CONTEXT, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwMmeDecodeBearerContextToBeCreated, &epsBearerTobeCreated);
+  NW_ASSERT(NW_GTPV2C_OK == rc2);
   /*
    * TODO: Parse the Create Session Response message
    */
-  rc = nwGtpv2cMsgParserRun(gpMsgParser->pCreateSessionResponseParser, (pUlpApi->hMsg), &offendingIeType, (NwU8T*)&offendingIeLength);
-  if( rc != NW_OK )
+  rc2 = nwGtpv2cMsgParserRun(gpMsgParser->pCreateSessionResponseParser, (pUlpApi->hMsg), &offendingIeType, (NwU8T*)&offendingIeLength);
+  if( rc2 != NW_GTPV2C_OK )
   {
-    switch(rc)
+    switch(rc2)
     {
       case NW_GTPV2C_MANDATORY_IE_MISSING:
         NW_UE_LOG(NW_LOG_LEVEL_ERRO, "Mandatory IE type '%u' instance '%u' missing!", offendingIeType, offendingIeLength);
@@ -515,7 +516,7 @@ nwMmeUeHandleCreateSessionResponse(NwMmeUeT* thiz, NwGtpv2cUlpApiT *pUlpApi)
       thiz->epsBearer[epsBearerTobeCreated.ebi].s5s8Tunnel.fteidPgw     = epsBearerTobeCreated.s5s8u.fteidPgw;
 
       rc = nwMmeDpeCreateGtpuIpv4Flow(thiz->pDpe,
-          (NwU32T)thiz,
+          (NwSdpUlpSessionHandleT)thiz,
           (NwU32T)thiz,
           &(thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.fteidEnodeB.teidOrGreKey),
           &(thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.fteidEnodeB.ipv4Addr),
@@ -523,7 +524,7 @@ nwMmeUeHandleCreateSessionResponse(NwMmeUeT* thiz, NwGtpv2cUlpApiT *pUlpApi)
 
 
       rc = nwMmeDpeCreateIpv4GtpuFlow(thiz->pDpe,
-          (NwU32T)thiz,
+          (NwSdpUlpSessionHandleT)thiz,
           (thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.fteidSgw.teidOrGreKey),
           (thiz->epsBearer[epsBearerTobeCreated.ebi].s1uTunnel.fteidSgw.ipv4Addr),
           thiz->pdnIpv4Addr,
@@ -545,41 +546,41 @@ nwMmeUeHandleCreateSessionResponse(NwMmeUeT* thiz, NwGtpv2cUlpApiT *pUlpApi)
 NwRcT
 nwMmeUeBuildSgwCreateSessionResponseParser(NwMmeUeT* thiz, NwGtpv2cMsgParserT** ppMsgParser)
 {
-  NwRcT                 rc;
+  NwGtpv2cRcT            rc;
   NwGtpv2cMsgParserT    *pMsgParser;
 
   /*
    * TODO: Parse the Create Session Request message
    */
   rc = nwGtpv2cMsgParserNew(thiz->hGtpcStack, NW_GTP_CREATE_SESSION_RSP, nwGtpv2cCreateSessionRequestIeIndication, NULL, &pMsgParser);
-  NW_ASSERT( NW_OK == rc );
+  NW_ASSERT(NW_GTPV2C_OK == rc );
 
   rc = nwGtpv2cMsgParserAddIe(pMsgParser, NW_GTPV2C_IE_PAA, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwGtpv2cCreateSessionRequestIeIndication, NULL);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cMsgParserAddIe(pMsgParser, NW_GTPV2C_IE_CAUSE, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY, nwGtpv2cCreateSessionRequestIeIndication, NULL);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cMsgParserAddIe(pMsgParser, NW_GTPV2C_IE_FTEID, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwGtpv2cCreateSessionRequestIeIndication, NULL);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cMsgParserAddIe(pMsgParser, NW_GTPV2C_IE_FTEID, NW_GTPV2C_IE_INSTANCE_ONE, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwGtpv2cCreateSessionRequestIeIndication, NULL);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cMsgParserAddIe(pMsgParser, NW_GTPV2C_IE_APN_RESTRICTION, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwGtpv2cCreateSessionRequestIeIndication, NULL);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cMsgParserAddIe(pMsgParser, NW_GTPV2C_IE_PCO, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwGtpv2cCreateSessionRequestIeIndication, NULL);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cMsgParserAddIe(pMsgParser, NW_GTPV2C_IE_BEARER_CONTEXT, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwGtpv2cCreateSessionRequestIeIndication, NULL);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   rc = nwGtpv2cMsgParserAddIe(pMsgParser, NW_GTPV2C_IE_RECOVERY, NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, nwGtpv2cCreateSessionRequestIeIndication, NULL);
-  NW_ASSERT(NW_OK == rc);
+  NW_ASSERT(NW_GTPV2C_OK == rc);
 
   *ppMsgParser = pMsgParser;
-  return rc;
+  return NW_OK;
 }
 
 NwRcT

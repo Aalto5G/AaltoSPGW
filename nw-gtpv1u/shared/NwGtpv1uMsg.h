@@ -192,6 +192,15 @@ NwGtpv1uRcT
 nwGtpv1uMsgSetSeqNumber(NW_IN NwGtpv1uMsgHandleT hMsg, NwU32T seqNum);
 
  /**
+  * Get msg type for gtpv1u message.
+  *
+  * @param[in] hMsg : Message handle.
+  */
+
+NwU32T
+nwGtpv1uMsgGetMsgType(NW_IN NwGtpv1uMsgHandleT hMsg);
+
+ /**
   * Get TEID present for gtpv1u message.
   *
   * @param[in] hMsg : Message handle.

@@ -247,17 +247,17 @@ nwSaeGwDpeGetIpv4Addr(NwSaeGwDpeT* thiz, NwU32T  *pIpv4Addr)
 
 NwRcT
 nwSaeGwDpeCreateGtpuIpv4Flow(NwSaeGwDpeT*   thiz,
-                         NwU32T         hSession,
-                         NwU32T         teidIngress,
-                         NwU32T         *pTeidIngress,
-                         NwU32T         *pIpv4Ingress,
-                         NwU32T         *phBearer)
+                             NwSdpUlpSessionHandleT         hSession,
+                             NwU32T         teidIngress,
+                             NwU32T         *pTeidIngress,
+                             NwU32T         *pIpv4Ingress,
+                             NwSdpSessionHandleT         *phBearer)
 {
   NwRcT rc;
   NwSdpUlpApiT           ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_CREATE_FLOW;
-  ulpReq.apiInfo.createFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
+  ulpReq.apiInfo.createFlowInfo.hUlpSession   = hSession;
 
   ulpReq.apiInfo.createFlowInfo.ingressEndPoint.ipv4Addr                = thiz->gtpuIf.ipAddr;
   ulpReq.apiInfo.createFlowInfo.ingressEndPoint.flowType                = NW_FLOW_TYPE_GTPU;
@@ -270,7 +270,7 @@ nwSaeGwDpeCreateGtpuIpv4Flow(NwSaeGwDpeT*   thiz,
 
   *pTeidIngress  = ulpReq.apiInfo.createFlowInfo.ingressEndPoint.flowKey.gtpuTeid;
   *pIpv4Ingress  = ulpReq.apiInfo.createFlowInfo.ingressEndPoint.ipv4Addr;
-  *phBearer     = (NwU32T) ulpReq.apiInfo.createFlowInfo.hSdpSession;
+  *phBearer      = ulpReq.apiInfo.createFlowInfo.hSdpSession;
   return rc;
 }
 
@@ -280,17 +280,17 @@ nwSaeGwDpeCreateGtpuIpv4Flow(NwSaeGwDpeT*   thiz,
 
 NwRcT
 nwSaeGwDpeCreateIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
-                         NwU32T         hSession,
-                         NwU32T         teidEgress,
-                         NwU32T         ipv4Egress,
-                         NwU32T         ipv4Ingress,
-                         NwU32T         *phBearer)
+                             NwSdpUlpSessionHandleT         hSession,
+                             NwU32T         teidEgress,
+                             NwU32T         ipv4Egress,
+                             NwU32T         ipv4Ingress,
+                             NwSdpSessionHandleT         *phBearer)
 {
   NwRcT rc;
   NwSdpUlpApiT           ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_CREATE_FLOW;
-  ulpReq.apiInfo.createFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
+  ulpReq.apiInfo.createFlowInfo.hUlpSession   = hSession;
 
   ulpReq.apiInfo.createFlowInfo.ingressEndPoint.flowType                = NW_FLOW_TYPE_IPv4;
   ulpReq.apiInfo.createFlowInfo.ingressEndPoint.flowKey.ipv4Addr        = ipv4Ingress;
@@ -302,7 +302,7 @@ nwSaeGwDpeCreateIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
   rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
   NW_ASSERT( NW_OK == rc );
 
-  *phBearer = (NwU32T) ulpReq.apiInfo.createFlowInfo.hSdpSession;
+  *phBearer = ulpReq.apiInfo.createFlowInfo.hSdpSession;
   return rc;
 }
 
@@ -313,18 +313,18 @@ nwSaeGwDpeCreateIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
 
 NwRcT
 nwSaeGwDpeModifyIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
-                         NwU32T         hSession,
+                         NwSdpUlpSessionHandleT      hSession,
                          NwU32T         teidEgress,
                          NwU32T         ipv4Egress,
                          NwU32T         ipv4Ingress,
-                         NwU32T         hBearer)
+                         NwSdpSessionHandleT         hBearer)
 {
   NwRcT rc;
   NwSdpUlpApiT           ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_UPDATE_FLOW;
-  ulpReq.apiInfo.updateFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
-  ulpReq.apiInfo.updateFlowInfo.hSdpSession   = (NwSdpSessionHandleT) hBearer;
+  ulpReq.apiInfo.updateFlowInfo.hUlpSession   = hSession;
+  ulpReq.apiInfo.updateFlowInfo.hSdpSession   = hBearer;
 
   ulpReq.apiInfo.updateFlowInfo.egressFlow.isValid                  = NW_TRUE;
   ulpReq.apiInfo.updateFlowInfo.egressFlow.ipv4Addr                 = ipv4Egress;
@@ -344,19 +344,19 @@ nwSaeGwDpeModifyIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
 
 NwRcT
 nwSaeGwDpeCreateGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
-                         NwU32T         hSession,
+                         NwSdpUlpSessionHandleT         hSession,
                          NwU32T         teidIngress,
                          NwU32T         teidEgress,
                          NwU32T         ipv4Egress,
                          NwU32T         *pTeidIngress,
                          NwU32T         *pIpv4Ingress,
-                         NwU32T         *phBearer)
+                         NwSdpSessionHandleT         *phBearer)
 {
   NwRcT                 rc;
   NwSdpUlpApiT          ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_CREATE_FLOW;
-  ulpReq.apiInfo.createFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
+  ulpReq.apiInfo.createFlowInfo.hUlpSession   = hSession;
 
   ulpReq.apiInfo.createFlowInfo.ingressEndPoint.flowType                = NW_FLOW_TYPE_GTPU;
   ulpReq.apiInfo.createFlowInfo.ingressEndPoint.ipv4Addr                = thiz->gtpuIf.ipAddr;
@@ -372,8 +372,7 @@ nwSaeGwDpeCreateGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
 
   *pTeidIngress  = ulpReq.apiInfo.createFlowInfo.ingressEndPoint.flowKey.gtpuTeid;
   *pIpv4Ingress  = ulpReq.apiInfo.createFlowInfo.ingressEndPoint.ipv4Addr;
-
-  *phBearer       = (NwU32T) ulpReq.apiInfo.createFlowInfo.hSdpSession;
+  *phBearer      = ulpReq.apiInfo.createFlowInfo.hSdpSession;
 
   return rc;
 }
@@ -384,18 +383,18 @@ nwSaeGwDpeCreateGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
 
 NwRcT
 nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
-                         NwU32T         hSession,
+                         NwSdpUlpSessionHandleT         hSession,
                          NwU32T         teidEgress,
                          NwU32T         ipv4Egress,
-                         NwU32T         hBearer)
+                         NwSdpSessionHandleT            hBearer)
 {
   /* Check*/
   NwRcT                 rc;
   NwSdpUlpApiT          ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_UPDATE_FLOW;
-  ulpReq.apiInfo.updateFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
-  ulpReq.apiInfo.updateFlowInfo.hSdpSession   = (NwSdpSessionHandleT) hBearer;
+  ulpReq.apiInfo.updateFlowInfo.hUlpSession   = hSession;
+  ulpReq.apiInfo.updateFlowInfo.hSdpSession   = hBearer;
 
   ulpReq.apiInfo.updateFlowInfo.egressFlow.isValid                  = NW_TRUE;
   ulpReq.apiInfo.updateFlowInfo.egressFlow.flowType                 = NW_FLOW_TYPE_GTPU;
@@ -415,16 +414,16 @@ nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
 
 NwRcT
 nwSaeGwDpeReleaseEndpointFlow(NwSaeGwDpeT*   thiz,
-                              NwU32T         hSession,
-                              NwU32T         hBearer)
+                              NwSdpUlpSessionHandleT         hSession,
+                              NwSdpSessionHandleT            hBearer)
 {
   /* Check*/
   NwRcT                 rc;
   NwSdpUlpApiT          ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_UPDATE_FLOW;
-  ulpReq.apiInfo.updateFlowInfo.hUlpSession   = (NwSdpUlpSessionHandleT) hSession;
-  ulpReq.apiInfo.updateFlowInfo.hSdpSession   = (NwSdpSessionHandleT) hBearer;
+  ulpReq.apiInfo.updateFlowInfo.hUlpSession   = hSession;
+  ulpReq.apiInfo.updateFlowInfo.hSdpSession   = hBearer;
 
   ulpReq.apiInfo.updateFlowInfo.egressFlow.isValid                  = NW_FALSE;
 
@@ -440,13 +439,13 @@ nwSaeGwDpeReleaseEndpointFlow(NwSaeGwDpeT*   thiz,
 
 NwRcT
 nwSaeGwDpeDestroyFlow(NwSaeGwDpeT*   thiz,
-                      NwU32T         hBearer)
+                      NwSdpSessionHandleT         hBearer)
 {
   NwRcT rc;
   NwSdpUlpApiT           ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_DESTROY_FLOW;
-  ulpReq.apiInfo.destroyFlowInfo.hSdpSession  = (NwSdpSessionHandleT) hBearer;
+  ulpReq.apiInfo.destroyFlowInfo.hSdpSession  = hBearer;
 
   rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
   NW_ASSERT( NW_OK == rc );

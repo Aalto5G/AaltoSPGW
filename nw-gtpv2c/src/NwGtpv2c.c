@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "NwTypes.h"
 #include "NwUtils.h"
@@ -91,13 +92,6 @@ extern "C" {
 #endif
 
 static NwGtpv2cTimeoutInfoT* gpGtpv2cTimeoutInfoPool = NULL;
-
-typedef struct
-{
-  int currSize;
-  int maxSize;
-  NwGtpv2cTimeoutInfoT** pHeap;
-} NwGtpv2cTmrMinHeapT;
 
 #define NW_HEAP_PARENT_INDEX(__child)           ( ( (__child) - 1 ) / 2 )
 
@@ -791,9 +785,6 @@ nwGtpv2cHandleUlpTriggeredRsp( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUlpApiT
 static NwGtpv2cRcT
 nwGtpv2cHandleUlpCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUlpApiT *pUlpReq)
 {
-  NwGtpv2cRcT rc;
-  NwGtpv2cTunnelT *pTunnel, *pCollision;
-
   NW_ENTER(thiz);
 
   nwGtpv2cCreateLocalTunnel(thiz,
@@ -855,7 +846,7 @@ nwGtpv2cSendInitialReqIndToUlp( NW_IN NwGtpv2cStackT *thiz,
   ulpApi.apiInfo.initialReqIndInfo.peerIp     = peerIp;
   ulpApi.apiInfo.initialReqIndInfo.peerPort   = peerPort;
 
-  ulpApi.apiInfo.triggeredRspIndInfo.error      = *pError;
+  ulpApi.apiInfo.triggeredRspIndInfo.error    = *pError;
 
   rc = thiz->ulp.ulpReqCallback(thiz->ulp.hUlp, &ulpApi);
 
@@ -1056,7 +1047,7 @@ nwGtpv2cContextNotFound(NW_IN NwGtpv2cStackT *thiz,
                              NW_GTPV2C_CAUSE_BIT_CS, 0, 0);
   NW_ASSERT( NW_GTPV2C_OK == rc );
 
-  if(!nwGtpv2cIsPeer(thiz, peerIp))
+  if(!nwGtpv2cIsPeer((NwGtpv2cStackHandleT)thiz, peerIp))
   {
       rc = nwGtpv2cMsgAddIeTV1(hRsp, NW_GTPV2C_IE_RECOVERY, 0,
                                thiz->restartCounter);
@@ -1067,7 +1058,8 @@ nwGtpv2cContextNotFound(NW_IN NwGtpv2cStackT *thiz,
                                 nwGtpv2cMsgGetSeqNumber(hMsg),
                                 peerIp,
                                 peerPort,
-                                hRsp);
+                                (NwGtpv2cMsgT*)hRsp);
+  return rc;
 }
 
 /**
@@ -1212,7 +1204,7 @@ nwGtpv2cHandleTriggeredRsp(NW_IN NwGtpv2cStackT *thiz,
   }
 
   NwGtpv2cPathT         *pPath;
-  pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), hUlpTrxn);
+  pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), (NwGtpv2cPathT*)hUlpTrxn);
   if(pPath && msgType == NW_GTP_ECHO_RSP)
   {
       rc = nwGtpv2cPathTriggeredEchoRsp(pPath, &error, hMsg);
@@ -1260,7 +1252,7 @@ nwGtpv2cInitialize( NW_INOUT NwGtpv2cStackHandleT* hGtpcStackHandle)
     RB_INIT(&(thiz->activeTimerList));
     RB_INIT(&(thiz->pathMap));
 
-    thiz->hTmrMinHeap = (NwHandleT) nwGtpv2cTmrMinHeapNew(10000);
+    thiz->hTmrMinHeap = nwGtpv2cTmrMinHeapNew(10000);
 
     NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_ECHO_REQ);
     NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_ECHO_RSP);
@@ -1706,10 +1698,10 @@ nwGtpv2cProcessTimeoutOld(void* arg)
   else
   {
     NW_LOG(thiz, NW_LOG_LEVEL_WARN,
-           "Received timeout event from ULP for non-existent timeoutInfo %#p "
-           "and activeTimer %#p!",
-           (NwHandleT) timeoutInfo,
-           (NwHandleT) thiz->activeTimerInfo);
+           "Received timeout event from ULP for non-existent timeoutInfo %p "
+           "and activeTimer %p!",
+           (void*) timeoutInfo,
+           (void*) thiz->activeTimerInfo);
     return NW_GTPV2C_OK;
   }
 
@@ -1778,10 +1770,10 @@ nwGtpv2cProcessTimeout(void* arg)
   else
   {
     NW_LOG(thiz, NW_LOG_LEVEL_WARN,
-           "Received timeout event from ULP for non-existent timeoutInfo %#p "
-           "and activeTimer %#p!",
-           (NwHandleT) timeoutInfo,
-           (NwHandleT) thiz->activeTimerInfo);
+           "Received timeout event from ULP for non-existent timeoutInfo %p "
+           "and activeTimer %p!",
+           (void*) timeoutInfo,
+           (void*) thiz->activeTimerInfo);
     return NW_GTPV2C_OK;
   }
 
@@ -1845,7 +1837,6 @@ nwGtpv2cStartTimer(NwGtpv2cStackT* thiz,
   NwGtpv2cRcT rc = NW_GTPV2C_OK;
   struct timeval tv;
   NwGtpv2cTimeoutInfoT *timeoutInfo;
-  NwGtpv2cTimeoutInfoT *collision;
 
   NW_ENTER(thiz);
 
@@ -1876,6 +1867,7 @@ nwGtpv2cStartTimer(NwGtpv2cStackT* thiz,
     rc = nwGtpv2cTmrMinHeapInsert(thiz->hTmrMinHeap, timeoutInfo);
 #if 0
     do {
+      NwGtpv2cTimeoutInfoT *collision;
       collision = RB_INSERT(NwGtpv2cActiveTimerList, &(thiz->activeTimerList), timeoutInfo);
       if(!collision)
         break;
@@ -1894,18 +1886,18 @@ nwGtpv2cStartTimer(NwGtpv2cStackT* thiz,
       if(NW_GTPV2C_TIMER_CMP_P(&(thiz->activeTimerInfo->tvTimeout), &(timeoutInfo->tvTimeout), >))
       {
         NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
-               "Stopping active timer %#p for info %#p!",
-               (NwHandleT) thiz->activeTimerInfo->hTimer,
-               (NwHandleT) thiz->activeTimerInfo);
+               "Stopping active timer %p for info %p!",
+               (void*) thiz->activeTimerInfo->hTimer,
+               (void*) thiz->activeTimerInfo);
         rc = thiz->tmrMgr.tmrStopCallback(thiz->tmrMgr.tmrMgrHandle, thiz->activeTimerInfo->hTimer);
         NW_ASSERT(NW_GTPV2C_OK == rc);
       }
       else
       {
         NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
-               "Already Started timer %#p for info %#p!",
-               (NwHandleT) thiz->activeTimerInfo->hTimer,
-               (NwHandleT) thiz->activeTimerInfo);
+               "Already Started timer %p for info %p!",
+               (void*) thiz->activeTimerInfo->hTimer,
+               (void*) thiz->activeTimerInfo);
         *phTimer = (NwGtpv2cTimerHandleT) timeoutInfo;
         NW_LEAVE(thiz);
         return NW_GTPV2C_OK;
@@ -1913,8 +1905,8 @@ nwGtpv2cStartTimer(NwGtpv2cStackT* thiz,
     }
 
     rc = thiz->tmrMgr.tmrStartCallback(thiz->tmrMgr.tmrMgrHandle, timeoutSec, timeoutUsec, tmrType, (void*)timeoutInfo, &timeoutInfo->hTimer);
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %#p for info %#p!",
-           (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %p for info %p!",
+           (void*) timeoutInfo->hTimer, (void*) timeoutInfo);
     NW_ASSERT(NW_GTPV2C_OK == rc);
     thiz->activeTimerInfo = timeoutInfo;
 
@@ -1986,18 +1978,18 @@ nwGtpv2cStartTimerOld(NwGtpv2cStackT* thiz,
       if(NW_GTPV2C_TIMER_CMP_P(&(thiz->activeTimerInfo->tvTimeout), &(timeoutInfo->tvTimeout), >))
       {
         NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
-               "Stopping active timer %#p for info %#p!",
-               (NwHandleT) thiz->activeTimerInfo->hTimer,
-               (NwHandleT) thiz->activeTimerInfo);
+               "Stopping active timer %p for info %p!",
+               (void*) thiz->activeTimerInfo->hTimer,
+               (void*) thiz->activeTimerInfo);
         rc = thiz->tmrMgr.tmrStopCallback(thiz->tmrMgr.tmrMgrHandle, thiz->activeTimerInfo->hTimer);
         NW_ASSERT(NW_GTPV2C_OK == rc);
       }
       else
       {
         NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
-               "Already Started timer %#p for info %#p!",
-               (NwHandleT) thiz->activeTimerInfo->hTimer,
-               (NwHandleT) thiz->activeTimerInfo);
+               "Already Started timer %p for info %p!",
+               (void*) thiz->activeTimerInfo->hTimer,
+               (void*) thiz->activeTimerInfo);
         *phTimer = (NwGtpv2cTimerHandleT) timeoutInfo;
         NW_LEAVE(thiz);
         return NW_GTPV2C_OK;
@@ -2005,8 +1997,8 @@ nwGtpv2cStartTimerOld(NwGtpv2cStackT* thiz,
     }
 
     rc = thiz->tmrMgr.tmrStartCallback(thiz->tmrMgr.tmrMgrHandle, timeoutSec, timeoutUsec, tmrType, (void*)timeoutInfo, &timeoutInfo->hTimer);
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %#p for info %#p!",
-           (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %p for info %p!",
+           (void*) timeoutInfo->hTimer, (void*) timeoutInfo);
     NW_ASSERT(NW_GTPV2C_OK == rc);
     thiz->activeTimerInfo = timeoutInfo;
 
@@ -2040,8 +2032,8 @@ nwGtpv2cStopTimer(NwGtpv2cStackT* thiz,
   timeoutInfo->next = gpGtpv2cTimeoutInfoPool;
   gpGtpv2cTimeoutInfoPool = timeoutInfo;
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer %#p for info %#p!",
-         (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer %p for info %p!",
+         (void*) timeoutInfo->hTimer, (void*) timeoutInfo);
   if(thiz->activeTimerInfo == timeoutInfo)
   {
     rc = thiz->tmrMgr.tmrStopCallback(thiz->tmrMgr.tmrMgrHandle, timeoutInfo->hTimer);
@@ -2064,8 +2056,8 @@ nwGtpv2cStopTimer(NwGtpv2cStackT* thiz,
         rc = thiz->tmrMgr.tmrStartCallback(thiz->tmrMgr.tmrMgrHandle,  tv.tv_sec, tv.tv_usec, timeoutInfo->tmrType, (void*)timeoutInfo, &timeoutInfo->hTimer);
         NW_ASSERT(NW_GTPV2C_OK == rc);
 
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %#p for info %#p!",
-               (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %p for info %p!",
+               (void*) timeoutInfo->hTimer, (void*) timeoutInfo);
         thiz->activeTimerInfo = timeoutInfo;
       }
     }
@@ -2094,12 +2086,12 @@ nwGtpv2cStopTimerOld(NwGtpv2cStackT* thiz,
   timeoutInfo->next = gpGtpv2cTimeoutInfoPool;
   gpGtpv2cTimeoutInfoPool = timeoutInfo;
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer %#p for info %#p!",
-         (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer %p for info %p!",
+         (void*) timeoutInfo->hTimer, (void*) timeoutInfo);
   if(thiz->activeTimerInfo == timeoutInfo)
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer %#p for info %#p!",
-           (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Stopping active timer %p for info %p!",
+           (void*) timeoutInfo->hTimer, (void*) timeoutInfo);
     rc = thiz->tmrMgr.tmrStopCallback(thiz->tmrMgr.tmrMgrHandle, timeoutInfo->hTimer);
     thiz->activeTimerInfo = NULL;
     NW_ASSERT(NW_GTPV2C_OK == rc);
@@ -2120,8 +2112,8 @@ nwGtpv2cStopTimerOld(NwGtpv2cStackT* thiz,
         rc = thiz->tmrMgr.tmrStartCallback(thiz->tmrMgr.tmrMgrHandle,  tv.tv_sec, tv.tv_usec, timeoutInfo->tmrType, (void*)timeoutInfo, &timeoutInfo->hTimer);
         NW_ASSERT(NW_GTPV2C_OK == rc);
 
-        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %#p for info %#p!",
-               (NwHandleT) timeoutInfo->hTimer, (NwHandleT) timeoutInfo);
+        NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Started timer %p for info %p!",
+               (void*) timeoutInfo->hTimer, (void*) timeoutInfo);
         thiz->activeTimerInfo = timeoutInfo;
       }
     }

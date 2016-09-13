@@ -84,6 +84,35 @@ extern "C" {
  #define NW_GTPV2C_UDP_PORT                                              (2123)
 
 /*--------------------------------------------------------------------------*
+ * Timeout Info Type Definition
+ *--------------------------------------------------------------------------*/
+
+/**
+ * gtpv2c timeout info
+ */
+
+typedef struct NwGtpv2cTimeoutInfo
+{
+  NwGtpv2cStackHandleT          hStack;
+  struct timeval                tvTimeout;
+  NwU32T                        tmrType;
+  void*                         timeoutArg;
+  NwGtpv2cRcT                         (*timeoutCallbackFunc)(void*);
+  NwGtpv2cTimerHandleT          hTimer;
+  RB_ENTRY (NwGtpv2cTimeoutInfo)       activeTimerListRbtNode;            /**< RB Tree Data Structure Node        */
+  NwU32T                        timerMinHeapIndex;
+  struct NwGtpv2cTimeoutInfo *next;
+} NwGtpv2cTimeoutInfoT;
+
+
+typedef struct
+{
+  int currSize;
+  int maxSize;
+  NwGtpv2cTimeoutInfoT** pHeap;
+} NwGtpv2cTmrMinHeapT;
+
+/*--------------------------------------------------------------------------*
  *  G T P V 2 C   S T A C K   O B J E C T   T Y P E    D E F I N I T I O N  *
  *--------------------------------------------------------------------------*/
 
@@ -112,30 +141,8 @@ typedef struct NwGtpv2cStack
   RB_HEAD( NwGtpv2cOutstandingRxSeqNumTrxnMap, NwGtpv2cTrxn ) outstandingRxSeqNumMap;
   RB_HEAD( NwGtpv2cActiveTimerList, NwGtpv2cTimeoutInfo     ) activeTimerList;
   RB_HEAD( NwGtpv2cPathMap, NwGtpv2cPathS                   ) pathMap;
-  NwHandleT                     hTmrMinHeap;
+  NwGtpv2cTmrMinHeapT           *hTmrMinHeap;
 } NwGtpv2cStackT;
-
-
-/*--------------------------------------------------------------------------*
- * Timeout Info Type Definition
- *--------------------------------------------------------------------------*/
-
-/**
- * gtpv2c timeout info
- */
-
-typedef struct NwGtpv2cTimeoutInfo
-{
-  NwGtpv2cStackHandleT          hStack;
-  struct timeval                tvTimeout;
-  NwU32T                        tmrType;
-  void*                         timeoutArg;
-  NwGtpv2cRcT                         (*timeoutCallbackFunc)(void*);
-  NwGtpv2cTimerHandleT          hTimer;
-  RB_ENTRY (NwGtpv2cTimeoutInfo)       activeTimerListRbtNode;            /**< RB Tree Data Structure Node        */
-  NwU32T                        timerMinHeapIndex;
-  struct NwGtpv2cTimeoutInfo *next;
-} NwGtpv2cTimeoutInfoT;
 
 
 /*---------------------------------------------------------------------------
@@ -204,7 +211,7 @@ typedef struct NwGtpv2cPathS
   NwGtpv2cTimerHandleT          hKeepAliveTmr;                          /**< Handle to path keep alive echo timer */
   RB_ENTRY (NwGtpv2cPathS)      pathMapRbtNode;
   NwU32T                        tunnelCount;
-  NwGtpv2cStackT*               pStack;
+  NwGtpv2cStackHandleT          pStack;
   NwGtpv2cTunnelHandleT         hTunnel;                                /**< Handle to local tunnel context     */
 
   struct NwGtpv2cPathS*         next;

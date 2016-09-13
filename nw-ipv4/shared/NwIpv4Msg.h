@@ -72,6 +72,14 @@ NwIpv4RcT
 nwIpv4MsgDelete( NW_IN NwIpv4StackHandleT hIpv4StackHandle,
                    NW_IN NwIpv4MsgHandleT hMsg);
 
+NwU8T*
+nwIpv4MsgGetBufHandle( NW_IN NwIpv4StackHandleT hIpv4StackHandle,
+                       NW_IN NwIpv4MsgHandleT hMsg);
+
+NwU32T
+nwIpv4MsgGetLength( NW_IN NwIpv4StackHandleT hIpv4StackHandle,
+                    NW_IN NwIpv4MsgHandleT hMsg);
+
 /**
  * Dump the contents of Ipv4 mesasge.
  *

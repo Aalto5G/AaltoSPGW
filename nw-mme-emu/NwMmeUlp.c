@@ -50,6 +50,7 @@
 #include "NwMmeLog.h"
 #include "NwLogMgr.h"
 #include "NwGtpv2c.h"
+#include "NwGtpv2cMsg.h"
 #include "NwMmeUe.h"
 #include "NwMmeUlp.h"
 #include "NwUdp.h"
@@ -279,8 +280,10 @@ nwMmeUlpStackReqCallback (NwGtpv2cUlpHandleT hUlp,
       {
         eventInfo.event   = NW_MME_UE_EVENT_NACK;
         eventInfo.arg     = pUlpApi;
-        NW_MME_LOG(NW_LOG_LEVEL_DEBG, "Received NW_GTPV2C_ULP_API_RSP_FAILURE from GTPv2c stack for session 0x%x and transaction 0x%x!",
-            pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn);
+        NW_MME_LOG(NW_LOG_LEVEL_DEBG,
+                   "Received NW_GTPV2C_ULP_API_RSP_FAILURE from GTPv2c stack for session %p and transaction %p!",
+                   (void*)hUlp,
+                   (void*)pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn);
 
         rc = nwMmeUeFsmRun((NwMmeUeT*)pUlpApi->apiInfo.rspFailureInfo.hUlpTrxn, &eventInfo);
       }
@@ -290,7 +293,7 @@ nwMmeUlpStackReqCallback (NwGtpv2cUlpHandleT hUlp,
       {
         eventInfo.event   = NW_MME_UE_EVENT_NACK;
         eventInfo.arg     = pUlpApi;
-        NW_MME_LOG(NW_LOG_LEVEL_DEBG, "Received  NW_GTPV2C_ULP_API_PEER_CHANGE_IND from GTPv2c stack ");
+        NW_MME_LOG(NW_LOG_LEVEL_DEBG, "Received NW_GTPV2C_ULP_API_PEER_CHANGE_IND from GTPv2c stack ");
         // = nwMmeUeFsmRun((NwMmeUeT*)pUlpApi->apiInfo.peerChangeInfo.hUlpTrxn, &eventInfo);
         /* TODO Remove peer sessions */
       }

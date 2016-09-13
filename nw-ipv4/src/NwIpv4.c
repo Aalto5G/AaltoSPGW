@@ -195,8 +195,8 @@ NwIpv4CreateTunnelEndPoint( NW_IN  NwIpv4StackT* thiz,
 
     if(pCollision)
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Tunnel endpoint cannot be created for IP "NW_IPV4_ADDR,
-	  ". Tunnel already exists", NW_IPV4_ADDR_FORMAT(ipv4Addr));
+      NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Tunnel endpoint cannot be created for IP "NW_IPV4_ADDR
+      ". Tunnel already exists", NW_IPV4_ADDR_FORMAT(ipv4Addr));
       rc = nwIpv4TunnelEndPointDestroy(thiz, pTunnelEndPoint);
       NW_ASSERT(rc == NW_IPv4_OK);
       *phStackSession = (NwIpv4StackSessionHandleT) 0;
@@ -204,7 +204,7 @@ NwIpv4CreateTunnelEndPoint( NW_IN  NwIpv4StackT* thiz,
     }
     else
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel endpoint '0x%x' creation successful for IPv4 "NW_IPV4_ADDR, pTunnelEndPoint, NW_IPV4_ADDR_FORMAT(ipv4Addr));
+      NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel endpoint '%p' creation successful for IPv4 "NW_IPV4_ADDR, pTunnelEndPoint, NW_IPV4_ADDR_FORMAT(ipv4Addr));
 
       *phStackSession = (NwIpv4StackSessionHandleT) pTunnelEndPoint;
     }
@@ -237,7 +237,7 @@ nwIpv4DestroyTunnelEndPoint( NwIpv4StackT* thiz,  NW_IN NwIpv4UlpApiT *pUlpReq)
   hStackSessionHandle = pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle;
   NW_ASSERT(hStackSessionHandle);
 
-  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Destroying tunnel endpoint '0x%x'", hStackSessionHandle);
+  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Destroying tunnel endpoint '%p'", (void*)hStackSessionHandle);
   pRemovedTeid = RB_REMOVE(NwIpv4TunnelEndPointIdentifierMap, &(thiz->ipv4AddrMap), (NwIpv4TunnelEndPointT*)(hStackSessionHandle));
 
   NW_ASSERT(pRemovedTeid == (NwIpv4TunnelEndPointT*)(hStackSessionHandle));
@@ -308,7 +308,7 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
       NwU16T csum;
       NwU32T srcAddr;
       NwU32T dstAddr;
-    } NwIpv4HdrT;
+    }__attribute__((packed)) NwIpv4HdrT;
 
     NwIpv4HdrT *pHdr = (NwIpv4HdrT*) pdu;
 
@@ -336,13 +336,13 @@ nwIpv4ProcessPdu( NwIpv4StackT* thiz,
       NwIpv4MsgHandleT hMsg;
 
       NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received IP PDU for endpoint "NW_IPV4_ADDR" from "NW_IPV4_ADDR,
-	  NW_IPV4_ADDR_FORMAT(tunnelEndPointKey.ipv4Addr), NW_IPV4_ADDR_FORMAT(pHdr->srcAddr));
-      rc = nwIpv4SessionSendMsgApiToUlpEntity(pTunnelEndPoint, pHdr, gPduLen);
+      NW_IPV4_ADDR_FORMAT(tunnelEndPointKey.ipv4Addr), NW_IPV4_ADDR_FORMAT(pHdr->srcAddr));
+      rc = nwIpv4SessionSendMsgApiToUlpEntity(pTunnelEndPoint, (NwU8T*)pHdr, gPduLen);
     }
     else
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Received IP PDU over non-existent tunnel endpoint "NW_IPV4_ADDR,
-	  " from "NW_IPV4_ADDR, NW_IPV4_ADDR_FORMAT(tunnelEndPointKey.ipv4Addr), NW_IPV4_ADDR_FORMAT(pHdr->srcAddr));
+      NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Received IP PDU over non-existent tunnel endpoint "NW_IPV4_ADDR
+      " from "NW_IPV4_ADDR, NW_IPV4_ADDR_FORMAT(tunnelEndPointKey.ipv4Addr), NW_IPV4_ADDR_FORMAT(pHdr->srcAddr));
     }
   }
   else
@@ -624,7 +624,7 @@ nwIpv4ProcessTimeout(void* timeoutInfo)
   NW_ASSERT(thiz != NULL);
 
   NW_ENTER(thiz);
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received timeout event from ULP with timeoutInfo %x!", timeoutInfo);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received timeout event from ULP with timeoutInfo %p!", timeoutInfo);
 
   rc = (((NwIpv4TimeoutInfoT*) timeoutInfo)->timeoutCallbackFunc) (timeoutInfo);
 

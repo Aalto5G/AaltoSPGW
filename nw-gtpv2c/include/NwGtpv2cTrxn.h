@@ -49,14 +49,16 @@
 extern "C" {
 #endif
 
+#include "NwGtpv2cPrivate.h"
+
 /**
- * Constructotr
+ * Constructor
  */
 NwGtpv2cTrxnT*
 nwGtpv2cTrxnNew( NW_IN  NwGtpv2cStackT* pStack);
 
 /**
- * Overloaded Constructotr
+ * Overloaded Constructor
  */
 NwGtpv2cTrxnT*
 nwGtpv2cTrxnWithSeqNumNew( NW_IN  NwGtpv2cStackT* pStack,

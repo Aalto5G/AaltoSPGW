@@ -59,7 +59,6 @@ NwRcT nwGtpv2cIfGetSelectionObject(NwGtpv2cIfT* thiz, NwU32T *pSelObj)
 
 void NW_EVT_CALLBACK(nwGtpv2cIfDataIndicationCallback)
 {
-  NwRcT         rc;
   NwU8T         udpBuf[MAX_GTPV2C_PAYLOAD_LEN];
   NwU32T        bytesRead;
   NwU32T        peerLen;
@@ -74,7 +73,7 @@ void NW_EVT_CALLBACK(nwGtpv2cIfDataIndicationCallback)
     NW_GTPV2C_IF_LOG(NW_LOG_LEVEL_DEBG, "Received GTPCv2 message of length %u from %X:%u", bytesRead, ntohl(peer.sin_addr.s_addr), ntohs(peer.sin_port));
     nwLogHexDump(udpBuf, bytesRead);
 
-    rc = nwGtpv2cProcessUdpReq(thiz->hGtpcStack, udpBuf, bytesRead, ntohs(peer.sin_port), (peer.sin_addr.s_addr));
+    nwGtpv2cProcessUdpReq(thiz->hGtpcStack, udpBuf, bytesRead, ntohs(peer.sin_port), (peer.sin_addr.s_addr));
   }
   else
   {
@@ -92,8 +91,8 @@ NwRcT nwGtpv2cIfDataReq(NwGtpv2cUdpHandleT udpHandle,
   NwS32T bytesSent;
   NwGtpv2cIfT* thiz = (NwGtpv2cIfT*) udpHandle;
 
-  NW_GTPV2C_IF_LOG(NW_LOG_LEVEL_DEBG, "Sending buf of size %u for on handle %x to peer "NW_IPV4_ADDR, dataSize, udpHandle,
-      NW_IPV4_ADDR_FORMAT(peerIpAddr));
+  NW_GTPV2C_IF_LOG(NW_LOG_LEVEL_DEBG, "Sending buf of size %u for on handle %p to peer "NW_IPV4_ADDR,
+                   dataSize, (void*)udpHandle, NW_IPV4_ADDR_FORMAT(peerIpAddr));
 
   peerAddr.sin_family       = AF_INET;
   peerAddr.sin_port         = htons(peerPort);

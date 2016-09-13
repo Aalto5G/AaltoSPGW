@@ -95,7 +95,7 @@ nwGtpv2cMsgNew( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
     pMsg->hStack        = hGtpcStackHandle;
 
     *phMsg = (NwGtpv2cMsgHandleT) pMsg;
-    NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Created message %x!", (NwU32T)pMsg);
+    NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Created message %p!", pMsg);
     return NW_GTPV2C_OK;
   }
 
@@ -146,7 +146,7 @@ nwGtpv2cMsgFromBufferNew( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
     pMsg->seqNum  = ntohl(pMsg->seqNum);
 
     pMsg->hStack        = hGtpcStackHandle;
-    NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Created message %x!", (NwU32T)pMsg);
+    NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Created message %p!", pMsg);
     return NW_GTPV2C_OK;
   }
   return NW_GTPV2C_FAILURE ;
@@ -157,7 +157,7 @@ nwGtpv2cMsgDelete( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
                    NW_IN NwGtpv2cMsgHandleT hMsg)
 {
   NwGtpv2cStackT* pStack = (NwGtpv2cStackT*) hGtpcStackHandle;
-  NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Purging message %x!", hMsg);
+  NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Purging message %p!", (void*)hMsg);
 
   ((NwGtpv2cMsgT*)hMsg)->next = gpGtpv2cMsgPool;
   gpGtpv2cMsgPool = (NwGtpv2cMsgT*) hMsg;

@@ -75,11 +75,11 @@ nwMmeDpeDestroy(NwMmeDpeT* thiz);
 
 extern NwRcT
 nwMmeDpeCreateGtpuIpv4Flow(NwMmeDpeT*   thiz,
-                         NwU32T         hSession,
+                         NwSdpUlpSessionHandleT         hSession,
                          NwU32T         teidIngress,
                          NwU32T         *pTeidIngress,
                          NwU32T         *pIpv4Ingress,
-                         NwU32T         *phBearer);
+                         NwSdpSessionHandleT         *phBearer);
 
 /**
  * Create Ipv4 to Gtpu flow with Soft Data Plane
@@ -87,11 +87,11 @@ nwMmeDpeCreateGtpuIpv4Flow(NwMmeDpeT*   thiz,
 
 extern NwRcT
 nwMmeDpeCreateIpv4GtpuFlow(NwMmeDpeT*   thiz,
-                         NwU32T         hSession,
-                         NwU32T         teidEgress,
-                         NwU32T         ipv4Egress,
-                         NwU32T         ipv4Ingress,
-                         NwU32T         *phBearer);
+                           NwSdpUlpSessionHandleT         hSession,
+                           NwU32T         teidEgress,
+                           NwU32T         ipv4Egress,
+                           NwU32T         ipv4Ingress,
+                           NwSdpSessionHandleT         *phBearer);
 
 /**
  * Create Gtpu to Gtpu flow with Soft Data Plane
@@ -99,12 +99,12 @@ nwMmeDpeCreateIpv4GtpuFlow(NwMmeDpeT*   thiz,
 
 extern NwRcT
 nwMmeDpeCreateGtpuGtpuFlow(NwMmeDpeT*   thiz,
-                         NwU32T         hSession,
-                         NwU32T         teidEgress,
-                         NwU32T         ipv4Egress,
-                         NwU32T         *teidIngress,
-                         NwU32T         *ipv4Ingress,
-                         NwU32T         *phBearer);
+                           NwSdpUlpSessionHandleT         hSession,
+                           NwU32T         teidEgress,
+                           NwU32T         ipv4Egress,
+                           NwU32T         *teidIngress,
+                           NwU32T         *ipv4Ingress,
+                           NwSdpSessionHandleT         *phBearer);
 
 /**
  * Destroy a flow with Soft Data Plane
@@ -112,7 +112,7 @@ nwMmeDpeCreateGtpuGtpuFlow(NwMmeDpeT*   thiz,
 
 extern NwRcT
 nwMmeDpeDestroyFlow(NwMmeDpeT*   thiz,
-                      NwU32T         hBearer);
+                    NwSdpSessionHandleT         hBearer);
 extern NwRcT
 nwMmeDpeCreateGtpuService( NwMmeDpeT* thiz, NwU32T ipv4Addr );
 

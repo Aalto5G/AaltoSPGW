@@ -347,7 +347,7 @@ int main(int argc, char* argv[])
     exit(1);
   }
 
-  NW_MME_LOG(NW_LOG_LEVEL_INFO, "GTP-Cv2 Stack Handle '%X' Creation Successful!", mme.hGtpcStack);
+  NW_MME_LOG(NW_LOG_LEVEL_INFO, "GTP-Cv2 Stack Handle '%p' Creation Successful!", (void*)mme.hGtpcStack);
 
   /* Set up Log Entity */
 
@@ -428,7 +428,7 @@ int main(int argc, char* argv[])
   }
   else
   {
-    NW_MME_LOG(NW_LOG_LEVEL_INFO, "GTP-Cv2 Stack Handle '%x' Finalize Successful!", mme.hGtpcStack);
+    NW_MME_LOG(NW_LOG_LEVEL_INFO, "GTP-Cv2 Stack Handle '%p' Finalize Successful!", (void*) mme.hGtpcStack);
   }
 
   return rc;

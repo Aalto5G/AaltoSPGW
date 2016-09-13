@@ -33,6 +33,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "NwTypes.h"
 #include "NwLog.h"

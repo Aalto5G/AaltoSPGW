@@ -40,6 +40,7 @@
 #include "NwUtils.h"
 #include "NwGtpv2cLog.h"
 #include "NwGtpv2c.h"
+#include "NwGtpv2cTrxn.h"
 #include "NwGtpv2cPrivate.h"
 #include "NwGtpv2cPath.h"
 
@@ -51,7 +52,7 @@
 extern "C" {
 #endif
 
-#define  NW_GTPV2C_KEEP_ALIVE_TMR 20
+#define  NW_GTPV2C_KEEP_ALIVE_TMR 2
 
 static NwGtpv2cPathT* gpGtpv2cPathPool = NULL;
 
@@ -70,34 +71,32 @@ static NwGtpv2cPathT* gpGtpv2cPathPool = NULL;
 static NwGtpv2cRcT
 nwGtpv2cPathSendPeerRestartToUlp(NwGtpv2cPathT* thiz)
 {
-  NwGtpv2cRcT                 rc;
   NwGtpv2cUlpApiT ulpApi;
   NwGtpv2cStackT* pStack;
 
-  pStack = thiz->pStack;
+  pStack = (NwGtpv2cStackT*)thiz->pStack;
   ulpApi.hMsg                              = 0;
   ulpApi.apiType                           = NW_GTPV2C_ULP_API_PEER_CHANGE_IND;
   ulpApi.apiInfo.peerChangeInfo.peerIp     = ntohl(thiz->ipv4Address);
   ulpApi.apiInfo.peerChangeInfo.cause      = peerRestarted;
   NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO, "Peer restart detected sending indication to ULP");
-  rc = pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
+  return pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
 }
 
 
 static NwGtpv2cRcT
 nwGtpv2cPathSendPeerDisconnectedToUlp(NwGtpv2cPathT* thiz)
 {
-  NwGtpv2cRcT                 rc;
   NwGtpv2cUlpApiT ulpApi;
   NwGtpv2cStackT* pStack;
 
-  pStack = thiz->pStack;
+  pStack = (NwGtpv2cStackT*)thiz->pStack;
   ulpApi.hMsg                              = 0;
   ulpApi.apiType                           = NW_GTPV2C_ULP_API_PEER_CHANGE_IND;
   ulpApi.apiInfo.peerChangeInfo.peerIp     = ntohl(thiz->ipv4Address);
   ulpApi.apiInfo.peerChangeInfo.cause      = peerDisconnected;
   NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO, "Peer disconected sending indication to ULP");
-  rc = pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
+  return pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
 }
 
 /* Forward declaration */
@@ -109,12 +108,12 @@ nwGtpv2cPathEchoRspWaitTimeout(void* arg)
 {
   NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cPathT* thiz = ((NwGtpv2cPathT*)arg);
-  NwGtpv2cStackT* pStack = thiz->pStack;
+  NwGtpv2cStackT* pStack = (NwGtpv2cStackT*)thiz->pStack;
   NwGtpv2cTrxnT* pTrxn = thiz->pTrxn;
 
   NW_ASSERT(pStack);
 
-  NW_LOG(pStack, NW_LOG_LEVEL_WARN, "T3 Response timer expired for transaction 0x%X", (NwU32T) pTrxn);
+  NW_LOG(pStack, NW_LOG_LEVEL_WARN, "T3 Response timer expired for transaction %p", pTrxn);
   if(!pTrxn){
       NW_LOG(pStack, NW_LOG_LEVEL_ERRO, "Invalid transaction. Ignoring");
       return rc;
@@ -131,7 +130,7 @@ nwGtpv2cPathEchoRspWaitTimeout(void* arg)
   }
   else
   {
-    NW_LOG(pStack, NW_LOG_LEVEL_ERRO, "N3 retries expired for transaction 0x%X", (NwU32T) pTrxn);
+    NW_LOG(pStack, NW_LOG_LEVEL_ERRO, "N3 retries expired for transaction %p", pTrxn);
     nwGtpv2cPathSendPeerDisconnectedToUlp(thiz);
 
     RB_REMOVE(NwGtpv2cOutstandingTxSeqNumTrxnMap, &(pStack->outstandingTxSeqNumMap), pTrxn);
@@ -160,7 +159,7 @@ nwGtpv2cPathHandleInitialReq( NW_IN  NwGtpv2cPathT* thiz, NW_IN NwGtpv2cUlpApiT 
 {
   NwGtpv2cRcT rc;
   NwGtpv2cTrxnT *pTrxn;
-  NwGtpv2cStackT* pStack = thiz->pStack;
+  NwGtpv2cStackT* pStack = (NwGtpv2cStackT*)thiz->pStack;
 
   NW_ENTER(thiz);
 
@@ -170,8 +169,7 @@ nwGtpv2cPathHandleInitialReq( NW_IN  NwGtpv2cPathT* thiz, NW_IN NwGtpv2cUlpApiT 
 
   if(!pTrxn)
   {
-      rc = NW_GTPV2C_FAILURE ;
-      return;
+      return NW_GTPV2C_FAILURE ;
   }
 
   NW_ASSERT(pUlpReq->apiInfo.initialReqInfo.hTunnel);
@@ -212,18 +210,19 @@ nwGtpv2cPathHandleInitialReq( NW_IN  NwGtpv2cPathT* thiz, NW_IN NwGtpv2cUlpApiT 
 
 
 static NwGtpv2cRcT
-nwGtpv2cPathPeriodicEchoReq(NwGtpv2cPathT* thiz)
+nwGtpv2cPathPeriodicEchoReq(void* _thiz)
 {
+  NwGtpv2cPathT* thiz = (NwGtpv2cPathT*)_thiz;
   NwGtpv2cRcT rc = NW_GTPV2C_OK;
   NwGtpv2cUlpApiT ulpReq;
-  NwGtpv2cStackT* pStack = thiz->pStack;
+  NwGtpv2cStackT* pStack = (NwGtpv2cStackT*)thiz->pStack;
 
   NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO, "Periodic echo to "NW_IPV4_ADDR,
          NW_IPV4_ADDR_FORMAT(thiz->ipv4Address));
 
   /* nwGtpv2cSendEchoReq(thiz->pStack, thiz->ipv4Address, 0); */
 
-  thiz->hKeepAliveTmr = NULL;
+  thiz->hKeepAliveTmr = (NwGtpv2cTimerHandleT)NULL;
 
   ulpReq.apiType = NW_GTPV2C_ULP_API_INITIAL_REQ;
 
@@ -231,7 +230,7 @@ nwGtpv2cPathPeriodicEchoReq(NwGtpv2cPathT* thiz)
   ulpReq.apiInfo.initialReqInfo.hUlpTrxn        = (NwGtpv2cUlpTrxnHandleT)thiz;
   ulpReq.apiInfo.initialReqInfo.hUlpTunnel      = (NwGtpv2cUlpTunnelHandleT)thiz;
 
-  rc = nwGtpv2cMsgNew( pStack,
+  rc = nwGtpv2cMsgNew( (NwGtpv2cStackHandleT)pStack,
       NW_FALSE,
       NW_GTP_ECHO_REQ,
       0,
@@ -289,13 +288,13 @@ nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
     NW_LOG(pStack, NW_LOG_LEVEL_ERRO, "Error allocating memory for Path ");
     return NULL;
   }
-  thiz->pStack           = pStack;
+  thiz->pStack           = (NwGtpv2cStackHandleT)pStack;
   thiz->ipv4Address      = ipv4Remote;
   thiz->restartCounter   = 0;
   thiz->t3ResponseTimout = 2;
   thiz->n3RequestCount   = 2;
   uint8_t t = NW_GTPV2C_KEEP_ALIVE_TMR + rand() % 6;
-  rc = nwGtpv2cStartTimer(thiz->pStack, t, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
+  rc = nwGtpv2cStartTimer(pStack, t, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
                           nwGtpv2cPathPeriodicEchoReq, thiz,
                           &thiz->hKeepAliveTmr);
 
@@ -308,7 +307,7 @@ nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
   ulpReq.apiInfo.createLocalTunnelInfo.teidLocal       = (NwGtpv2cUlpTrxnHandleT)0;
   ulpReq.apiInfo.createLocalTunnelInfo.peerIp          = ipv4Remote;
 
-  rc = nwGtpv2cProcessUlpReq(thiz->pStack, &ulpReq);
+  rc = nwGtpv2cProcessUlpReq((NwGtpv2cStackHandleT)thiz->pStack, &ulpReq);
   NW_ASSERT(NW_GTPV2C_OK == rc);
   thiz->hTunnel = ulpReq.apiInfo.createLocalTunnelInfo.hTunnel;
 
@@ -332,23 +331,23 @@ nwGtpv2cPathDelete( NW_INOUT NwGtpv2cPathT **pthiz)
   NwGtpv2cPathT *thiz = *pthiz;
   NwGtpv2cUlpApiT       ulpReq;
 
-  pStack = thiz->pStack;
+  pStack = (NwGtpv2cStackT*)thiz->pStack;
   RB_REMOVE(NwGtpv2cPathMap, &(pStack->pathMap), thiz);
 
   if(thiz->hKeepAliveTmr)
   {
     NW_ASSERT(pStack->tmrMgr.tmrStopCallback != NULL);
 
-    rc = nwGtpv2cStopTimer(thiz->pStack, thiz->hKeepAliveTmr);
+    rc = nwGtpv2cStopTimer(pStack, thiz->hKeepAliveTmr);
     thiz->hKeepAliveTmr = 0;
   }
 
   ulpReq.apiType = NW_GTPV2C_ULP_DELETE_LOCAL_TUNNEL;
   ulpReq.apiInfo.deleteLocalTunnelInfo.hTunnel = (*pthiz)->hTunnel;
-  rc = nwGtpv2cProcessUlpReq(thiz->pStack, &ulpReq);
+  rc = nwGtpv2cProcessUlpReq((NwGtpv2cStackHandleT)thiz->pStack, &ulpReq);
   NW_ASSERT(NW_GTPV2C_OK == rc);
 
-  NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Purging path ", NW_IPV4_ADDR,
+  NW_LOG(pStack, NW_LOG_LEVEL_DEBG, "Purging path "NW_IPV4_ADDR,
          NW_IPV4_ADDR_FORMAT(thiz->ipv4Address));
   thiz->next = gpGtpv2cPathPool;
   gpGtpv2cPathPool = thiz;
@@ -399,19 +398,20 @@ NwGtpv2cRcT
 nwGtpv2cPathResetKeepAliveTimer(NW_IN NwGtpv2cPathT *thiz)
 {
   NwGtpv2cRcT rc = NW_GTPV2C_OK;
+  NwGtpv2cStackT* pStack = (NwGtpv2cStackT*)thiz->pStack;
 
 
   uint8_t t = NW_GTPV2C_KEEP_ALIVE_TMR + rand() % 6;
 
   if(thiz->hKeepAliveTmr)
   {
-    NW_ASSERT(thiz->pStack->tmrMgr.tmrStopCallback != NULL);
+    NW_ASSERT(pStack->tmrMgr.tmrStopCallback != NULL);
 
-    rc = nwGtpv2cStopTimer(thiz->pStack, thiz->hKeepAliveTmr);
-    thiz->hKeepAliveTmr = NULL;
+    rc = nwGtpv2cStopTimer(pStack, thiz->hKeepAliveTmr);
+    thiz->hKeepAliveTmr = (NwGtpv2cTimerHandleT)NULL;
   }
 
-  rc = nwGtpv2cStartTimer(thiz->pStack, t, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
+  rc = nwGtpv2cStartTimer(pStack, t, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
                           nwGtpv2cPathPeriodicEchoReq, thiz,
                           &thiz->hKeepAliveTmr);
   return rc;

@@ -70,6 +70,20 @@ extern "C" {
     NW_LOG(_greHandle, NW_LOG_LEVEL_DEBG, "Leaving '%s'", __func__);\
   } while(0)
 
+/*---------------------------------------------------------------------------
+ * IPv4 logging macros
+ *--------------------------------------------------------------------------*/
+#define NW_IPV4_ADDR                            "%u.%u.%u.%u"
+#define NW_IPV4_ADDR_FORMAT(__addr)             (NwU8T)((__addr) & 0x000000ff),        \
+                                                (NwU8T)(((__addr) & 0x0000ff00) >> 8 ), \
+                                                (NwU8T)(((__addr) & 0x00ff0000) >> 16), \
+                                                (NwU8T)(((__addr) & 0xff000000) >> 24)
+
+#define NW_IPV4_ADDR_FORMATP(__paddr)           (NwU8T)(*((NwU8T*)(__paddr)) & 0x000000ff),     \
+                                                (NwU8T)(*((NwU8T*)(__paddr + 1)) & 0x000000ff), \
+                                                (NwU8T)(*((NwU8T*)(__paddr + 2)) & 0x000000ff), \
+                                                (NwU8T)(*((NwU8T*)(__paddr + 3)) & 0x000000ff)
+
 #ifdef __cplusplus
 }
 #endif

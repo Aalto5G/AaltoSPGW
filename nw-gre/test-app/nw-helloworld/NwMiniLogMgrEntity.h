@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include <libgen.h>
 #include "NwEvt.h"
 
 #ifndef NW_ASSERT

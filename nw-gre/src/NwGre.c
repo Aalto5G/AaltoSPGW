@@ -41,6 +41,7 @@
 #include "NwGrePrivate.h"
 #include "NwGreTunnelEndPoint.h"
 #include "NwGre.h"
+#include "NwGreTrxn.h"
 #include "NwGreLog.h"
 
 #ifdef __cplusplus
@@ -245,7 +246,7 @@ NwGreCreateTunnelEndPoint( NW_IN  NwGreStackT* thiz,
   if(pTunnelEndPoint)
   {
 
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel endpoint '0x%x' creation successful for GRE key 0x%08x", pTunnelEndPoint, greKey);
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel endpoint '%p' creation successful for GRE key 0x%08x", pTunnelEndPoint, greKey);
 
     pTunnelEndPoint->greKey             = greKey;
     pTunnelEndPoint->pStack             = thiz;
@@ -255,7 +256,7 @@ NwGreCreateTunnelEndPoint( NW_IN  NwGreStackT* thiz,
 
     if(pCollision)
     {
-      NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Tunnel endpoint '0x%x' cannot be created for GRE key 0x%08x. GRE key already exists", pTunnelEndPoint, greKey);
+      NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Tunnel endpoint '%p' cannot be created for GRE key 0x%08x. GRE key already exists", pTunnelEndPoint, greKey);
       rc = nwGreTunnelEndPointDestroy(thiz, pTunnelEndPoint);
       NW_ASSERT(NW_GRE_OK == rc);
       rc = NW_GRE_FAILURE;
@@ -289,7 +290,7 @@ nwGreDestroyTunnelEndPoint( NwGreStackT* thiz,  NW_IN NwGreUlpApiT *pUlpReq)
   NwGreRcT rc = NW_GRE_OK;
   NwGreTunnelEndPointT *pRemovedTunnel;
 
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destroying tunnel endpoint '0x%x'", pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destroying tunnel endpoint '%p'", (void*)pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
   pRemovedTunnel = RB_REMOVE(NwGreTunnelEndPointIdentifierMap, &(thiz->teidMap), (NwGreTunnelEndPointT*)(pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle));
 
   NW_ASSERT(pRemovedTunnel == (NwGreTunnelEndPointT*)(pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle));
@@ -459,7 +460,8 @@ nwGreProcessGpdu( NwGreStackT* thiz,
   }
   else
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Received T-PDU with key flag from 0x%x", *gpdu, ntohl(peerIp));
+    NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Received T-PDU with key flag from 0x%x "NW_IPV4_ADDR,
+           *gpdu, NW_IPV4_ADDR_FORMAT(peerIp));
   }
   NW_LEAVE(thiz);
 
@@ -724,7 +726,7 @@ nwGreProcessTimeout(void* timeoutInfo)
   NW_ASSERT(thiz != NULL);
 
   NW_ENTER(thiz);
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received timeout event from ULP with timeoutInfo %x!", timeoutInfo);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received timeout event from ULP with timeoutInfo %p!", timeoutInfo);
 
   rc = (((NwGreTimeoutInfoT*) timeoutInfo)->timeoutCallbackFunc) (timeoutInfo);
 

@@ -41,6 +41,7 @@
 #include "NwGtpv1uPrivate.h"
 #include "NwGtpv1uTunnelEndPoint.h"
 #include "NwGtpv1u.h"
+#include "NwGtpv1uTrxn.h"
 #include "NwGtpv1uIe.h"
 #include "NwGtpv1uLog.h"
 
@@ -322,7 +323,7 @@ NwGtpv1uCreateTunnelEndPoint( NW_IN  NwGtpv1uStackT* thiz,
       *phStackSession = (NwGtpv1uStackSessionHandleT) pTunnelEndPoint;
       pTunnelEndPoint = RB_FIND(NwGtpv1uTunnelEndPointIdentifierMap, &(thiz->teidMap), pTunnelEndPoint);
       NW_ASSERT(pTunnelEndPoint);
-      NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel endpoint 0x%x creation successful for TEID 0x%08x", pTunnelEndPoint, teid);
+      NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Tunnel endpoint %p creation successful for TEID 0x%08x", pTunnelEndPoint, teid);
     }
 
   }
@@ -352,7 +353,7 @@ nwGtpv1uDestroyTunnelEndPoint( NwGtpv1uStackT* thiz,  NW_IN NwGtpv1uUlpApiT *pUl
 
   if(pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle)
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destroying tunnel endpoint handle '0x%x'", pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
+      NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Destroying tunnel endpoint handle '%p'", (void*)pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
     pRemovedTeid = RB_REMOVE(NwGtpv1uTunnelEndPointIdentifierMap, &(thiz->teidMap), (NwGtpv1uTunnelEndPointT*)(pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle));
 
     NW_ASSERT(pRemovedTeid == (NwGtpv1uTunnelEndPointT*)(pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle));
@@ -361,7 +362,7 @@ nwGtpv1uDestroyTunnelEndPoint( NwGtpv1uStackT* thiz,  NW_IN NwGtpv1uUlpApiT *pUl
   }
   else
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Non-existent tunnel endpoint handle '0x%x'", pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Non-existent tunnel endpoint handle '%p'", (void*)pUlpReq->apiInfo.destroyTunnelEndPointInfo.hStackSessionHandle);
   }
 
   return rc;
@@ -477,8 +478,8 @@ nwGtpv1uProcessGpdu( NwGtpv1uStackT* thiz,
     if(NW_GTPV1U_OK == rc)
     {
       NwGtpv1uMsgT* pMsg = (NwGtpv1uMsgT*) hMsg;
-      NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received T-PDU over tunnel endpoint from IP "NW_IPV4_ADDR,
-	  " TEID 0x%08x of size %u", NW_IPV4_ADDR_FORMAT(peerIp), tunnelEndPointKey.teid, pMsg->msgLen);
+      NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received T-PDU over tunnel endpoint from IP "NW_IPV4_ADDR
+             " TEID 0x%08x of size %u", NW_IPV4_ADDR_FORMAT(ntohl(peerIp)), tunnelEndPointKey.teid, pMsg->msgLen);
       rc = nwGtpSessionSendMsgApiToUlpEntity(pTunnelEndPoint, pMsg);
     }
   }
@@ -856,7 +857,7 @@ nwGtpv1uProcessTimeout(void* timeoutInfo)
   NW_ASSERT(thiz != NULL);
 
   NW_ENTER(thiz);
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received timeout event from ULP with timeoutInfo %x!", timeoutInfo);
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Received timeout event from ULP with timeoutInfo %p!", timeoutInfo);
 
   rc = (((NwGtpv1uTimeoutInfoT*) timeoutInfo)->timeoutCallbackFunc) (timeoutInfo);
 

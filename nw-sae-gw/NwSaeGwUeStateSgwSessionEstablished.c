@@ -398,6 +398,7 @@ nwSaeGwUeHandleSgwS11ModifyBearerRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
   NwGtpv2cErrorT        error;
   NwSaeGwUeSgwModifyBearerRequestT modifyBearerReq;
   NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
+  NwU64T                imsi;
 
   NW_UE_LOG(NW_LOG_LEVEL_INFO, "Modify Bearer Request received from peer!");
 
@@ -482,12 +483,15 @@ nwSaeGwUeHandleSgwS11ModifyBearerRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* 
     error.cause = NW_GTPV2C_CAUSE_REQUEST_ACCEPTED;
 
     /* Send Create Session Response with success*/;
+    memcpy(&imsi, thiz->imsi, sizeof(NwU64T));
     rc = nwSaeGwUeSgwSendModifyBearerResponseToMme(thiz,
         pUlpApi->apiInfo.initialReqIndInfo.hTrxn,
         &(pUlpApi->apiInfo.initialReqIndInfo.error),
         &modifyBearerReq);
 
-    NW_UE_LOG(NW_LOG_LEVEL_NOTI, "Bearer for UE Session with IP " NW_IPV4_ADDR " and IMSI %llx modified successfully!", NW_IPV4_ADDR_FORMATP((thiz->paa.ipv4Addr)), NW_NTOHLL(*((NwU64T*)(thiz->imsi))));
+    NW_UE_LOG(NW_LOG_LEVEL_NOTI, "Bearer for UE Session with IP "NW_IPV4_ADDR" and IMSI %llx modified successfully!",
+              NW_IPV4_ADDR_FORMATP(thiz->paa.ipv4Addr),
+              NW_NTOHLL(imsi));
   }
 
   return NW_OK;
