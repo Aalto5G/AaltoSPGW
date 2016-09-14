@@ -421,11 +421,11 @@ nwSaeGwDpeReleaseEndpointFlow(NwSaeGwDpeT*   thiz,
   NwRcT                 rc;
   NwSdpUlpApiT          ulpReq = {0};
 
-  ulpReq.apiType                              = NW_SDP_ULP_API_UPDATE_FLOW;
-  ulpReq.apiInfo.updateFlowInfo.hUlpSession   = hSession;
-  ulpReq.apiInfo.updateFlowInfo.hSdpSession   = hBearer;
+  ulpReq.apiType                                   = NW_SDP_ULP_API_UPDATE_FLOW;
+  ulpReq.apiInfo.updateFlowInfo.hUlpSession        = hSession;
+  ulpReq.apiInfo.updateFlowInfo.hSdpSession        = hBearer;
 
-  ulpReq.apiInfo.updateFlowInfo.egressFlow.isValid                  = NW_FALSE;
+  ulpReq.apiInfo.updateFlowInfo.egressFlow.isValid = NW_FALSE;
 
   rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
   NW_ASSERT( NW_OK == rc );

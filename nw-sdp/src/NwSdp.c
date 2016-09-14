@@ -399,62 +399,6 @@ nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
 
   pFlowContext->egressEndPoint = *pNewFlowEndPoint;
 
-  /* switch(pFlowContext->ingressEndPoint.flowType) */
-  /* { */
-  /*   case NW_FLOW_TYPE_IPv4: */
-  /*     { */
-  /*       if(!(thiz->hIpv4Stack)) */
-  /*       { */
-  /*         return NW_SDP_FAILURE; */
-  /*       } */
-  /*       if(!(pFlowContext->ingressEndPoint.hTunnelEndPoint.ipv4)) */
-  /*       { */
-  /*         NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "IPv4 end point does not exist on data plane!"); */
-  /*         return NW_SDP_FAILURE; */
-  /*       } */
-  /*       NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Modifying IPv4 tunnel endpoint with peer IP "NW_IPV4_ADDR, */
-  /*              NW_IPV4_ADDR_FORMAT(pFlowContext->ingressEndPoint.flowKey.ipv4Addr)); */
-  /*       pFlowContext->egressEndPoint = *pNewFlowEndPoint; */
-  /*     } */
-  /*     break; */
-
-  /*   case NW_FLOW_TYPE_GTPU: */
-  /*     { */
-  /*       if(!(pFlowContext->ingressEndPoint.hTunnelEndPoint.gtpu)) */
-  /*       { */
-  /*         return NW_SDP_FAILURE; */
-  /*       } */
-  /*       NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Modifying GTPU tunnel endpoint with TEID 0x%08x for handle 0x%x", */
-  /*              pFlowContext->ingressEndPoint.flowKey.gtpuTeid, */
-  /*              (NwGtpv1uUlpSessionHandleT)pFlowContext->ingressEndPoint.hTunnelEndPoint.gtpu); */
-  /*       pFlowContext->egressEndPoint.flowKey.gtpuTeid = pFlowContext->ingressEndPoint.flowKey.gtpuTeid; */
-  /*       pFlowContext->egressEndPoint.ipv4Addr = pFlowContext->ingressEndPoint.ipv4Addr; */
-  /*     } */
-  /*     break; */
-
-  /*   case NW_FLOW_TYPE_GRE: */
-  /*     { */
-  /*       if(!(thiz->hGreStack)) */
-  /*       { */
-  /*         return NW_SDP_FAILURE; */
-  /*       } */
-  /*       if(!(pFlowContext->ingressEndPoint.hTunnelEndPoint.gre)) */
-  /*       { */
-  /*         return NW_SDP_FAILURE; */
-  /*       } */
-  /*       NW_LOG(thiz, NW_LOG_LEVEL_NOTI, "Modifying GRE tunnel endpoint with key %d", */
-  /*              pFlowContext->egressEndPoint.flowKey.greKey); */
-  /*       pFlowContext->egressEndPoint.flowKey.gtpuTeid = pNewFlowEndPoint->flowKey.gtpuTeid; */
-  /*       pFlowContext->egressEndPoint.ipv4Addr = pNewFlowEndPoint->ipv4Addr; */
-  /*     } */
-  /*     break; */
-  /*   default: */
-  /*     { */
-  /*       NW_LOG(thiz, NW_LOG_LEVEL_NOTI, "Unsupported encapsulation type %u", pFlowContext->ingressEndPoint.flowType); */
-  /*       return NW_SDP_FAILURE; */
-  /*     } */
-  /* } */
-
   return rc;
 }
 
@@ -574,7 +518,13 @@ nwSdpProcessIpv4DataIndication(NwSdpT* thiz,
               NwSdpFlowContextT* pFlowContext,
               NwIpv4MsgHandleT hMsg)
 {
-  NwSdpRcT rc;
+  NwSdpRcT rc = NW_SDP_OK;
+
+  if(pFlowContext->egressEndPoint.isValid == NW_FALSE)
+  {
+    NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Paging not supported yet");
+    return rc;
+  }
 
   /*
    * Send Message Request to GTPv1u Stack Instance
