@@ -790,7 +790,7 @@ nwGtpv2cHandleUlpCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUl
   nwGtpv2cCreateLocalTunnel(thiz,
                             pUlpReq->apiInfo.createLocalTunnelInfo.teidLocal,
                             pUlpReq->apiInfo.createLocalTunnelInfo.peerIp,
-                            pUlpReq->apiInfo.triggeredRspInfo.hUlpTunnel,
+                            pUlpReq->apiInfo.createLocalTunnelInfo.hUlpTunnel,
                             &(pUlpReq->apiInfo.createLocalTunnelInfo.hTunnel));
   return NW_GTPV2C_OK;
 }

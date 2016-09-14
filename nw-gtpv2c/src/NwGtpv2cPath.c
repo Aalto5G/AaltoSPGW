@@ -52,7 +52,7 @@
 extern "C" {
 #endif
 
-#define  NW_GTPV2C_KEEP_ALIVE_TMR 2
+#define  NW_GTPV2C_KEEP_ALIVE_TMR 20
 
 static NwGtpv2cPathT* gpGtpv2cPathPool = NULL;
 
@@ -89,6 +89,7 @@ nwGtpv2cPathSendPeerDisconnectedToUlp(NwGtpv2cPathT* thiz)
 {
   NwGtpv2cUlpApiT ulpApi;
   NwGtpv2cStackT* pStack;
+  NwGtpv2cRcT rc = NW_GTPV2C_OK;
 
   pStack = (NwGtpv2cStackT*)thiz->pStack;
   ulpApi.hMsg                              = 0;
