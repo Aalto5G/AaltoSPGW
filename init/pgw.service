@@ -1,5 +1,6 @@
 [Unit]
 Description=Packet Data Network Gateway (P-GW)
+After=network-online.target
 
 [Service]
 Type=simple

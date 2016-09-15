@@ -1,5 +1,6 @@
 [Unit]
 Description=Serving Gateway (S-GW)
+After=network-online.target
 
 [Service]
 Type=simple

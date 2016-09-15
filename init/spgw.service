@@ -1,5 +1,6 @@
 [Unit]
 Description=Combined Serving/Packet Data Network Gateway (S/P-GW)
+After=network-online.target
 
 [Service]
 Type=simple
