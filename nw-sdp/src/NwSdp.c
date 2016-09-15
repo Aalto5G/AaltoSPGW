@@ -623,6 +623,22 @@ nwSdpProcessGtpuDataIndication(NwSdpT* thiz,
 {
   NwSdpRcT rc;
 
+  if(pFlowContext->egressEndPoint.isValid == NW_FALSE)
+  {
+    NwSdpUlpApiT ulpApi;
+    ulpApi.apiType                              = NW_SDP_ULP_API_DATA_IND;
+    ulpApi.apiInfo.dataIndInfo.ingressEndPoint  = pFlowContext->ingressEndPoint;
+    /* ulpApi.apiInfo.dataIndInfo.hUlpSession      = thiz->ulp.hUlp; */
+    ulpApi.apiInfo.dataIndInfo.hSdpSession      = pFlowContext;
+
+    NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Sending Data indication to ULP");
+
+    rc = thiz->ulp.ulpReqCallback(thiz->ulp.hUlp, &ulpApi);
+    NW_ASSERT( rc == NW_SDP_OK );
+
+    return rc;
+  }
+
   /*
    * Send Message Request to GTPv1u Stack Instance
    */
