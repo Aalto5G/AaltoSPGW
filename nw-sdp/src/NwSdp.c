@@ -522,7 +522,17 @@ nwSdpProcessIpv4DataIndication(NwSdpT* thiz,
 
   if(pFlowContext->egressEndPoint.isValid == NW_FALSE)
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Paging not supported yet");
+    NwSdpUlpApiT ulpApi;
+    ulpApi.apiType                              = NW_SDP_ULP_API_DATA_IND;
+    ulpApi.apiInfo.dataIndInfo.ingressEndPoint  = pFlowContext->ingressEndPoint;
+    /* ulpApi.apiInfo.dataIndInfo.hUlpSession      = thiz->ulp.hUlp; */
+    ulpApi.apiInfo.dataIndInfo.hSdpSession      = pFlowContext;
+
+    NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Sending Data indication to ULP");
+
+    rc = thiz->ulp.ulpReqCallback(thiz->ulp.hUlp, &ulpApi);
+    NW_ASSERT( rc == NW_SDP_OK );
+
     return rc;
   }
 

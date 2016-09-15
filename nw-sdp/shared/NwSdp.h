@@ -106,9 +106,12 @@ typedef enum
 {
   /* APIs from ULP to SDP */
 
-  NW_SDP_ULP_API_CREATE_FLOW = 0x00000000,              /**< Create a local flow context on SDP         */
-  NW_SDP_ULP_API_DESTROY_FLOW,                          /**< Delete a local flow context on SDP         */
-  NW_SDP_ULP_API_UPDATE_FLOW,                           /**< Update a local flow context on SDP         */
+  NW_SDP_ULP_API_CREATE_FLOW = 0x00000000,   /**< Create a local flow context on SDP         */
+  NW_SDP_ULP_API_DESTROY_FLOW,               /**< Delete a local flow context on SDP         */
+  NW_SDP_ULP_API_UPDATE_FLOW,                /**< Update a local flow context on SDP         */
+
+  /* APIs from SDP to ULP */
+  NW_SDP_ULP_API_DATA_IND,                   /**< Data notification on non active egress endpoint  */
 
   /* Do not add below this */
   NW_SDP_ULP_API_END
@@ -210,6 +213,18 @@ typedef struct
 } NwSdpUpdateFlowInfoT;
 
 /**
+ * API information elements between Stack and ULP for
+ * indicating data on non active egress endpoint.
+ */
+
+typedef struct
+{
+  NW_IN   NwSdpFlowEndPointT            ingressEndPoint;
+  NW_IN   NwSdpUlpSessionHandleT        hUlpSession;
+  NW_IN   NwSdpSessionHandleT           hSdpSession;
+} NwSdpDataIndInfoT;
+
+/**
  * API information elements between ULP and Stack for
  * sending a Gre message over a session.
  */
@@ -255,6 +270,7 @@ typedef struct
     NwSdpCreateFlowInfoT        createFlowInfo;
     NwSdpDestroyFlowInfoT       destroyFlowInfo;
     NwSdpUpdateFlowInfoT        updateFlowInfo;
+    NwSdpDataIndInfoT           dataIndInfo;
   } apiInfo;
 } NwSdpUlpApiT;
 

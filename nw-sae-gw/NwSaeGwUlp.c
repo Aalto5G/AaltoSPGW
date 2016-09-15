@@ -715,7 +715,7 @@ nwSaeGwUlpPgwDeregisterAllUeSessionFromPeer(NwSaeGwUlpT* hSaeGw, NwGtpv2cUlpApiT
   NwSaeGwUeEventInfoT           eventInfo;
   NwU32T peerAddr = pUlpApi->apiInfo.peerChangeInfo.peerIp;
 
-  NW_ASSERT( thiz-> saeGwType == NW_SAE_GW_TYPE_PGW);
+  NW_ASSERT( thiz->saeGwType == NW_SAE_GW_TYPE_PGW);
 
   eventInfo.event =  NW_SAE_GW_UE_EVENT_LOW_LAYER_ERROR;
   eventInfo.arg   = pUlpApi;
@@ -873,6 +873,37 @@ nwSaeGwUlpSgwS11GtpcStackIndication (NwGtpv2cUlpHandleT hUlp,
   if(pUlpApi->hMsg)
     rc = nwGtpv2cMsgDelete(thiz->sgw.s11c.hGtpv2cStack, (pUlpApi->hMsg));
 
+  return rc;
+}
+
+static NwSdpRcT
+nwSaeGwUlpSgwSdpStackIndication (NwSdpUlpHandleT hUlp,  NwSdpUlpApiT *pUlpApi)
+{
+  NwSdpRcT              rc = NW_SDP_OK;
+  NwSaeGwUlpT           *thiz;
+  NwSaeGwUeT            *pUe;
+  NwUeStateT            ueState;
+  NwSaeGwUeEventInfoT   eventInfo;
+
+  NW_ASSERT(pUlpApi != NULL);
+
+  thiz = (NwSaeGwUlpT*) hUlp;
+
+  NW_ASSERT(thiz->saeGwType == NW_SAE_GW_TYPE_SGW);
+
+  switch(pUlpApi->apiType)
+  {
+    case NW_SDP_ULP_API_DATA_IND:
+      {
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO, "Received api type %x from SDP stack!", pUlpApi->apiType);
+      }
+      break;
+    default:
+      {
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN, "Received undefined api type %x from SDP stack!", pUlpApi->apiType);
+        rc = NW_SDP_FAILURE;
+      }
+  }
   return rc;
 }
 
@@ -1334,8 +1365,10 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
                      NwSaeGwUlpConfigT *pCfg)
 {
   NwRcT                         rc;
+  NwSdpRcT                      sdpRc;
   NwGtpv2cUlpEntityT            ulp;
   NwGtpv2cUdpEntityT            udp;
+  NwSdpUlpEntityT               sdpUlp;
   NwU32T                        gtpcIfSelObj;
   NwU8T                         restartCounter=0;
 
@@ -1384,6 +1417,12 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
     rc = nwGtpv2cSetUlpEntity(thiz->sgw.s11c.hGtpv2cStack, &ulp);
     NW_ASSERT( NW_OK == rc );
 
+    /* Initialize and Set ULP Entity for Data plane*/
+    sdpUlp.hUlp = (NwSdpUlpHandleT) thiz;
+    sdpUlp.ulpReqCallback = nwSaeGwUlpSgwSdpStackIndication;
+
+    sdpRc = nwSdpSetUlpEntity(thiz->pDpe->hSdp, &sdpUlp);
+    NW_ASSERT( NW_SDP_OK == sdpRc );
 
     /* Create SGW-S5 Gtpv2c Service Access Point*/
 
@@ -1452,6 +1491,13 @@ nwSaeGwUlpInitialize(NwSaeGwUlpT*     thiz,
 
     rc = nwGtpv2cSetUlpEntity(thiz->pgw.s5c.hGtpv2cStack, &ulp);
     NW_ASSERT( NW_OK == rc );
+
+    /* Initialize and Set ULP Entity for Data plane*/ /*TODO*/
+    /* sdpUlp.hUlp = (NwSdpUlpHandleT) thiz; */
+    /* sdpUlp.ulpReqCallback = nwSaeGwUlpPgwSdpStackIndication; */
+
+    /* sdpRc = nwSdpSetUlpEntity(thiz->pDpe->hSdp, &sdpUlp); */
+    /* NW_ASSERT( NW_SDP_OK == sdpRc ); */
 
     /*  Initialize IP Pool */
     thiz->hIpv4Pool = nwIpv4PoolMgrNew(pCfg->ippoolSubnet + 1, (pCfg->ippoolSubnet + (~pCfg->ippoolMask) - 1), pCfg->ippoolMask);
