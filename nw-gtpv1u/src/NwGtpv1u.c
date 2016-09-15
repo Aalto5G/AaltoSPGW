@@ -485,7 +485,8 @@ nwGtpv1uProcessGpdu( NwGtpv1uStackT* thiz,
   }
   else
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Received T-PDU over non-existent tunnel end-point '%x' from "NW_IPV4_ADDR, ntohl(msgHdr->teid), NW_IPV4_ADDR_FORMAT((peerIp)));
+    NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Received T-PDU over non-existent tunnel end-point '%x' from "NW_IPV4_ADDR,
+           ntohl(msgHdr->teid), NW_IPV4_ADDR_FORMAT(ntohl(peerIp)));
   }
   NW_LEAVE(thiz);
 
@@ -534,7 +535,8 @@ nwGtpv1uHandleEchoReq(NW_IN NwGtpv1uStackT *thiz,
    */
   rc = nwGtpv1uMsgAddIeTV1(hMsg, NW_GTPV1U_IE_RECOVERY, 0x00);
 
-  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Sending NW_GTP_ECHO_RSP message to %x:%x with seq %u", peerIp, peerPort, seqNum);
+  NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Sending NW_GTP_ECHO_RSP message to "NW_IPV4_ADDR":%u with seq %u",
+         NW_IPV4_ADDR_FORMAT(ntohl(peerIp)), peerPort, seqNum);
 
   rc = nwGtpv1uCreateAndSendMsg(thiz,
       peerIp,
