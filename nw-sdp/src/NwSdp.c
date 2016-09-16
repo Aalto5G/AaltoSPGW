@@ -434,6 +434,7 @@ nwSdpCreateFlow( NW_IN  NwSdpT* thiz,
   {
     pCreateFlowInfo = &(pUlpReq->apiInfo.createFlowInfo);
 
+    pFlowContext->hUlpSession = pUlpReq->apiInfo.createFlowInfo.hUlpSession;
     pFlowContext->ingressEndPoint = pCreateFlowInfo->ingressEndPoint;
     pFlowContext->ingressEndPoint.isValid = NW_TRUE;
     pFlowContext->egressEndPoint  = pCreateFlowInfo->egressEndPoint;
@@ -471,7 +472,13 @@ static NwSdpRcT
 nwSdpDestroyFlow( NwSdpT* thiz,  NW_IN NwSdpUlpApiT *pUlpReq)
 {
   NwSdpRcT rc = NW_SDP_OK;
-  NwSdpFlowContextT* pFlowContext = (NwSdpFlowContextT*)pUlpReq->apiInfo.destroyFlowInfo.hSdpSession;
+  NwSdpFlowContextT* pFlowContext;
+  NwSdpDestroyFlowInfoT* pDestroyFlowInfo;
+
+  pDestroyFlowInfo = &(pUlpReq->apiInfo.destroyFlowInfo);
+  pFlowContext = (NwSdpFlowContextT*)pDestroyFlowInfo->hSdpSession;
+
+  NW_ASSERT(pFlowContext->hUlpSession == pDestroyFlowInfo->hUlpSession);
 
   rc = nwSdpDestroyFlowEndPoint(thiz, pFlowContext, &pFlowContext->ingressEndPoint);
   NW_ASSERT(rc == NW_SDP_OK);
@@ -508,6 +515,7 @@ nwSdpUpdateFlow( NW_IN NwSdpT* thiz,
   {
     return NW_SDP_FAILURE;
   }
+  NW_ASSERT(pFlowContext->hUlpSession == pUpdateFlowInfo->hUlpSession);
 
   rc = nwSdpUpdateFlowEndPoint(thiz,
                                pFlowContext,
@@ -530,7 +538,7 @@ nwSdpProcessIpv4DataIndication(NwSdpT* thiz,
     NwSdpUlpApiT ulpApi;
     ulpApi.apiType                              = NW_SDP_ULP_API_DATA_IND;
     ulpApi.apiInfo.dataIndInfo.ingressEndPoint  = pFlowContext->ingressEndPoint;
-    /* ulpApi.apiInfo.dataIndInfo.hUlpSession      = thiz->ulp.hUlp; */
+    ulpApi.apiInfo.dataIndInfo.hUlpSession      = pFlowContext->hUlpSession;
     ulpApi.apiInfo.dataIndInfo.hSdpSession      = pFlowContext;
 
     NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Sending Data indication to ULP");
@@ -633,7 +641,7 @@ nwSdpProcessGtpuDataIndication(NwSdpT* thiz,
     NwSdpUlpApiT ulpApi;
     ulpApi.apiType                              = NW_SDP_ULP_API_DATA_IND;
     ulpApi.apiInfo.dataIndInfo.ingressEndPoint  = pFlowContext->ingressEndPoint;
-    /* ulpApi.apiInfo.dataIndInfo.hUlpSession      = thiz->ulp.hUlp; */
+    ulpApi.apiInfo.dataIndInfo.hUlpSession      = pFlowContext->hUlpSession;
     ulpApi.apiInfo.dataIndInfo.hSdpSession      = pFlowContext;
 
     NW_LOG(thiz, NW_LOG_LEVEL_INFO, "Sending Data indication to ULP");

@@ -439,12 +439,14 @@ nwSaeGwDpeReleaseEndpointFlow(NwSaeGwDpeT*   thiz,
 
 NwRcT
 nwSaeGwDpeDestroyFlow(NwSaeGwDpeT*   thiz,
+                      NwSdpUlpSessionHandleT      hSession,
                       NwSdpSessionHandleT         hBearer)
 {
   NwRcT rc;
   NwSdpUlpApiT           ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_DESTROY_FLOW;
+  ulpReq.apiInfo.destroyFlowInfo.hUlpSession  = hSession;
   ulpReq.apiInfo.destroyFlowInfo.hSdpSession  = hBearer;
 
   rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);

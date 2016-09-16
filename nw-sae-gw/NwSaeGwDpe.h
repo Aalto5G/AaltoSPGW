@@ -154,6 +154,7 @@ nwSaeGwDpeReleaseEndpointFlow(NwSaeGwDpeT*   thiz,
 
 extern NwRcT
 nwSaeGwDpeDestroyFlow(NwSaeGwDpeT*   thiz,
+                      NwSdpUlpSessionHandleT      hSession,
                       NwSdpSessionHandleT         hBearer);
 #ifdef __cplusplus
 }

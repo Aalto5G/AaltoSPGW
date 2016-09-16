@@ -884,6 +884,7 @@ nwSaeGwUlpSgwSdpStackIndication (NwSdpUlpHandleT hUlp,  NwSdpUlpApiT *pUlpApi)
   NwSaeGwUeT            *pUe;
   NwUeStateT            ueState;
   NwSaeGwUeEventInfoT   eventInfo;
+  NwU64T                imsi=0;
 
   NW_ASSERT(pUlpApi != NULL);
 
@@ -895,12 +896,25 @@ nwSaeGwUlpSgwSdpStackIndication (NwSdpUlpHandleT hUlp,  NwSdpUlpApiT *pUlpApi)
   {
     case NW_SDP_ULP_API_DATA_IND:
       {
-        NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO, "Received api type %x from SDP stack!", pUlpApi->apiType);
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Received NW_SDP_ULP_API_DATA_IND from SGW S1U GTPv1u stack");
+        eventInfo.event = NW_SAE_GW_UE_EVENT_SGW_GTPU_S1_DATA_NOT;
+        eventInfo.arg   = pUlpApi;
+
+        pUe = (NwSaeGwUeT*)pUlpApi->apiInfo.dataIndInfo.hUlpSession;
+        NW_ASSERT(pUe);
+
+        rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
+        if(ueState == NW_SAE_GW_UE_STATE_END)
+        {
+          memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+          NW_SAE_GW_LOG(NW_LOG_LEVEL_NOTI, "Purging UE session with IMSI %llx", NW_NTOHLL(imsi));
+          rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe);
+        }
       }
       break;
     default:
       {
-        NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN, "Received undefined api type %x from SDP stack!", pUlpApi->apiType);
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN, "Received undefined API type %x from SDP stack!", pUlpApi->apiType);
         rc = NW_SDP_FAILURE;
       }
   }
@@ -1786,7 +1800,8 @@ nwSaeGwUlpRemoveUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
                     (void*)pUe->epsBearer[ebi].hSgwUplink,
                     ebi, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
       rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
-          pUe->epsBearer[ebi].hSgwUplink);
+                                 (NwSdpUlpSessionHandleT)pUe,
+                                 pUe->epsBearer[ebi].hSgwUplink);
     }
 
     if(pUe->epsBearer[ebi].hPgwUplink && thiz->saeGwType == NW_SAE_GW_TYPE_PGW)
@@ -1796,7 +1811,8 @@ nwSaeGwUlpRemoveUplinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
                     (void*)pUe->epsBearer[ebi].hPgwUplink,
                     ebi, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
       rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
-          pUe->epsBearer[ebi].hPgwUplink);
+                                 (NwSdpUlpSessionHandleT)pUe,
+                                 pUe->epsBearer[ebi].hPgwUplink);
     }
   }
 
@@ -1848,7 +1864,7 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
      * Create SGW-GTPU to eNodeB-GTPU downlink user plane flow
      */
     rc = nwSaeGwDpeCreateGtpuGtpuFlow(thiz->pDpe,
-        (NwSdpUlpSessionHandleT)thiz,
+        (NwSdpUlpSessionHandleT)pUe,
         (NwU32T)&pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
@@ -1935,7 +1951,7 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
      * Create SGW-GTPU to eNodeB-GTPU downlink user plane flow
      */
     rc = nwSaeGwDpeModifyGtpuGtpuFlow(thiz->pDpe,
-        (NwSdpUlpSessionHandleT)thiz,
+        (NwSdpUlpSessionHandleT)pUe,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
         pUe->epsBearer[ebi].hSgwDownlink);
@@ -1957,7 +1973,8 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
     if(pUe->epsBearer[ebi].hPgwDownlink)
     {
       rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
-          pUe->epsBearer[ebi].hPgwDownlink);
+                                 (NwSdpUlpSessionHandleT)pUe,
+                                 pUe->epsBearer[ebi].hPgwDownlink);
     }
     /*
      * Create PGW-IPv4 to SGW-GTPU downlink user plane flow
@@ -1994,7 +2011,7 @@ nwSaeGwUlpReleaseDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   NwSaeGwUlpT* thiz = (NwSaeGwUlpT*) hSaeGw;
 
   return nwSaeGwDpeReleaseEndpointFlow(thiz->pDpe,
-                                       (NwSdpUlpSessionHandleT)thiz,
+                                       (NwSdpUlpSessionHandleT)pUe,
                                        (NwSdpSessionHandleT)pUe->epsBearer[ebi].hSgwDownlink);
 }
 
@@ -2018,7 +2035,9 @@ nwSaeGwUlpRemoveDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
                     "Destroying S-GW Downlink Bearer (%p) EBI %u for IPue "NW_IPV4_ADDR,
                     (void*)pUe->epsBearer[ebi].hSgwDownlink,
                     ebi, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
-      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe, pUe->epsBearer[ebi].hSgwDownlink);
+      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
+                                 (NwSdpUlpSessionHandleT)pUe,
+                                 pUe->epsBearer[ebi].hSgwDownlink);
       pUe->epsBearer[ebi].hSgwDownlink = (NwDpeBearerHandleT)NULL;
     }
 
@@ -2028,7 +2047,9 @@ nwSaeGwUlpRemoveDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
                     "Destroying P-GW Downlink Bearer (%p) EBI %u for IPue "NW_IPV4_ADDR,
                     (void*)pUe->epsBearer[ebi].hPgwDownlink,
                     ebi, NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
-      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe, pUe->epsBearer[ebi].hPgwDownlink);
+      rc = nwSaeGwDpeDestroyFlow(thiz->pDpe,
+                                 (NwSdpUlpSessionHandleT)pUe,
+                                 pUe->epsBearer[ebi].hPgwDownlink);
       pUe->epsBearer[ebi].hPgwDownlink = (NwDpeBearerHandleT)NULL;
     }
   }

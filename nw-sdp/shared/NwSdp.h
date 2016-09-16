@@ -197,6 +197,7 @@ typedef struct
 
 typedef struct
 {
+  NW_IN   NwSdpUlpSessionHandleT       hUlpSession;
   NW_IN   NwSdpSessionHandleT          hSdpSession;
 } NwSdpDestroyFlowInfoT;
 
