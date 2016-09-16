@@ -765,9 +765,18 @@ NwSdpRcT nwSdpProcessGtpv1uStackReqCallback(NwGtpv1uUlpHandleT hUlp,
         rc = nwSdpProcessGtpuDataIndication(thiz, (NwSdpFlowContextT*)pUlpApi->apiInfo.recvMsgInfo.hUlpSession, pUlpApi->apiInfo.recvMsgInfo.hMsg);
       }
       break;
+    case NW_GTPV1U_ULP_API_RECV_MSG:
+      {
+        NwU32T teid = nwGtpv1uMsgGetTeid(pUlpApi->apiInfo.recvMsgInfo.hMsg);
+        NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Received Error Message from GTPU Stack TEID 0x%08x from "NW_IPV4_ADDR,
+               teid,NW_IPV4_ADDR_FORMAT(ntohl(pUlpApi->apiInfo.recvMsgInfo.peerIp)));
+      }
+      break;
 
     default:
-      NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Received Unhandled API request from GTPU Stack");
+      {
+        NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Received Unhandled API %u request from GTPU Stack", pUlpApi->apiType);
+      }
       break;
   }
 

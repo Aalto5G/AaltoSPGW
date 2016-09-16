@@ -122,14 +122,14 @@
  * Opaque Gtpv2 Stack Handles
  *--------------------------------------------------------------------------*/
 
-typedef NwPtrT  NwGtpv1uStackHandleT;                     /**< Gtpv2 Stack Handle               */
-typedef NwPtrT  NwGtpv1uUlpHandleT;                       /**< Gtpv2 Stack Ulp Entity Handle    */
-typedef NwPtrT  NwGtpv1uUdpHandleT;                       /**< Gtpv2 Stack Udp Entity Handle    */
-typedef NwPtrT  NwGtpv1uMemMgrHandleT;                    /**< Gtpv2 Stack Mem Manager Handle   */
-typedef NwPtrT  NwGtpv1uTimerMgrHandleT;                  /**< Gtpv2 Stack Timer Manager Handle */
-typedef NwPtrT  NwGtpv1uLogMgrHandleT;                    /**< Gtpv2 Stack Log Mnagaer Handle   */
-typedef NwPtrT  NwGtpv1uTimerHandleT;                     /**< Gtpv2 Stack Timer Handle         */
-typedef NwPtrT  NwGtpv1uMsgHandleT;                       /**< Gtpv2 Msg Handle                 */
+typedef NwPtrT  NwGtpv1uStackHandleT;                     /**< Gtpv1u Stack Handle               */
+typedef NwPtrT  NwGtpv1uUlpHandleT;                       /**< Gtpv1u Stack Ulp Entity Handle    */
+typedef NwPtrT  NwGtpv1uUdpHandleT;                       /**< Gtpv1u Stack Udp Entity Handle    */
+typedef NwPtrT  NwGtpv1uMemMgrHandleT;                    /**< Gtpv1u Stack Mem Manager Handle   */
+typedef NwPtrT  NwGtpv1uTimerMgrHandleT;                  /**< Gtpv1u Stack Timer Manager Handle */
+typedef NwPtrT  NwGtpv1uLogMgrHandleT;                    /**< Gtpv1u Stack Log Mnagaer Handle   */
+typedef NwPtrT  NwGtpv1uTimerHandleT;                     /**< Gtpv1u Stack Timer Handle         */
+typedef NwPtrT  NwGtpv1uMsgHandleT;                       /**< Gtpv1u Msg Handle                 */
 
 typedef struct NwGtpv1uStackConfig
 {
@@ -141,7 +141,7 @@ typedef struct NwGtpv1uStackConfig
  *--------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------
- * Gtpv2 Stack ULP API type definitions
+ * Gtpv1u Stack ULP API type definitions
  *--------------------------------------------------------------------------*/
 
 /**
@@ -163,7 +163,7 @@ typedef enum
 
   NW_GTPV1U_ULP_API_RECV_TPDU,                                  /**< Receive a gtpv1u T-PDU from stack          */
   NW_GTPV1U_ULP_API_RECV_MSG,                                   /**< Receive a gtpv1u message from stack        */
-  NW_GTPV1U_ULP_API_RSP_FAILURE,                                /**< Rsp failure for gtpv2 message from stack   */
+  NW_GTPV1U_ULP_API_RSP_FAILURE,                                /**< Rsp failure for gtpv1u message from stack  */
 
   /* Do not add below this */
 
@@ -171,14 +171,14 @@ typedef enum
 } NwGtpv1uUlpApiTypeT;
 
 /*---------------------------------------------------------------------------
- * Gtpv2 Stack API information elements definitions
+ * Gtpv1u Stack API information elements definitions
  *--------------------------------------------------------------------------*/
 
-typedef NwHandleT  NwGtpv1uStackSessionHandleT;/**< Gtpv2 Stack session Handle */
-typedef NwU8T      NwGtpv1uMsgTypeT;           /**< Gtpv2 Msg Type     */
-typedef NwHandleT  NwGtpv1uTrxnHandleT;        /**< Gtpv2 Transaction Handle */
-typedef NwHandleT  NwGtpv1uUlpTrxnHandleT;     /**< Gtpv2 Ulp Transaction Handle */
-typedef NwHandleT  NwGtpv1uUlpSessionHandleT;  /**< Gtpv2 Ulp session Handle */
+typedef NwHandleT  NwGtpv1uStackSessionHandleT;/**< Gtpv1u Stack session Handle */
+typedef NwU8T      NwGtpv1uMsgTypeT;           /**< Gtpv1u Msg Type     */
+typedef NwHandleT  NwGtpv1uTrxnHandleT;        /**< Gtpv1u Transaction Handle */
+typedef NwHandleT  NwGtpv1uUlpTrxnHandleT;     /**< Gtpv1u Ulp Transaction Handle */
+typedef NwHandleT  NwGtpv1uUlpSessionHandleT;  /**< Gtpv1u Ulp session Handle */
 
 /**
  * API information elements between ULP and Stack for

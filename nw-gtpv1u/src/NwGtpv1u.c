@@ -751,7 +751,6 @@ nwGtpv1uProcessUdpReq( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
       break;
 
     case NW_GTP_ERROR_INDICATION:
-
       rc  = nwGtpv1uSendUlpMessageIndication( thiz,
           0,
           NW_GTPV1U_ULP_API_RECV_MSG,
@@ -762,7 +761,6 @@ nwGtpv1uProcessUdpReq( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
           udpDataLen);
 
       NW_ASSERT(rc == NW_GTPV1U_OK);
-
       break;
 
     case NW_GTP_ECHO_RSP:
