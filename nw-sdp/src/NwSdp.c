@@ -364,6 +364,9 @@ nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
 {
   NwGtpv1uUlpApiT ulpReq;
   NwSdpRcT rc  = NW_SDP_OK;
+
+  NW_ENTER(thiz);
+
   if(!(thiz->hGtpv1uStack))
   {
     return NW_SDP_FAILURE;
@@ -398,6 +401,8 @@ nwSdpUpdateFlowEndPoint( NW_IN  NwSdpT* thiz,
   }
 
   pFlowContext->egressEndPoint = *pNewFlowEndPoint;
+
+  NW_LEAVE(thiz);
 
   return rc;
 }

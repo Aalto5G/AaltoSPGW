@@ -1995,7 +1995,7 @@ nwSaeGwUlpReleaseDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
 
   return nwSaeGwDpeReleaseEndpointFlow(thiz->pDpe,
                                        (NwSdpUlpSessionHandleT)thiz,
-                                       (NwSdpSessionHandleT)&pUe->epsBearer[ebi].hSgwDownlink);
+                                       (NwSdpSessionHandleT)pUe->epsBearer[ebi].hSgwDownlink);
 }
 
 NwRcT
