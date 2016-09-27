@@ -206,20 +206,10 @@ nwSaeGwUeHandleSgwS11DeleteSessionRequest(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT*
 }
 
 static NwRcT
-nwSaeGwUeHandleSgwS1uDataNotification(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
-{
-  NwRcT              rc = NW_OK;
-  NwSdpUlpApiT       *pUlpApi = pEv->arg;
-  /*TODO*/
-  return rc;
-}
-
-static NwRcT
 nwSaeGwUeHandleSgwLLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 {
   NwRcT                 rc;
   NwGtpv2cUlpApiT       *pUlpApi = pEv->arg;
-  /* TODO */
 
   NwU32T peer = pUlpApi->apiInfo.peerChangeInfo.peerIp;
 
@@ -260,11 +250,6 @@ nwSaeGwStateSgwSessionCreatedNew()
   rc = nwSaeGwStateSetEventHandler(thiz,
       NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_DELETE_SESSION_REQ,
       nwSaeGwUeHandleSgwS11DeleteSessionRequest);
-  NW_ASSERT(NW_OK == rc);
-
-  rc = nwSaeGwStateSetEventHandler(thiz,
-      NW_SAE_GW_UE_EVENT_SGW_GTPU_S1_DATA_NOT,
-      nwSaeGwUeHandleSgwS1uDataNotification);
   NW_ASSERT(NW_OK == rc);
 
   rc = nwSaeGwStateSetEventHandler(thiz,

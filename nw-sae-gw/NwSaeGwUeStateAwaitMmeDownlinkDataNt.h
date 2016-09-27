@@ -5,6 +5,7 @@
  *                                                                            *
  *                                                                            *
  * Copyright (c) 2010-2016 Vicent Ferrer Guasch                               *
+ * Copyright (c) 2010-2016 Jesus Llorente Santos                              *
  * All rights reserved.                                                       *
  *                                                                            *
  * Redistribution and use in source and binary forms, with or without         *
@@ -32,20 +33,24 @@
  *----------------------------------------------------------------------------*/
 
 /**
- * @file NwGtpv2cPath.h
+ * @file NwSaeGwUeStateAwaitMmeDownlinkDataNt.h
  * @author Vicent Ferrer Guasch
+ * @author Jesus Llorente Santos
  * @brief
  *
- * This header file contains required definitions and functions
- * prototypes used by gtpv2c path.
+ * State to manage the Network triggered Service request
  *
  **/
 
-
 #pragma once
 
-#include "NwGtpv2cPrivate.h"
+#include <stdio.h>
+#include <assert.h>
+
+#include "NwLog.h"
 #include "NwTypes.h"
+#include "NwUtils.h"
+#include "NwSaeGwUeState.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,54 +59,17 @@ extern "C" {
 /**
  * Constructor
  */
-NwGtpv2cPathT*
-nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
-                 NW_IN  NwU32T ipv4Remote);
+
+NwSaeUeStateT*
+nwSaeGwStateAwaitMmeDownlinkDataNtNew();
 
 /**
  * Destructor
  */
-NwGtpv2cRcT
-nwGtpv2cPathDelete( NW_INOUT NwGtpv2cPathT **ppPath);
 
-/**
- * Checks if the restart Counter has changed. If so, notifies the ULP
- * and updates the local restart counter
- *
- * @param[out] pthiz : Pointer to pointer to Path object.
- * @return NW_GTPV2C_OK on success.
- */
-NwGtpv2cRcT
-nwGtpv2cPathCheckRestartCounter(NW_IN NwGtpv2cPathT *pthiz, NW_IN NwU8T remoteRestartCounter);
-
-
-/**
- *
- *
- * @param[out] pthiz : Pointer to pointer to Path object.
- * @return NW_GTPV2C_OK on success.
- */
-NwGtpv2cRcT
-nwGtpv2cPathResetKeepAliveTimer(NW_IN NwGtpv2cPathT *thiz);
-
-
-/**
-  Send GTPv2c Triggered Echo Response Indication to path
-
-  @param[in] thiz : Path handle
-  @return NW_GTPV2C_OK on success.
- */
-
-NwGtpv2cRcT
-nwGtpv2cPathTriggeredEchoRsp( NW_IN NwGtpv2cPathT* thiz,
-                              NW_IN NwGtpv2cErrorT *pError,
-                              NW_IN NwGtpv2cMsgHandleT hMsg);
-
+NwRcT
+nwSaeGwStateAwaitMmeDownlinkDataNtDelete(NwSaeUeStateT* thiz);
 
 #ifdef __cplusplus
 }
 #endif
-
-/*--------------------------------------------------------------------------*
- *                      E N D     O F    F I L E                            *
- *--------------------------------------------------------------------------*/

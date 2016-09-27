@@ -574,7 +574,18 @@ nwSaeGwUeHandleSgwS1uDataNotification(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv
 {
   NwRcT              rc = NW_OK;
   NwSdpUlpApiT       *pUlpApi = pEv->arg;
-  /*TODO*/
+  NwGtpv2cUlpApiT    ulpReq;
+
+  NW_UE_LOG(NW_LOG_LEVEL_INFO, "Data Notification from deactivated downlink endpoint!");
+
+  if(thiz->sessionType & NW_SAE_GW_UE_SESSION_TYPE_SGW)
+  {
+    thiz->state = NW_SAE_GW_UE_STATE_WT_MME_DOWNLINK_DATA_NT;
+  }
+  else
+  {
+    NW_UE_LOG(NW_LOG_LEVEL_ERRO, "Received unhandled Data Notification on P-GW");
+  }
   return rc;
 }
 

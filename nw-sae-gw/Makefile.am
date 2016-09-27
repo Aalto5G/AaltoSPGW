@@ -61,6 +61,7 @@ nwLteSaeGw_SOURCES =    \
 						NwSaeGwUeStateAwaitPgwDeleteSessionRsp.h\
 						NwSaeGwUeStateAwaitPgwModifyBearerRsp.h\
 						NwSaeGwUeStateAwaitPgwModifyBearerRsp2.h\
+						NwSaeGwUeStateAwaitMmeDownlinkDataNt.h\
 			NwSaeGwUlp.c\
 			NwSaeGwDpe.c\
 						NwSaeGwUeFsm.c\
@@ -75,6 +76,7 @@ nwLteSaeGw_SOURCES =    \
 						NwSaeGwUeStateAwaitPgwDeleteSessionRsp.c\
 						NwSaeGwUeStateAwaitPgwModifyBearerRsp.c\
 						NwSaeGwUeStateAwaitPgwModifyBearerRsp2.c\
+						NwSaeGwUeStateAwaitMmeDownlinkDataNt.c\
 						NwSaeGwMain.c\
 						NwSaeGwUe.c
 

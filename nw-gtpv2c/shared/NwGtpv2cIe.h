@@ -107,7 +107,7 @@
 #define NW_GTPV2C_IE_FQDN                                               (136)
 #define NW_GTPV2C_IE_TI                                                 (137)
 #define NW_GTPV2C_IE_MBMS_SESSION_DURATION                              (138)
-#define NW_GTPV2C_IE_MBMS_SERIVCE_AREA                                  (139)
+#define NW_GTPV2C_IE_MBMS_SERVICE_AREA                                  (139)
 #define NW_GTPV2C_IE_MBMS_SESSION_IDENTIFIER                            (140)
 #define NW_GTPV2C_IE_MBMS_FLOW_IDENTIFIER                               (141)
 #define NW_GTPV2C_IE_MBMS_IP_MULTICAST_DISTRIBUTION                     (142)
@@ -118,6 +118,7 @@
 #define NW_GTPV2C_IE_CSG_ID                                             (147)
 #define NW_GTPV2C_IE_CSG_MEMBERSHIP_INDICATION                          (148)
 #define NW_GTPV2C_IE_SERVICE_INDICATOR                                  (149)
+#define NW_GTPV2C_IE_ALLOCATION_RETENTION_PRIORITY                      (155)
 #define NW_GTPV2C_IE_PRIVATE_EXTENSION                                  (255)
 #define NW_GTPV2C_IE_TYPE_MAXIMUM                                       (256)
 

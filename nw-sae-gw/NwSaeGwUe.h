@@ -60,6 +60,7 @@ typedef enum
   NW_SAE_GW_UE_STATE_WT_PGW_DELETE_SESSION_RSP,
   NW_SAE_GW_UE_STATE_WT_PGW_MODIFY_BEARER_RSP,  /* Modify Bearer Sent during X2 based HO with SGW relocation */
   NW_SAE_GW_UE_STATE_WT_PGW_MODIFY_BEARER_RSP2, /* Modify Bearer Sent during S1 based HO with SGW relocation */
+  NW_SAE_GW_UE_STATE_WT_MME_DOWNLINK_DATA_NT,
   NW_SAE_GW_UE_STATE_END
 } NwUeStateT;
 
@@ -74,6 +75,7 @@ typedef enum
   NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_DELETE_SESSION_RSP,
   NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_RELEASE_ACCESS_BEARERS_REQ,
   NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_RELEASE_ACCESS_BEARERS_RSP,
+  NW_SAE_GW_UE_EVENT_SGW_GTPC_S11_DOWNLINK_DATA_NOTIFICATION_ACK,
 
   /* SAEGW SGW S5c Interface Events */
   NW_SAE_GW_UE_EVENT_SGW_GTPC_S5_CREATE_SESSION_RSP,
@@ -215,6 +217,7 @@ typedef struct NwSaeGwUe
       NwSaeGwFteidT             fteidSgw;
     } s5s8uTunnel;
 
+    /*TODO Add QoS parameters for each bearer*/
   }                             epsBearer[NW_SAE_GW_MAX_EPS_BEARERS];
 
 

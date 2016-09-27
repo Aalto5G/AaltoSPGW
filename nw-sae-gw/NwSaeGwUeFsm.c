@@ -54,6 +54,7 @@
 #include "NwSaeGwUeStateSgwSessionEstablished.h"
 #include "NwSaeGwUeStateAwaitPgwCreateSessionRsp.h"
 #include "NwSaeGwUeStateAwaitPgwDeleteSessionRsp.h"
+#include "NwSaeGwUeStateAwaitMmeDownlinkDataNt.h"
 #include "NwSaeGwUe.h"
 
 #ifdef __cplusplus
@@ -92,6 +93,7 @@ NwSaeGwUeFsmNew()
     thiz->pState[NW_SAE_GW_UE_STATE_SGW_SESSION_ESTABLISHED] = nwSaeGwStateSgwSessionEstablishedNew();
     thiz->pState[NW_SAE_GW_UE_STATE_WT_PGW_CREATE_SESSION_RSP] = nwSaeGwStateAwaitPgwCreateSessionRspNew();
     thiz->pState[NW_SAE_GW_UE_STATE_WT_PGW_DELETE_SESSION_RSP] = nwSaeGwStateAwaitPgwDeleteSessionRspNew();
+    thiz->pState[NW_SAE_GW_UE_STATE_WT_MME_DOWNLINK_DATA_NT] = nwSaeGwStateAwaitMmeDownlinkDataNtNew();
 
     rc = nwSaeGwStateSetParentState(thiz->pState[NW_SAE_GW_UE_STATE_SGW_SESSION_CREATED],
                                     thiz->pState[NW_SAE_GW_UE_STATE_SAE_SESSION_CREATED]);
