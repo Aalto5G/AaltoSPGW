@@ -342,6 +342,7 @@ nwMmeDpeCreateGtpuGtpuFlow(NwMmeDpeT*   thiz,
 
 NwRcT
 nwMmeDpeDestroyFlow(NwMmeDpeT*   thiz,
+                    NwSdpUlpSessionHandleT      hSession,
                     NwSdpSessionHandleT         hBearer)
 {
   NwRcT rc;
@@ -349,6 +350,7 @@ nwMmeDpeDestroyFlow(NwMmeDpeT*   thiz,
 
   ulpReq.apiType                              = NW_SDP_ULP_API_DESTROY_FLOW;
   ulpReq.apiInfo.destroyFlowInfo.hSdpSession  = hBearer;
+  ulpReq.apiInfo.destroyFlowInfo.hUlpSession  = hSession;
 
   rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
   NW_ASSERT( NW_OK == rc );

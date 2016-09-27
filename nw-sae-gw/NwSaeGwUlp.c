@@ -1838,7 +1838,7 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
     memcpy(&ipv4Addr, pUe->paa.ipv4Addr, sizeof(NwU32T));
 
     rc = nwSaeGwDpeCreateIpv4GtpuFlow(thiz->pDpe,
-        (NwSdpUlpSessionHandleT)thiz,
+        (NwSdpUlpSessionHandleT)pUe,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
         ipv4Addr,
@@ -1890,7 +1890,7 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
      */
     memcpy(&ipv4Addr, pUe->paa.ipv4Addr, sizeof(NwU32T));
     rc = nwSaeGwDpeCreateIpv4GtpuFlow(thiz->pDpe,
-        (NwSdpUlpSessionHandleT)thiz,
+        (NwSdpUlpSessionHandleT)pUe,
         pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr,
         ipv4Addr,
@@ -1932,7 +1932,7 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
      */
     memcpy(&ipv4Addr, pUe->paa.ipv4Addr, sizeof(NwU32T));
     rc = nwSaeGwDpeModifyIpv4GtpuFlow(thiz->pDpe,
-        (NwSdpUlpSessionHandleT)thiz,
+        (NwSdpUlpSessionHandleT)pUe,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
         ipv4Addr,
@@ -1981,7 +1981,7 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
      */
     memcpy(&ipv4Addr, pUe->paa.ipv4Addr, sizeof(NwU32T));
     rc = nwSaeGwDpeCreateIpv4GtpuFlow(thiz->pDpe,
-        (NwSdpUlpSessionHandleT)thiz,
+        (NwSdpUlpSessionHandleT)pUe,
         pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
         pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr,
         ipv4Addr,

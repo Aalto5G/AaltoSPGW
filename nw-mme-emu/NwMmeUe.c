@@ -724,9 +724,9 @@ nwMmeUeStSessionCreatedHandleSessionTimeout(NwMmeUeT* thiz, NwMmeUeEventInfoT* p
   NW_ASSERT( NW_OK == rc );
 
   thiz->state = NW_MME_UE_STATE_DELETE_SESSION_REQUEST_SENT;
-  rc = nwMmeDpeDestroyFlow(thiz->pDpe, thiz->epsBearer[5].s1uTunnel.hDownlink);
+  rc = nwMmeDpeDestroyFlow(thiz->pDpe, thiz, thiz->epsBearer[5].s1uTunnel.hDownlink);
   NW_ASSERT( NW_OK == rc );
-  rc = nwMmeDpeDestroyFlow(thiz->pDpe, thiz->epsBearer[5].s1uTunnel.hUplink);
+  rc = nwMmeDpeDestroyFlow(thiz->pDpe, thiz, thiz->epsBearer[5].s1uTunnel.hUplink);
   NW_ASSERT( NW_OK == rc );
 
   NW_UE_LOG(NW_LOG_LEVEL_INFO, "Delete Session Request sent to peer.");

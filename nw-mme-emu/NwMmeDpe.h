@@ -112,6 +112,7 @@ nwMmeDpeCreateGtpuGtpuFlow(NwMmeDpeT*   thiz,
 
 extern NwRcT
 nwMmeDpeDestroyFlow(NwMmeDpeT*   thiz,
+                    NwSdpUlpSessionHandleT      hSession,
                     NwSdpSessionHandleT         hBearer);
 extern NwRcT
 nwMmeDpeCreateGtpuService( NwMmeDpeT* thiz, NwU32T ipv4Addr );
