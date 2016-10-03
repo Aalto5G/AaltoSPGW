@@ -111,7 +111,6 @@ nwSaeGwDpeModifyIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
                              NwSdpUlpSessionHandleT      hSession,
                              NwU32T         teidEgress,
                              NwU32T         ipv4Egress,
-                             NwU32T         ipv4Ingress,
                              NwSdpSessionHandleT         hBearer);
 
 /**

@@ -1833,26 +1833,47 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
    */
   if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_SAE)
   {
-    NW_ASSERT(pUe->epsBearer[ebi].hSgwDownlink == 0);
-    /*
-     * Create PGW-IPv4 to eNodeB-GTPU downlink user plane flow
-     */
-    memcpy(&ipv4Addr, pUe->paa.ipv4Addr, sizeof(NwU32T));
+    if(!pUe->epsBearer[ebi].hSgwDownlink)
+    {
+      /*
+       * Create PGW-IPv4 to eNodeB-GTPU downlink user plane flow
+       */
+      memcpy(&ipv4Addr, pUe->paa.ipv4Addr, sizeof(NwU32T));
 
-    rc = nwSaeGwDpeCreateIpv4GtpuFlow(thiz->pDpe,
-        (NwSdpUlpSessionHandleT)pUe,
-        pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
-        pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
-        ipv4Addr,
-        &(pUe->epsBearer[ebi].hSgwDownlink));
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
-                  "Created S/P-GW Downlink Bearer (%p) for EBI %u ingress IPue "NW_IPV4_ADDR
-                  " to egress IP "NW_IPV4_ADDR" TEID 0x%08x",
-                  (void*)pUe->epsBearer[ebi].hSgwDownlink,
-                  ebi,
-                  NW_IPV4_ADDR_FORMAT(ipv4Addr),
-                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
-                  pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey);
+      rc = nwSaeGwDpeCreateIpv4GtpuFlow(thiz->pDpe,
+                                        (NwSdpUlpSessionHandleT)pUe,
+                                        pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
+                                        pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
+                                        ipv4Addr,
+                                        &(pUe->epsBearer[ebi].hSgwDownlink));
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                    "Created S/P-GW Downlink Bearer (%p) for EBI %u ingress IPue "NW_IPV4_ADDR
+                    " to egress IP "NW_IPV4_ADDR" TEID 0x%08x",
+                    (void*)pUe->epsBearer[ebi].hSgwDownlink,
+                    ebi,
+                    NW_IPV4_ADDR_FORMAT(ipv4Addr),
+                    NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
+                    pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey);
+    }
+    else
+    {
+      /*
+       * Update PGW-IPv4 to eNodeB-GTPU downlink user plane flow
+       */
+      rc = nwSaeGwDpeModifyIpv4GtpuFlow(thiz->pDpe,
+                                        (NwSdpUlpSessionHandleT)pUe,
+                                        pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
+                                        pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
+                                        &(pUe->epsBearer[ebi].hSgwDownlink));
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                    "Modified S/P-GW Downlink Bearer (%p) for EBI %u ingress IPue "NW_IPV4_ADDR
+                    " to egress IP "NW_IPV4_ADDR" TEID 0x%08x",
+                    (void*)pUe->epsBearer[ebi].hSgwDownlink,
+                    ebi,
+                    NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr),
+                    NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
+                    pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey);
+    }
 
     /*
      * No need to install a GTPU to GTPU tunnel for SGW-Only case
@@ -1861,28 +1882,51 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_SGW)
   {
-    NW_ASSERT(pUe->epsBearer[ebi].hSgwDownlink == 0);
-    /*
-     * Create SGW-GTPU to eNodeB-GTPU downlink user plane flow
-     */
-    rc = nwSaeGwDpeCreateGtpuGtpuFlow(thiz->pDpe,
-        (NwSdpUlpSessionHandleT)pUe,
-        (NwU32T)&pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
-        pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
-        pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
-        &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
-        &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr,
-        &pUe->epsBearer[ebi].hSgwDownlink);
-    NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
-                  "Created S-GW Downlink Bearer (%p) for EBI %u ingress IP "NW_IPV4_ADDR
-                  " TEID 0x%08x to egress IP "NW_IPV4_ADDR" TEID 0x%08x for IPue "NW_IPV4_ADDR,
-                  (void*)pUe->epsBearer[ebi].hSgwDownlink,
-                  ebi,
-                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr)),
-                  pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
-                  NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
-                  pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
-                  NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
+    if(!pUe->epsBearer[ebi].hSgwDownlink)
+    {
+      /*
+       * Create SGW-GTPU to eNodeB-GTPU downlink user plane flow
+       */
+        rc = nwSaeGwDpeCreateGtpuGtpuFlow(thiz->pDpe,
+                                          (NwSdpUlpSessionHandleT)pUe,
+                                          (NwU32T)&pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
+                                          pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
+                                          pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
+                                          &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
+                                          &pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr,
+                                          &pUe->epsBearer[ebi].hSgwDownlink);
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                      "Created S-GW Downlink Bearer (%p) for EBI %u ingress IP "NW_IPV4_ADDR
+                      " TEID 0x%08x to egress IP "NW_IPV4_ADDR" TEID 0x%08x for IPue "NW_IPV4_ADDR,
+                      (void*)pUe->epsBearer[ebi].hSgwDownlink,
+                      ebi,
+                      NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr)),
+                      pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
+                      NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
+                      pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
+                      NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
+    }
+    else
+    {
+      /*
+       * Modify SGW-GTPU to eNodeB-GTPU downlink user plane flow
+       */
+      rc = nwSaeGwDpeModifyGtpuGtpuFlow(thiz->pDpe,
+                                        (NwSdpUlpSessionHandleT)pUe,
+                                        pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
+                                        pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
+                                        pUe->epsBearer[ebi].hSgwDownlink);
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
+                    "Updated S-GW Downlink Bearer (%p) for EBI %u ingress IP "NW_IPV4_ADDR
+                    " TEID 0x%08x to egress IP "NW_IPV4_ADDR" TEID 0x%08x for IPue "NW_IPV4_ADDR,
+                    (void*)pUe->epsBearer[ebi].hSgwDownlink,
+                    ebi,
+                    NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.ipv4Addr)),
+                    pUe->epsBearer[ebi].s5s8uTunnel.fteidSgw.teidOrGreKey,
+                    NW_IPV4_ADDR_FORMAT(ntohl(pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr)),
+                    pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
+                    NW_IPV4_ADDR_FORMATP(pUe->paa.ipv4Addr));
+    }
   }
   else if(pUe->sessionType == NW_SAE_GW_UE_SESSION_TYPE_PGW)
   {
@@ -1937,7 +1981,6 @@ nwSaeGwUlpModifyDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
         (NwSdpUlpSessionHandleT)pUe,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
-        ipv4Addr,
         pUe->epsBearer[ebi].hSgwDownlink);
     NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
                   "Modified S/P-GW Downlink Bearer for EBI %u ingress IPue "NW_IPV4_ADDR

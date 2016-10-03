@@ -316,7 +316,6 @@ nwSaeGwDpeModifyIpv4GtpuFlow(NwSaeGwDpeT*   thiz,
                          NwSdpUlpSessionHandleT      hSession,
                          NwU32T         teidEgress,
                          NwU32T         ipv4Egress,
-                         NwU32T         ipv4Ingress,
                          NwSdpSessionHandleT         hBearer)
 {
   NwRcT rc;
@@ -389,7 +388,8 @@ nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
                          NwSdpSessionHandleT            hBearer)
 {
   /* Check*/
-  NwRcT                 rc;
+  NwRcT                 rc = NW_OK;
+  NwSdpRcT              sDPrc = NW_SDP_OK;
   NwSdpUlpApiT          ulpReq = {0};
 
   ulpReq.apiType                              = NW_SDP_ULP_API_UPDATE_FLOW;
@@ -402,8 +402,8 @@ nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
   ulpReq.apiInfo.updateFlowInfo.egressFlow.flowKey.gtpuTeid         = teidEgress;
 
   NW_ASSERT(teidEgress != 0);
-  rc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
-  NW_ASSERT( NW_OK == rc );
+  sDPrc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
+  NW_ASSERT( NW_OK == sDPrc );
 
   return rc;
 }
