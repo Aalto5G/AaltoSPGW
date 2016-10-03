@@ -219,6 +219,22 @@ NwGtpv2cMsgIeInfoT releaseAccessBearersRspIeInfoTbl[] =
   { 0, 0, 0}
 };
 
+
+static
+NwGtpv2cMsgIeInfoT downlinkDataNotificationAckIeInfoTbl[] =
+{
+  { NW_GTPV2C_IE_CAUSE          ,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_MANDATORY  , NULL },
+  /* { NW__GTPV2C_IE_DATA_NOTIFICATION_DELAY  ,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, NULL }, */
+  { NW_GTPV2C_IE_RECOVERY       ,       1,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL, NULL },
+  /* {NW_GTPV2C_IE_DL_LOW_PRIORITY_TRAFFIC_THROTTLING,  0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_OPTIONAL, NULL }, */
+  { NW_GTPV2C_IE_IMSI           ,       8,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL_OPTIONAL, NULL},
+  /*{NW_GTPV2C_IE_DL_BUFFERING_DURATION,       0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_CONDITIONAL_OPTIONAL, NULL }, */
+  /*{NW_GTPV2C_IE_DL_BUFFERING_SUGGESTED_PACKET_COUNT,         0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_OPTIONAL, NULL }, */
+  { NW_GTPV2C_IE_PRIVATE_EXTENSION,     0,      NW_GTPV2C_IE_INSTANCE_ZERO, NW_GTPV2C_IE_PRESENCE_OPTIONAL   , NULL },
+  /* Do not add below this */
+  { 0, 0, 0}
+};
+
 /*----------------------------------------------------------------------------*
  *                     P R I V A T E     F U N C T I O N S                    *
  *----------------------------------------------------------------------------*/
@@ -337,7 +353,12 @@ nwGtpv2cMsgIeParseInfoNew(NwGtpv2cStackHandleT hStack, NwU8T msgType)
           NW_ASSERT(NW_GTPV2C_OK == rc);
         }
         break;
-
+      case NW_GTP_DOWNLINK_DATA_NOTIFICATION_ACK:
+        {
+          rc = nwGtpv2cMsgIeParseInfoUpdate(thiz, downlinkDataNotificationAckIeInfoTbl);
+          NW_ASSERT(NW_GTPV2C_OK == rc);
+        }
+        break;
       default:
         {
           free(thiz);

@@ -596,7 +596,7 @@ static NwGtpv2cRcT
 nwGtpv2cHandleUlpInitialReq( NW_IN NwGtpv2cStackT* thiz, NW_IN NwGtpv2cUlpApiT *pUlpReq)
 {
   NwGtpv2cRcT rc;
-  NwGtpv2cTrxnT *pTrxn;
+  NwGtpv2cTrxnT *pTrxn = NULL;
 
   NW_ENTER(thiz);
 
@@ -1203,11 +1203,15 @@ nwGtpv2cHandleTriggeredRsp(NW_IN NwGtpv2cStackT *thiz,
            NW_IPV4_ADDR_FORMAT(peerIp));
   }
 
-  NwGtpv2cPathT         *pPath;
-  pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), (NwGtpv2cPathT*)hUlpTrxn);
-  if(pPath && msgType == NW_GTP_ECHO_RSP)
+  if(msgType == NW_GTP_ECHO_RSP)
   {
+    NwGtpv2cPathT         *pPath = RB_FIND(NwGtpv2cPathMap,
+                                           &(thiz->pathMap),
+                                           (NwGtpv2cPathT*)hUlpTrxn);
+    if(pPath)
+    {
       rc = nwGtpv2cPathTriggeredEchoRsp(pPath, &error, hMsg);
+    }
   }
   else
   {
@@ -1264,6 +1268,7 @@ nwGtpv2cInitialize( NW_INOUT NwGtpv2cStackHandleT* hGtpcStackHandle)
     NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_MODIFY_BEARER_RSP);
     NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_RELEASE_ACCESS_BEARERS_REQ);
     NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_RELEASE_ACCESS_BEARERS_RSP);
+    NW_GTPV2C_INIT_MSG_IE_PARSE_INFO(thiz, NW_GTP_DOWNLINK_DATA_NOTIFICATION_ACK);
 
 
     nwGtpv2cDisplayBanner(thiz);
@@ -1576,6 +1581,7 @@ nwGtpv2cProcessUdpReq( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
     case NW_GTP_CREATE_BEARER_RSP:
     case NW_GTP_UPDATE_BEARER_RSP:
     case NW_GTP_DELETE_BEARER_RSP:
+    case NW_GTP_DOWNLINK_DATA_NOTIFICATION_ACK:
       {
         rc = nwGtpv2cHandleTriggeredRsp(thiz, msgType, udpData, udpDataLen, peerPort, peerIp);
       }

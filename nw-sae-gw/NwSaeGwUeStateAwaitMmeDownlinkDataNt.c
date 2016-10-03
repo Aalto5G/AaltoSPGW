@@ -71,9 +71,10 @@ nwSaeGwStateAwaitMmeDownlinkDataNtEntryAction(NwSaeGwUeT* thiz, NwSaeGwUeEventIn
    */
   ulpReq.apiType = NW_GTPV2C_ULP_API_INITIAL_REQ;
 
-  ulpReq.apiInfo.initialReqInfo.hTunnel  = thiz->s11cTunnel.hSgwLocalTunnel;
-  ulpReq.apiInfo.initialReqInfo.hUlpTrxn = (NwGtpv2cUlpTrxnHandleT)pUlpApi->apiInfo.initialReqIndInfo.hTrxn;
-  ulpReq.apiInfo.initialReqInfo.peerIp   = htonl(thiz->s11cTunnel.fteidMme.ipv4Addr);
+  ulpReq.apiInfo.initialReqInfo.hTunnel   = thiz->s11cTunnel.hSgwLocalTunnel;
+  ulpReq.apiInfo.initialReqInfo.hUlpTrxn  = (NwGtpv2cUlpTrxnHandleT)pUlpApi->apiInfo.initialReqIndInfo.hTrxn;
+  ulpReq.apiInfo.initialReqInfo.teidLocal = thiz->s11cTunnel.fteidSgw.teidOrGreKey;
+  ulpReq.apiInfo.initialReqInfo.peerIp    = htonl(thiz->s11cTunnel.fteidMme.ipv4Addr);
 
   rc = nwGtpv2cMsgNew( thiz->hGtpv2cStackSgwS11,
                        NW_TRUE,
