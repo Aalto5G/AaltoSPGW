@@ -403,7 +403,7 @@ nwSaeGwDpeModifyGtpuGtpuFlow(NwSaeGwDpeT*   thiz,
 
   NW_ASSERT(teidEgress != 0);
   sDPrc = nwSdpProcessUlpReq(thiz->hSdp, &ulpReq);
-  NW_ASSERT( NW_OK == sDPrc );
+  NW_ASSERT( NW_SDP_OK == sDPrc );
 
   return rc;
 }
