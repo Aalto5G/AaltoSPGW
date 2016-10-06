@@ -2,5 +2,4 @@
 Name=sgi0
 
 [Network]
-Name=sgi0
 IPForward=ipv4
