@@ -1864,7 +1864,7 @@ nwSaeGwUlpInstallDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
                                         (NwSdpUlpSessionHandleT)pUe,
                                         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.teidOrGreKey,
                                         pUe->epsBearer[ebi].s1uTunnel.fteidEnodeB.ipv4Addr,
-                                        &(pUe->epsBearer[ebi].hSgwDownlink));
+                                        pUe->epsBearer[ebi].hSgwDownlink);
       NW_SAE_GW_LOG(NW_LOG_LEVEL_INFO,
                     "Modified S/P-GW Downlink Bearer (%p) for EBI %u ingress IPue "NW_IPV4_ADDR
                     " to egress IP "NW_IPV4_ADDR" TEID 0x%08x",
