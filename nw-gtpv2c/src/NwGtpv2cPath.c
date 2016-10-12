@@ -294,6 +294,7 @@ nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
   thiz->restartCounter   = 0;
   thiz->t3ResponseTimout = 2;
   thiz->n3RequestCount   = 2;
+  thiz->tunnelCount      = 0;
   uint8_t t = NW_GTPV2C_KEEP_ALIVE_TMR + rand() % 6;
   rc = nwGtpv2cStartTimer(pStack, t, 0, NW_GTPV2C_TMR_TYPE_ONE_SHOT,
                           nwGtpv2cPathPeriodicEchoReq, thiz,

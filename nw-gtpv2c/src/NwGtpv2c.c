@@ -533,8 +533,8 @@ nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
     pPath->tunnelCount++;
   }else{
     pPath = nwGtpv2cPathNew(thiz, ipv4Remote);
-    pPath->tunnelCount++;
   }
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"*****TUNNEL COUNT %u", pPath->tunnelCount);
 
   *phTunnel = (NwGtpv2cTunnelHandleT) pTunnel;
   NW_LEAVE(thiz);
@@ -559,19 +559,23 @@ nwGtpv2cDeleteLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
 
   NW_ENTER(thiz);
 
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
+         "Deleting local tunnel with TEID 0x%08x and peer IP "NW_IPV4_ADDR,
+         pTunnel->teid, NW_IPV4_ADDR_FORMAT(pTunnel->ipv4AddrRemote));
+
   pathKey.ipv4Address = pTunnel->ipv4AddrRemote;
   pPath = RB_FIND(NwGtpv2cPathMap, &(thiz->pathMap), &pathKey);
   if(pPath && pPath->tunnelCount>0)
   {
     pPath->tunnelCount--;
+    NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"*****TUNNEL COUNT %u", pPath->tunnelCount);
+    if(pPath->tunnelCount==0){
+        nwGtpv2cPathDelete(&pPath);
+    }
   }
 
   pTunnel = RB_REMOVE(NwGtpv2cTunnelMap, &(thiz->tunnelMap), (NwGtpv2cTunnelT*)hTunnel);
   NW_ASSERT(pTunnel == (NwGtpv2cTunnelT*)hTunnel);
-
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG,
-         "Deleting local tunnel with TEID 0x%08x and peer IP "NW_IPV4_ADDR,
-         pTunnel->teid, NW_IPV4_ADDR_FORMAT(pTunnel->ipv4AddrRemote));
 
   rc = nwGtpv2cTunnelDelete(thiz, pTunnel);
   NW_ASSERT(NW_GTPV2C_OK == rc);
