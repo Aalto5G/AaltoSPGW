@@ -315,6 +315,8 @@ nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
 
   NW_LOG(pStack, NW_LOG_LEVEL_INFO, "Created Path "NW_IPV4_ADDR,
          NW_IPV4_ADDR_FORMAT(thiz->ipv4Address));
+
+  thiz->tunnelCount--;
   return thiz;
 }
 
