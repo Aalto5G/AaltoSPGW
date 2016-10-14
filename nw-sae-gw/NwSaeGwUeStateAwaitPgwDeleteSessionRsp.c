@@ -184,13 +184,13 @@ nwSaeGwUeHandleSgwLLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
 
   NwU32T peer = pUlpApi->apiInfo.peerChangeInfo.peerIp;
 
-  if(peer = thiz->s5s8cTunnel.fteidPgw.ipv4Addr)
+  if(peer == thiz->s5s8cTunnel.fteidPgw.ipv4Addr)
   {
     /* S5/S8 stack failure*/
     nwSaeGwUeHandleSgwS5DeleteSessionResponseNack(thiz, pEv);
     NW_UE_LOG(NW_LOG_LEVEL_ERRO, "P-GW disconnected or restarted");
   }
-  else if(peer = thiz->s11cTunnel.fteidMme.ipv4Addr)
+  else if(peer == thiz->s11cTunnel.fteidMme.ipv4Addr)
   {
     /* S11 stack failure*/
     rc = nwSaeGwUlpSgwDeregisterUeSession(thiz->hSgw, thiz);

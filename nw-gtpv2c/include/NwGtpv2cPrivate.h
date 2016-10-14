@@ -205,6 +205,7 @@ typedef struct NwGtpv2cTrxn
 typedef struct NwGtpv2cPathS
 {
   NwU32T                        ipv4Address;
+  NwBoolT                       isRestartValid;
   NwU32T                        restartCounter;
   NwU16T                        t3ResponseTimout;
   NwU16T                        n3RequestCount;

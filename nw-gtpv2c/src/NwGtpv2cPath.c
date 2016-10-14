@@ -79,7 +79,9 @@ nwGtpv2cPathSendPeerRestartToUlp(NwGtpv2cPathT* thiz)
   ulpApi.apiType                           = NW_GTPV2C_ULP_API_PEER_CHANGE_IND;
   ulpApi.apiInfo.peerChangeInfo.peerIp     = ntohl(thiz->ipv4Address);
   ulpApi.apiInfo.peerChangeInfo.cause      = peerRestarted;
-  NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO, "Peer restart detected sending indication to ULP");
+  NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO,
+         "Peer ("NW_IPV4_ADDR") restart detected sending indication to ULP",
+         NW_IPV4_ADDR_FORMAT(thiz->ipv4Address));
   return pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
 }
 
@@ -96,7 +98,9 @@ nwGtpv2cPathSendPeerDisconnectedToUlp(NwGtpv2cPathT* thiz)
   ulpApi.apiType                           = NW_GTPV2C_ULP_API_PEER_CHANGE_IND;
   ulpApi.apiInfo.peerChangeInfo.peerIp     = ntohl(thiz->ipv4Address);
   ulpApi.apiInfo.peerChangeInfo.cause      = peerDisconnected;
-  NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO, "Peer disconected sending indication to ULP");
+  NW_LOG(thiz->pStack, NW_LOG_LEVEL_INFO,
+         "Peer ("NW_IPV4_ADDR") disconected sending indication to ULP",
+         NW_IPV4_ADDR_FORMAT(thiz->ipv4Address));
   return pStack->ulp.ulpReqCallback(pStack->ulp.hUlp, &ulpApi);
 }
 
@@ -291,6 +295,7 @@ nwGtpv2cPathNew( NW_IN  NwGtpv2cStackT* pStack,
   }
   thiz->pStack           = (NwGtpv2cStackHandleT)pStack;
   thiz->ipv4Address      = ipv4Remote;
+  thiz->isRestartValid   = NW_FALSE;
   thiz->restartCounter   = 0;
   thiz->t3ResponseTimout = 2;
   thiz->n3RequestCount   = 2;
@@ -371,6 +376,11 @@ NwGtpv2cRcT
 nwGtpv2cPathCheckRestartCounter(NW_IN NwGtpv2cPathT *thiz, NW_IN NwU8T remoteRestartCounter)
 {
   NwGtpv2cRcT rc = NW_GTPV2C_OK;
+  if(!thiz->isRestartValid)
+  {
+    thiz->restartCounter = remoteRestartCounter;
+    thiz->isRestartValid = NW_TRUE;
+  }
   if(remoteRestartCounter > thiz->restartCounter ||
      (remoteRestartCounter<2 && thiz->restartCounter>254)) /*Overflow*/
   {
