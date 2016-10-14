@@ -376,6 +376,8 @@ NwGtpv2cRcT
 nwGtpv2cPathCheckRestartCounter(NW_IN NwGtpv2cPathT *thiz, NW_IN NwU8T remoteRestartCounter)
 {
   NwGtpv2cRcT rc = NW_GTPV2C_OK;
+  NW_ENTER(thiz->pStack);
+
   if(!thiz->isRestartValid)
   {
     thiz->restartCounter = remoteRestartCounter;
@@ -398,6 +400,8 @@ nwGtpv2cPathCheckRestartCounter(NW_IN NwGtpv2cPathT *thiz, NW_IN NwU8T remoteRes
            NW_IPV4_ADDR_FORMAT(thiz->ipv4Address), remoteRestartCounter, thiz->restartCounter);
     rc = NW_GTPV2C_FAILURE ;
   }
+
+  NW_LEAVE(thiz->pStack);
   return rc;
 }
 

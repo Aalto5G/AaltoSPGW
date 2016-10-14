@@ -533,7 +533,6 @@ nwGtpv2cCreateLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
     pPath = nwGtpv2cPathNew(thiz, ipv4Remote);
   }
   pPath->tunnelCount++;
-  NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"*****TUNNEL COUNT %u", pPath->tunnelCount);
 
   *phTunnel = (NwGtpv2cTunnelHandleT) pTunnel;
   NW_LEAVE(thiz);
@@ -567,7 +566,6 @@ nwGtpv2cDeleteLocalTunnel( NW_IN NwGtpv2cStackT* thiz,
   if(pPath && pPath->tunnelCount>0)
   {
     pPath->tunnelCount--;
-    NW_LOG(thiz, NW_LOG_LEVEL_DEBG,"*****TUNNEL COUNT %u", pPath->tunnelCount);
     if(pPath->tunnelCount==0){
         nwGtpv2cPathDelete(&pPath);
     }
