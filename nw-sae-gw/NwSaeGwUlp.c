@@ -2103,25 +2103,45 @@ nwSaeGwUlpRemoveDownlinkEpsBearer(NwHandleT hSaeGw, NwSaeGwUeT *pUe, NwU8T ebi)
   return rc;
 }
 
+/* Management of Protocol Configuration options
+   TODO: Organize this a bit better.
+   TODO: Add IMS parameters
+ */
+
+typedef struct{
+    NwU16T id;
+    NwU8T  length; /* without header */
+    NwU8T  data[256];
+} __attribute__((packed)) PCO_header_t;
+
+typedef struct{
+    NwU8T  code;
+    NwU8T  identifier;
+    NwU16T length; /* with header */
+    NwU8T  data[256];
+} __attribute__((packed)) PPP_header_t;
+
+typedef struct{
+    NwU8T  option;
+    NwU8T  length; /* without header */
+    NwU8T  data[256];
+} __attribute__((packed)) IPCP_option_t;
 
 NwRcT
 nwSaeGwUlpPgwSetPCO(NwHandleT hPgw, NwSaeGwUeT *pUe)
 {
   NwSaeGwUlpT *thiz = (NwSaeGwUlpT*) hPgw;
-  NwU8T                       query[NW_SAE_GW_MAX_PCO_LEN], *pco_rsp_p, *pco_p;
-  NwU16T                      qlength, pco_len=0, pco_id, mtu=0;
+  NwU8T          query[NW_SAE_GW_MAX_PCO_LEN];
+  NwU16T         qlength, mtu=0;
 
-  const NwU8T ipcp[] = {
-    0x80, 0x21, 0x10, 0x03, 0x01, 0x00, 0x10,
-    0x81, 0x06, 0, 0, 0, 0,
-    0x83, 0x06, 0, 0, 0, 0};
-  const NwU8T pco_dns[] = {
-    0x00, 0x0d, 0x04, 0, 0, 0, 0};
-  const NwU8T pco_mtu[] = {
-    0x00, 0x10, 0x02, 0x00, 0x00};
+  NwU8T          *pco_rsp_p, *pco_p;
+  PCO_header_t   *pco_h, *pco_h_rsp;
 
-  const NwU8T dns[] = {
-      0x08,0x08,0x08,0x08};
+  NwU8T          *ppp_p, *ppp_rsp_p;
+  PPP_header_t   *ppp_h, *ppp_h_rsp;
+
+  NwU8T          *ipcp_p, *ipcp_rsp_p;
+  IPCP_option_t  *ipcp_h, *ipcp_h_rsp;
 
   if(!pUe->pco.isPresent)
   {
@@ -2133,39 +2153,109 @@ nwSaeGwUlpPgwSetPCO(NwHandleT hPgw, NwSaeGwUeT *pUe)
   memcpy(query, pUe->pco.value, qlength);
   bzero(pUe->pco.value, NW_SAE_GW_MAX_PCO_LEN);
 
-  pco_p = query+1;
   pco_rsp_p = pUe->pco.value;
-  *pco_rsp_p = 0x80;
+  *pco_rsp_p = 0x80; /* First byte */
   pco_rsp_p++;
-  pco_len++;
-  while(qlength >= pco_p-(query+1)){
-    pco_id = (*pco_p <<8)|(*(pco_p+1));
-    pco_p += *(pco_p+2)+3;
-    switch(pco_id){
-      case 0x8021: /* IP Control Protocol */
-        memcpy(pco_rsp_p, ipcp, 19);
-        inet_pton(AF_INET, thiz->ue_dns1, pco_rsp_p+9);
-        inet_pton(AF_INET, thiz->ue_dns2, pco_rsp_p+15);
-        pco_rsp_p +=19;
-        pco_len+=19;
+  pUe->pco.length=1;
+
+  /*
+     pco_p = query+1              : Initial value of the buffer
+     pco_p-(query+1) < qlength-1  : read < total
+     pco_p += pco_h->length + 3   : next PCO element
+   */
+  for(pco_p = query+1;
+      pco_p-(query+1) < qlength-1;
+      pco_p += pco_h->length + 3)
+  {
+    pco_h = (PCO_header_t *)pco_p;
+    pco_h_rsp = (PCO_header_t *) pco_rsp_p;
+
+    switch(NW_NTOHS(pco_h->id))
+    {
+      case 0xC021: /* LCP */
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN,"LCP PCO received, ignoring");
+        break;
+      case 0xC023: /* PAP */
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN,"PAP PCO received, ignoring");
+        break;
+      case 0xC223: /* CHAP */
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN,"CHAP PCO received, ignoring");
+        break;
+      case 0x8021: /* IP Control Protocol (IPCP) */
+        pco_h_rsp->id = NW_HTONS(0x8021);
+        ppp_rsp_p = pco_h_rsp->data;
+        for (ppp_p = pco_h->data;
+             ppp_p - pco_h->data < pco_h->length ;
+             ppp_p += ppp_h->length)
+        {
+          ppp_h = (PPP_header_t *) ppp_p;
+          ppp_h_rsp = (PPP_header_t*) ppp_rsp_p;
+
+          ppp_h_rsp->identifier = ppp_h->identifier;
+          ipcp_rsp_p = ppp_h_rsp->data;
+          for (ipcp_p = ppp_h->data;
+               ipcp_p - ppp_h->data < NW_NTOHS(ppp_h->length)-4;
+               ipcp_p += ipcp_h->length)
+          {
+            ipcp_h = (IPCP_option_t *)ipcp_p;
+            ipcp_h_rsp = (IPCP_option_t *) ipcp_rsp_p;
+            ppp_h_rsp->length = NW_HTONS(4);
+            switch(ipcp_h->option)
+            {
+              case 3: /* IP-Address*/
+                ipcp_h_rsp->option = 3;
+                ipcp_h_rsp->length = 6;
+                memcpy(ipcp_h_rsp->data, pUe->paa.ipv4Addr, 4);
+                ppp_h_rsp->code = 3; /* Configure-Nak. */
+                break;
+              case 129: /* Primary DNS Server Address. */
+                ipcp_h_rsp->option = 129;
+                ipcp_h_rsp->length = 6;
+                inet_pton(AF_INET, thiz->ue_dns1, ipcp_h_rsp->data);
+                ppp_h_rsp->code = 3; /* Configure-Nak. */
+                break;
+              case 131: /* Secondary DNS Server Address.*/
+                ipcp_h_rsp->option = 131;
+                ipcp_h_rsp->length = 6;
+                inet_pton(AF_INET, thiz->ue_dns2, ipcp_h_rsp->data);
+                ppp_h_rsp->code = 3; /* Configure-Nak. */
+                break;
+              default:
+                ipcp_h_rsp->option = ipcp_h->option;
+                ipcp_h_rsp->length = ipcp_h->length;
+                ppp_h_rsp->code = 7; /* Code-Reject. */
+                NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN,
+                              "IPCP option not recognized (%u), rejecting",
+                              ipcp_h->option);
+            }
+
+            ipcp_rsp_p += ipcp_h_rsp->length;
+            ppp_h_rsp->length = NW_HTONS(NW_NTOHS(ppp_h_rsp->length) + ipcp_h_rsp->length);
+          }
+
+          ppp_rsp_p += ppp_h_rsp->length;
+          pco_h_rsp->length += NW_NTOHS(ppp_h_rsp->length);
+        }
         break;
       case 0x000d: /* DNS Server IPv4 Address */
-        memcpy(pco_rsp_p, pco_dns, 7);
-        inet_ntop(AF_INET, pco_rsp_p+3, thiz->ue_dns1, INET_ADDRSTRLEN);
-        pco_rsp_p +=7;
-        pco_len+=7;
+        pco_h_rsp->id = NW_HTONS(0x000d);
+        pco_h_rsp->length = 4;
+        inet_pton(AF_INET, thiz->ue_dns1, pco_h_rsp->data);
         break;
       case 0x0010: /* IPv4 Link MTU */
-        memcpy(pco_rsp_p, pco_mtu, 5);
+        pco_h_rsp->id = NW_HTONS(0x0010);
+        pco_h_rsp->length = 2;
         mtu = htons(thiz->mtu);
-        memcpy(pco_rsp_p+3, &mtu, 2);
-        pco_rsp_p +=5;
-        pco_len+=5;
+        memcpy(pco_h_rsp->data, &mtu, 2);
         break;
       default: /* Not Recognized Ignoring*/
+          NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN,
+                        "PCO not recognized (%x), rejecting",
+                        NW_NTOHS(pco_h->id));
         break;
-      }
-    pUe->pco.length = pco_len;
+    }
+    pco_rsp_p +=  pco_h_rsp->length + 3;
+    pUe->pco.length += pco_h_rsp->length + 3;
   }
   return NW_OK;
 }
