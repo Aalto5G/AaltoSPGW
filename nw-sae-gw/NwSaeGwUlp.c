@@ -2174,13 +2174,13 @@ nwSaeGwUlpPgwSetPCO(NwHandleT hPgw, NwSaeGwUeT *pUe)
     {
       case 0xC021: /* LCP */
         NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN,"LCP PCO received, ignoring");
-        break;
+        continue;
       case 0xC023: /* PAP */
         NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN,"PAP PCO received, ignoring");
-        break;
+        continue;
       case 0xC223: /* CHAP */
         NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN,"CHAP PCO received, ignoring");
-        break;
+        continue;
       case 0x8021: /* IP Control Protocol (IPCP) */
         pco_h_rsp->id = NW_HTONS(0x8021);
         ppp_rsp_p = pco_h_rsp->data;
@@ -2237,22 +2237,29 @@ nwSaeGwUlpPgwSetPCO(NwHandleT hPgw, NwSaeGwUeT *pUe)
           pco_h_rsp->length += NW_NTOHS(ppp_h_rsp->length);
         }
         break;
-      case 0x000d: /* DNS Server IPv4 Address */
-        pco_h_rsp->id = NW_HTONS(0x000d);
-        pco_h_rsp->length = 4;
-        inet_pton(AF_INET, thiz->ue_dns1, pco_h_rsp->data);
+      case 0x0005: /* MS Support of Network Requested Bearer Control indicator*/
+        pco_h_rsp->id      = NW_HTONS(0x0005); /* Selected Bearer Control Mode */
+        pco_h_rsp->length  = 1;
+        pco_h_rsp->data[0] = 0x2; /* MS/NW */
         break;
-      case 0x0010: /* IPv4 Link MTU */
-        pco_h_rsp->id = NW_HTONS(0x0010);
+      case 0x0010: /* IPv4 Link MTU Request */
+        pco_h_rsp->id     = NW_HTONS(0x0010); /* IPv4 Link MTU */
         pco_h_rsp->length = 2;
         mtu = htons(thiz->mtu);
         memcpy(pco_h_rsp->data, &mtu, 2);
         break;
-      default: /* Not Recognized Ignoring*/
-          NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN,
-                        "PCO not recognized (%x), rejecting",
-                        NW_NTOHS(pco_h->id));
+      case 0x000A: /* IP address allocation via NAS signalling */
+        continue; /* Ignore */
+      case 0x000D: /* DNS Server IPv4 Address Request */
+        pco_h_rsp->id = NW_HTONS(0x000d); /* DNS Server IPv4 Address */
+        pco_h_rsp->length = 4;
+        inet_pton(AF_INET, thiz->ue_dns1, pco_h_rsp->data);
         break;
+      default: /* Not Recognized Ignoring*/
+        NW_SAE_GW_LOG(NW_LOG_LEVEL_WARN,
+                      "PCO not recognized (%x), rejecting",
+                      NW_NTOHS(pco_h->id));
+        continue; /* Ignore */
     }
     pco_rsp_p +=  pco_h_rsp->length + 3;
     pUe->pco.length += pco_h_rsp->length + 3;
