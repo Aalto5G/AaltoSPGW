@@ -1355,7 +1355,11 @@ nwSaeGwGetRestartCounter(const char *stateDir, NwU32T ipAddr, NwU8T *restartCoun
                     filename, strerror(errno));
       return NW_FAILURE;
     }
-    read(fd, &r, sizeof(NwU8T));
+    if(read(fd, &r, sizeof(NwU8T)) != 1){
+      NW_SAE_GW_LOG(NW_LOG_LEVEL_ERRO,
+                    "Couldn't read the restart counter from the persistent state");
+      goto error;
+    }
     NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Read from %s (fd=%d) restartCounter %d", filename, fd, r);
     r++;
     close(fd);
@@ -1365,14 +1369,22 @@ nwSaeGwGetRestartCounter(const char *stateDir, NwU32T ipAddr, NwU8T *restartCoun
   {
     NW_SAE_GW_LOG(NW_LOG_LEVEL_ERRO, "Couldn't write/create file %s, %s ",
                   filename, strerror(errno));
-    return NW_FAILURE;
+    goto error;
   }
   NW_SAE_GW_LOG(NW_LOG_LEVEL_DEBG, "Updating restart Counter (fd=%d) %d", fd, r);
-  write(fd, &r, sizeof(NwU8T));
+  if(write(fd, &r, sizeof(NwU8T)) != 1){
+    NW_SAE_GW_LOG(NW_LOG_LEVEL_ERRO,
+                  "Couldn't write the restart counter to the persistent state");
+    goto error;
+  }
   close(fd);
 
   *restartCounter = r;
   return NW_OK;
+
+ error:
+  close(fd);
+  return NW_FAILURE;
 }
 
 NwRcT
