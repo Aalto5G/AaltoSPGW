@@ -2249,7 +2249,17 @@ nwSaeGwUlpPgwSetPCO(NwHandleT hPgw, NwSaeGwUeT *pUe)
         memcpy(pco_h_rsp->data, &mtu, 2);
         break;
       case 0x000A: /* IP address allocation via NAS signalling */
+        /* All right, this is the type implemented*/
         continue; /* Ignore */
+      case 0x000B: /* IPv4 address allocation via DHCPv4 */
+        {
+          NwU64T     imsi;
+          memcpy(&imsi, pUe->imsi, sizeof(NwU64T));
+          NW_SAE_GW_LOG(NW_LOG_LEVEL_ERRO,
+                        "UE (%llx) requested IPv4 address allocation via DHCPv4, "
+                        "but it is not supported", NW_NTOHLL(imsi));
+        }
+        continue;
       case 0x000D: /* DNS Server IPv4 Address Request */
         pco_h_rsp->id = NW_HTONS(0x000d); /* DNS Server IPv4 Address */
         pco_h_rsp->length = 4;
