@@ -640,6 +640,7 @@ nwSaeGwUlpDestroyUeSession(NwSaeGwUlpT* thiz, NwSaeGwUeT **ppUe)
     rc = nwSaeGwUlpSgwDeregisterUeSession(pUe->hSgw, pUe);
   }
   rc = nwSaeGwUeDelete(pUe);
+  *ppUe = NULL;
   return rc;
 }
 
@@ -693,6 +694,10 @@ nwSaeGwUlpSgwDeregisterAllUeSessionFromPeer(NwSaeGwUlpT* hSaeGw, NwGtpv2cUlpApiT
                     NW_NTOHLL(imsi));
 
       rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
+      if(ueState == NW_SAE_GW_UE_STATE_END)
+      {
+        rc = nwSaeGwUeDelete(pUe);
+      }
     }
     else if(pUe->s5s8cTunnel.fteidPgw.ipv4Addr == peerAddr)
     {
@@ -701,6 +706,10 @@ nwSaeGwUlpSgwDeregisterAllUeSessionFromPeer(NwSaeGwUlpT* hSaeGw, NwGtpv2cUlpApiT
                     NW_NTOHLL(imsi));
 
       rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
+      if(ueState == NW_SAE_GW_UE_STATE_END)
+      {
+        rc = nwSaeGwUeDelete(pUe);
+      }
     }
   }
   return rc;
@@ -726,7 +735,12 @@ nwSaeGwUlpPgwDeregisterAllUeSessionFromPeer(NwSaeGwUlpT* hSaeGw, NwGtpv2cUlpApiT
     nxt = RB_NEXT(NwUePgwSessionRbtT, &thiz->uePgwSessionRbt, pUe);
     if(pUe->s5s8cTunnel.fteidSgw.ipv4Addr == peerAddr)
     {
-        rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
+      rc = nwSaeGwUeFsmRun(thiz->pUeFsm, pUe, &eventInfo, &ueState);
+      if(ueState == NW_SAE_GW_UE_STATE_END)
+      {
+        rc = nwSaeGwUeDelete(pUe);
+        /* rc = nwSaeGwUlpDestroyUeSession(thiz, &pUe); */
+      }
     }
   }
   return rc;

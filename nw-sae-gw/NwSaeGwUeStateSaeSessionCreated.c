@@ -611,7 +611,7 @@ nwSaeGwUeHandleSgwS11LLE(NwSaeGwUeT* thiz, NwSaeGwUeEventInfoT* pEv)
     rc = nwSaeGwUlpPgwDeregisterUeSession(thiz->hPgw, thiz);
     NW_ASSERT(NW_OK == rc);
   }
-
+  thiz->state = NW_SAE_GW_UE_STATE_END;
   return rc;
 }
 
