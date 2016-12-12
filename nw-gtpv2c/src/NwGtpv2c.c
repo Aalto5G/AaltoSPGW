@@ -1455,6 +1455,7 @@ nwGtpv2cSetPeerRestartCounter( NW_IN NwGtpv2cStackHandleT hGtpcStackHandle,
     pPath = nwGtpv2cPathNew(thiz, peerAddr);
 
   pPath->restartCounter = restartCounter;
+  pPath->isRestartValid = NW_TRUE;
   return NW_GTPV2C_OK;
 }
 
