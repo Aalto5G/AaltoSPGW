@@ -684,7 +684,7 @@ nwSaeGwUlpSgwDeregisterAllUeSessionFromPeer(NwSaeGwUlpT* hSaeGw, NwGtpv2cUlpApiT
                   pUe,
                   NW_NTOHLL(imsi),
                   NW_IPV4_ADDR_FORMAT(ntohl(pUe->s11cTunnel.fteidMme.ipv4Addr)),
-                  NW_IPV4_ADDR_FORMAT(peerAddr));
+                  NW_IPV4_ADDR_FORMAT(ntohl(peerAddr)));
     if(pUe->s11cTunnel.fteidMme.ipv4Addr == peerAddr)
     {
       /* TODO Tell PGW*/
