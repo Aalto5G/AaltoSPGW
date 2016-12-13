@@ -439,6 +439,54 @@ nwGtpv1uSendto( NwGtpv1uStackT* thiz,  NW_IN NwGtpv1uUlpApiT *pUlpReq)
   return rc;
 }
 
+static void
+nwGtpv1uSendErrorIndication(NwGtpv1uStackT* thiz,
+                            NW_IN NwU32T teid,
+                            NW_IN NwU32T peerIp,
+                            NW_IN NwU16T peerPort)
+{
+  NwGtpv1uMsgHandleT    hMsg = 0;
+  NwGtpv1uRcT rc;
+
+  /* seqNum = ntohs(*(NwU16T*) (msgBuf + (((*msgBuf) & 0x02) ? 8 : 4))); */
+
+  /* Send Echo Response */
+
+  rc = nwGtpv1uMsgNew( (NwGtpv1uStackHandleT)thiz,
+      NW_FALSE,         /* SeqNum flag    */
+      NW_FALSE,
+      NW_FALSE,
+      NW_GTP_ERROR_INDICATION,  /* Msg Type             */
+      0x00000000UL,             /* TEID                 */
+      0,                        /* Seq Number           */
+      0,
+      0,
+      (&hMsg));
+
+  NW_ASSERT(NW_GTPV1U_OK == rc);
+
+  /* Tunnel Endpoint Identifier Data I (8.3) */
+  rc = nwGtpv1uMsgAddIeTV4(hMsg, NW_GTPV1U_IE_TEID_DATA_I, 4, htonl(teid));
+
+  /* GTP-U Peer Address (8.4) */
+  NwU32T naddr = htonl(peerIp);
+  rc = nwGtpv1uMsgAddIe(hMsg, NW_GTPV1U_IE_GSN_ADDRESS, 4, &naddr);
+
+  /* TODO: Maybe add "UDP Port" extension header (Type 0x40) */
+
+  NW_LOG(thiz, NW_LOG_LEVEL_DEBG, "Sending NW_GTP_ERROR_INDICATION message to "NW_IPV4_ADDR":%u with seq %u",
+         NW_IPV4_ADDR_FORMAT(ntohl(peerIp)), peerPort, 0);
+
+  rc = nwGtpv1uCreateAndSendMsg(thiz,
+      peerIp,
+      peerPort,
+      (NwGtpv1uMsgT*) hMsg);
+
+  rc = nwGtpv1uMsgDelete((NwGtpv1uStackHandleT)thiz, hMsg);
+  NW_ASSERT(NW_GTPV1U_OK == rc);
+
+}
+
 /**
   Process GPDU from UDP entity.
 
@@ -451,7 +499,8 @@ static NwGtpv1uRcT
 nwGtpv1uProcessGpdu( NwGtpv1uStackT* thiz,
                      NW_IN NwCharT* gpdu,
                      NW_IN NwU32T gdpuLen,
-                     NW_IN NwU32T peerIp)
+                     NW_IN NwU32T peerIp,
+                     NW_IN NwU16T peerPort)
 
 {
   NwGtpv1uRcT rc;
@@ -485,8 +534,12 @@ nwGtpv1uProcessGpdu( NwGtpv1uStackT* thiz,
   }
   else
   {
-    NW_LOG(thiz, NW_LOG_LEVEL_ERRO, "Received T-PDU over non-existent tunnel end-point '%x' from "NW_IPV4_ADDR,
+    NW_LOG(thiz, NW_LOG_LEVEL_WARN, "Received T-PDU over non-existent tunnel end-point '%.8x' from "NW_IPV4_ADDR,
            ntohl(msgHdr->teid), NW_IPV4_ADDR_FORMAT(ntohl(peerIp)));
+    if(msgHdr->teid != 0)
+    {
+      nwGtpv1uSendErrorIndication(thiz, msgHdr->teid, peerIp, peerPort);
+    }
   }
   NW_LEAVE(thiz);
 
@@ -768,7 +821,7 @@ nwGtpv1uProcessUdpReq( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
       break;
 
     case NW_GTP_GPDU:
-      rc = nwGtpv1uProcessGpdu(thiz, udpData, udpDataLen, peerIp);
+      rc = nwGtpv1uProcessGpdu(thiz, udpData, udpDataLen, peerIp, peerPort);
       break;
 
     default:
