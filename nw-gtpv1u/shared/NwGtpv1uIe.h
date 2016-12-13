@@ -45,7 +45,7 @@
  *--------------------------------------------------------------------------*/
 
 #define NW_GTPV1U_IE_RECOVERY                                           (14)
-#define NW_GTPV1U_IE_TEID_DATA_I                                        (15)
+#define NW_GTPV1U_IE_TEID_DATA_I                                        (16)
 #define NW_GTPV1U_IE_GSN_ADDRESS                                        (133)
 #define NW_GTPV1U_IE_EXT_HDR_TYPE_LIST                                  (141)
 #define NW_GTPV1U_IE_PRIVATE_EXTENSION                                  (255)

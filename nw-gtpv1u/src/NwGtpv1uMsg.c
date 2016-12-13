@@ -413,8 +413,8 @@ nwGtpv1uMsgAddIe(NW_IN NwGtpv1uMsgHandleT hMsg,
   pIe->t        = type;
   pIe->l        = htons(length);
 
-  memcpy(pIe + 4, pVal, length);
-  pMsg->msgLen += (4 + length);
+  memcpy((NwU8T*)pIe + 3, pVal, length);
+  pMsg->msgLen += (3 + length);
 
   return NW_GTPV1U_OK;
 }
