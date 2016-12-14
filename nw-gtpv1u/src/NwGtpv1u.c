@@ -804,6 +804,7 @@ nwGtpv1uProcessUdpReq( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
       break;
 
     case NW_GTP_ERROR_INDICATION:
+    case NW_GTP_END_MARKER:
       rc  = nwGtpv1uSendUlpMessageIndication( thiz,
           0,
           NW_GTPV1U_ULP_API_RECV_MSG,
@@ -824,8 +825,15 @@ nwGtpv1uProcessUdpReq( NW_IN NwGtpv1uStackHandleT hGtpuStackHandle,
       rc = nwGtpv1uProcessGpdu(thiz, udpData, udpDataLen, peerIp, peerPort);
       break;
 
+    case NW_GTP_SUPPORTED_EXTENSION_HEADER_INDICATION:
+      NW_LOG(thiz, NW_LOG_LEVEL_ERRO,
+             "Supported Extension Header Indication message not supported. Ignoring");
+      break;
+
     default:
-      NW_ASSERT(0);
+      NW_LOG(thiz, NW_LOG_LEVEL_ERRO,
+             "Invalid GTP-U message type received: 0x%x. Ignoring",
+             msgType);
   }
 
   NW_LEAVE(thiz);
