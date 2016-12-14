@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
- *                              n w - s d p                                   * 
+ *                              n w - s d p                                   *
  *                    S o f t     D a t a     P l a n e                       *
  *                                                                            *
  *                                                                            *
@@ -45,9 +45,9 @@
 #include "NwIpv4.h"
 
 
-/** 
+/**
  * @file NwSdpPrivate.h
- * @brief This header file contains private definitions not to be 
+ * @brief This header file contains private definitions not to be
  * exposed to user application.
  */
 
@@ -102,7 +102,7 @@ typedef struct NwSdp
   NwGreStackHandleT             hGreStack;
   NwIpv4StackHandleT            hIpv4Stack;
   NwU32T                        greSd;
-} NwSdpT; 
+} NwSdpT;
 
 /**
  * GTP Tunnel End Point class definition
@@ -112,19 +112,19 @@ typedef struct NwSdpFlowContext
 {
   NwSdpFlowEndPointT            ingressEndPoint;
   NwSdpFlowEndPointT            egressEndPoint;
-  NwU32T                        egressIpv4Addr;                 /**< Egress Ip Address for this session */
-  NwSdpT*                       pStack;                         /**< Pointer to the parent stack        */
-  NwSdpUlpSessionHandleT        hUlpSession;                    /**< ULP session handle for the session */
+  NwU32T                        egressIpv4Addr;  /**< Session's Egress Ip   */
+  NwSdpT*                       pStack;          /**< Pointer to the parent */
+  NwSdpUlpSessionHandleT        hUlpSession;     /**< Session's ULP handle  */
   struct NwSdpFlowContext       *next;
 } NwSdpFlowContextT;
 
 
 /*--------------------------------------------------------------------------*
- * Timeout Info Type Definition  
+ * Timeout Info Type Definition
  *--------------------------------------------------------------------------*/
 
 /**
- * Timeout info 
+ * Timeout info
  */
 
 typedef struct NwSdpTimeoutInfo
@@ -139,7 +139,7 @@ typedef struct NwSdpTimeoutInfo
  *
  * @param[in] thiz Pointer to stack instance
  * @param[in] timeoutArg Arg to timeout function.
- * @param[out] phTmr Pointer to timer handle. 
+ * @param[out] phTmr Pointer to timer handle.
  * @return NW_SDP_OK on success.
  */
 
@@ -150,7 +150,7 @@ nwSdpStartTrxnPeerRspTimer(NwSdpT* thiz, NwSdpTimeoutInfoT* timeoutInfo, NwSdpTi
  * Stop a transaction response timer
  *
  * @param[in] thiz Pointer to stack instance
- * @param[out] phTmr Pointer to timer handle. 
+ * @param[out] phTmr Pointer to timer handle.
  * @return NW_SDP_OK on success.
  */
 
@@ -174,7 +174,7 @@ typedef struct NwSdpMsg
   NwU16T        msgLen;
   NwU32T        teid;
   NwU16T        seqNum;
-  NwU8T         npduNum;    
+  NwU8T         npduNum;
   NwU8T         nextExtHdrType;
   NwU8T         msgBuf[NW_SDP_MAX_MSG_LEN];
 } NwSdpMsgT;
@@ -186,7 +186,7 @@ typedef struct NwSdpMsg
 
 #pragma pack(1)
 
-typedef struct NwSdpMsgHeader 
+typedef struct NwSdpMsgHeader
 {
   NwU8T PN:1;
   NwU8T S:1;
@@ -209,4 +209,3 @@ typedef struct NwSdpMsgHeader
 /*--------------------------------------------------------------------------*
  *                      E N D     O F    F I L E                            *
  *--------------------------------------------------------------------------*/
-
