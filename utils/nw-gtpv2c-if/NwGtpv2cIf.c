@@ -42,7 +42,7 @@ NwRcT nwGtpv2cIfInitialize(NwGtpv2cIfT* thiz, NwU32T ipAddr, NwGtpv2cStackHandle
   if(bind(sd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
   {
     NW_GTPV2C_IF_LOG(NW_LOG_LEVEL_ERRO, "Bind error for "NW_IPV4_ADDR":%u - %s",
-                     NW_IPV4_ADDR_FORMAT(ipAddr), NW_GTPC_UDP_PORT, strerror(errno));
+                     NW_IPV4_ADDR_FORMAT(htonl(ipAddr)), NW_GTPC_UDP_PORT, strerror(errno));
     NW_ASSERT(0);
   }
 
