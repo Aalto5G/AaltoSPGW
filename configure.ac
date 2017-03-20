@@ -1,7 +1,7 @@
 # this is example-file: configure.ac
 
 # initial information about the project
-AC_INIT([NwEpc],[0.18.1],[vicent.ferrerguasch@aalto.fi], [NwEPC], [])
+AC_INIT([NwEpc],[0.19.0],[vicent.ferrerguasch@aalto.fi], [NwEPC], [])
 
 AC_PREREQ([2.68])
 
