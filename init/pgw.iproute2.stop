@@ -1,8 +1,13 @@
 #!/bin/bash
 
-ip route del dev sgi0 ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK}
-ip rule del from ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} table rt_lte_ue
-ip route del ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} dev sgi0 table rt_lte_ue
-ip route del default via ${SGI_GW} table rt_lte_ue
+#ip rule delete iff pdn0 table rt_lte_ue
+ip rule delete to ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} table rt_lte_ue
+
+ip rule delete iif sgi0 table rt_lte_ue
+
+ip route delete ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} dev sgi0 table rt_lte_ue
+ip route delete default via ${SGI_GW} table rt_lte_ue
+
 sed -i -e '/rt_lte_ue/d' /etc/iproute2/rt_tables
+
 exit 0

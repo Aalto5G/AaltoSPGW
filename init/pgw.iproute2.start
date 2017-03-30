@@ -1,9 +1,22 @@
 #!/bin/bash
 
-echo 100 rt_lte_ue >> /etc/iproute2/rt_tables
 ip link set dev sgi0 multicast off
-ip route add dev sgi0 ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK}
-ip rule add from ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} table rt_lte_ue
+
+
+## PDN routing
+echo 100 rt_lte_ue >> /etc/iproute2/rt_tables
+
+## Downlink
+### Alternative when dedicated pdn interface is available
+# ip rule add iif pdn0 table rt_lte_ue
+ip rule add to ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} table rt_lte_ue
+
+## Uplink
+ip rule add iif sgi0 table rt_lte_ue
+
+
+## PDN routing table
 ip route add ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} dev sgi0 table rt_lte_ue
 ip route add default via ${SGI_GW} table rt_lte_ue
+
 exit 0
