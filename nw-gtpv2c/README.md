@@ -30,6 +30,7 @@ applications. It should compile on Linux,  BSD, Mac OS X, Solaris and Windows
 The stack architecture builds upon following mentioned entities that are
 external to it:
 
+```
       +-------------+      +---------+        +---------+
       |  ULP ENTITY |      | TMR MGR |        | LOG MGR |
       +------+------+      +----+----+        +----+----+
@@ -43,7 +44,7 @@ external to it:
                          +------+------+
                          |  UDP ENTITY |
                          +-------------+
-
+```
 
 - User Layer Protocol (ULP) Entity:
 This entity is the one which decides behaviour of the GTP user application.
