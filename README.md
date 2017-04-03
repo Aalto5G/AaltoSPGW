@@ -1,7 +1,7 @@
 nwEPC - EPC Gateways
 ====================
 
-This software provides a C implementation of S-GW, P-GW or a combined version of the both SAE-GW. It is a fork of the nwEPC provided by Amit Chawre (original [Readme](README))
+This software provides a C implementation of S-GW, P-GW or a combined version of the both SAE-GW. It is a fork of the nwEPC provided by Amit Chawre (original [Readme](README.old))
 
 
 Dependencies

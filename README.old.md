@@ -66,6 +66,7 @@ Other than these, an IPv4 address range for UEs will also be required.
 
   Sample illustration:
 
+```
   +------------------------------------------------+
   |                                                |
   |     Combined SGW/PGW Application Framework     |
@@ -91,7 +92,7 @@ Other than these, an IPv4 address range for UEs will also be required.
   +------------+    +------------+    +------------+      |
   | eNodeB/PGW |    |    MME     |    | Other PGWs |------+
   +------------+    +------------+    +------------+
-
+```
 
 2. Create virtual IP address on NIC1 for data plane interface SGW/PGW for
    S1-U/S5-U interface. Both SGW and PGW shall share the same data plane.
@@ -121,6 +122,7 @@ Other than these, an IPv4 address range for UEs will also be required.
 
   Supported command line arguments are:
 
+```
   +----------------------+-------------+-------------------------------------+
   | ARGUMENT             | PRESENCE    | DESCRIPTION                         |
   +----------------------+-------------+-------------------------------------+
@@ -135,7 +137,7 @@ Other than these, an IPv4 address range for UEs will also be required.
   | --max-ue     | -mu   | OPTIONAL    | Maximum number of UEs to support.   |
   | --combined-gw | -cgw | OPTIONAL    | Combine SGW and PGW funtions.       |
   +----------------------+-------------+-------------------------------------+
-
+```
 
 :: Workarounds
 ==================================================================================
@@ -181,13 +183,15 @@ IPv4 address range for UEs. This range should be routable in PDN. Similary, a fe
 PDN IP address are required.
 
 5. Set-up
+
+```
                                    __
                                 __(  )__
   +=============+......        (        )        ......+=============+
   ||  MME-EMU  || NIC1 |<=====( IP Cloud )=====>| NIC1 ||  SAE-GW   ||
-  +=============+``````        (__    __)        ``````+=============+
+  +=============+''''''        (__    __)        ''''''+=============+
      | NIC 2 |                    (__)                    | NIC 2 |
-      ```+```                                              ```+```
+      `''+''´                                              `''+''´
          |                                                    |
      +---+---+                                            +---+---+
      | L3 SW |                                            | L3 SW |
@@ -196,7 +200,7 @@ PDN IP address are required.
     +----+----+                                          +----+----+
     | E-UTRAN |                                          |   PDN   |
     +---------+                                          +---------+
-
+```
 
 Install nwEPC software on two of the servers/machines with two NICs each
 mentioned in 2 above. We will use one as SAE-GW and other as MME-emulater.
@@ -229,6 +233,7 @@ MME-emulator.
 
 Supported command line arguments for MME-emulator are:
 
+```
 +---------------------------+---------------+---------------------------------------+
 | ARGUMENT                  | PRESENCE      | DESCRIPTION                           |
 +---------------------------+---------------+---------------------------------------+
@@ -241,6 +246,7 @@ Supported command line arguments for MME-emulator are:
 | --reg-per-sec| -rps       | OPTIONAL      | Session registrations per second.     |
 | --tun-if  | -si           | OPTIONAL      | Network interface name for tunnel-if. |
 +---------------------------+---------------+---------------------------------------+
+```
 
 Example Usage:
 $ nwLteMmeEmu --mme-ip 10.0.0.1 --sgw-ip 10.0.0.2 --pgw-ip 10.0.0.3 --gtpu-ip 10.0.0.1 \
