@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*
  *                                                                            *
  *                             n w - g t p v 2 u                              *
- *    G P R S    T u n n e l i n g    P r o t o c o l   v 2 u   S t a c k     *
+ *    G P R S    T u n n e l i n g    P r o t o c o l   v 1 u   S t a c k     *
  *                                                                            *
  *                                                                            *
  * Copyright (c) 2010-2011 Amit Chawre                                        *
@@ -40,7 +40,7 @@
 #include "NwTypes.h"
 #include "NwGtpv1uError.h"
 
-/** @mainpage
+/** @page GTPv1u GTP-U Stack
 
   @section intro Introduction
 

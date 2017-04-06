@@ -40,7 +40,7 @@
 #include "NwTypes.h"
 #include "NwIpv4Error.h"
 
-/** @mainpage
+/** @page IPv4 IPv4 stack for GTP tunnel protocol
 
   @section intro Introduction
 

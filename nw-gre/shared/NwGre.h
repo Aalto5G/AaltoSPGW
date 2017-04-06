@@ -40,7 +40,7 @@
 #include "NwTypes.h"
 #include "NwGreError.h"
 
-/** @mainpage
+/** @page NwGre Generic Routing Encapsulation Stack
 
   @section intro Introduction
 
