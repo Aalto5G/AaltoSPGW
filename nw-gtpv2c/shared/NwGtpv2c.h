@@ -40,7 +40,7 @@
 #include "NwTypes.h"
 #include "NwGtpv2cError.h"
 
-/** @mainpage
+/** @page NwGtpv2c GTPv2 module
 
   @section intro Introduction
 
