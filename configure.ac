@@ -20,7 +20,7 @@ LT_INIT([disable-shared])
 AC_CONFIG_MACRO_DIRS([m4])
 
 # automake initialisation
-AM_INIT_AUTOMAKE([-Wall -Werror])
+AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 
 # use the C compiler for the following checks
 AC_LANG([C])
