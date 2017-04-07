@@ -79,7 +79,7 @@ The configuration of the services is done on the configuration files located on 
 # systemctl daemon-reload
 ```
 
-- Enable and start the network to add the new devices:
+- Enable and start the network to add the new devices (only required for P-GW functionality):
 
 ```
 # systemctl enable systemd-networkd
