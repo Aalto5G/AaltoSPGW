@@ -106,16 +106,18 @@ On the main header, the API is documented using comments.
 
 ### Structure of nw-sae-gw files
 
-- `NwSaeGwUeState*`:
+- `NwSaeGwUeState*`: UE state logic.
+The states of S-GW, P-GW and combined gateway are mixed.
+Some are common, other are specific.
 
-- `NwSaeGwUe`:
+- `NwSaeGwUe`: UE structure. Contains the UE state machine
 
-- `NwSaeGwUeFsm`:
+- `NwSaeGwUeFsm`: UE State machine functions
 
-- `NwSaeGwLog.h` and `NwSaeGwUeLog.h`:
+- `NwSaeGwLog.h` and `NwSaeGwUeLog.h`: Logging utils
 
-- `NwSaeGwUlp`:
+- `NwSaeGwUlp`: ULP for the interface stacks
 
-- `NwSaeGwDpe`:
+- `NwSaeGwDpe`: Data plane entity (DPE), wrapper of Software data plane module (SDP)
 
-- `NwSaeGwMain.c`:
+- `NwSaeGwMain.c`: Main program for the S/P-GW
