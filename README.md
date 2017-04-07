@@ -79,10 +79,11 @@ The configuration of the services is done on the configuration files located on 
 # systemctl daemon-reload
 ```
 
-- Reload the network to add the new devices:
+- Enable and start the network to add the new devices:
 
 ```
-# systemctl restart systemd-networkd
+# systemctl enable systemd-networkd
+# systemctl start systemd-networkd
 ```
 
 - Enable the required services sgw|pgw|spgw to start them on boot , i.e.
