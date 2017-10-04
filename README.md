@@ -40,6 +40,13 @@ $ make
 $ sudo make install
 ```
 
+It is also possible to use checkinstall for installing and building a deb package
+
+```
+$ sudo checkinstall               # Install and build package
+$ sudo checkinstall --install=no  # Only build package
+```
+
 Configuration
 -------------
 
