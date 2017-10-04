@@ -19,4 +19,10 @@ ip rule add iif sgi0 table rt_lte_ue
 ip route add ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} dev sgi0 table rt_lte_ue
 ip route add default via ${SGI_GW} table rt_lte_ue
 
+## NAT support
+if [ -n "$SGI_NAT" ]; then
+    # Enable NAT
+    iptables -t nat -I POSTROUTING -s ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} -o $SGI_NAT -j MASQUERADE
+fi
+
 exit 0

@@ -10,4 +10,10 @@ ip route delete default table rt_lte_ue
 
 sed -i -e '/rt_lte_ue/d' /etc/iproute2/rt_tables
 
+## NAT support
+if [ -n "$SGI_NAT" ]; then
+    # Disable NAT
+    iptables -t nat -D POSTROUTING -s ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} -o $SGI_NAT -j MASQUERADE
+fi
+
 exit 0
