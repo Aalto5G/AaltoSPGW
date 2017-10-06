@@ -4,7 +4,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-EnvironmentFile=/etc/cumucore/pgw.cfg
+EnvironmentFile=/etc/aalto/pgw.cfg
 
 ExecStartPre=/bin/bash /etc/conf.d/iproute2/pgw.iproute2.start
 ExecStartPre=/sbin/iptables -t mangle -I POSTROUTING -s ${IPADDR_IPUE_NETW}/${IPADDR_IPUE_MASK} -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss ${SGI_TCP_MSS}

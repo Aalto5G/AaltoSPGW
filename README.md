@@ -63,13 +63,13 @@ Folder `/etc/conf.d/iproute2/` :
 - `pgw.iproute2.stop`  : P-GW configuration clean
 
 
-Folder `/etc/cumucore/` :
+Folder `/etc/aalto/` :
 - `sgw.cfg.template`  : configuration template for S-GW
 - `pgw.cfg.template`  : configuration template for P-GW
 - `spgw.cfg.template` : configuration template for S/P-GW
 
 
-The configuration of the services is done on the configuration files located on `/etc/cumucore/`. This are the only files a user should modify. Fill the configuration files and remove the template extention.
+The configuration of the services is done on the configuration files located on `/etc/aalto/`. This are the only files a user should modify. Fill the configuration files and remove the template extention.
 
 ### Systemd workflow
 

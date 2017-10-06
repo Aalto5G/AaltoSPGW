@@ -94,7 +94,7 @@ systemdnet_DATA = ../init/sgi0.network ../init/sgi0.netdev
 iproutedir = /etc/conf.d/iproute2/
 iproute_DATA = ../init/pgw.iproute2.start ../init/pgw.iproute2.stop
 
-confdir = /etc/cumucore
+confdir = /etc/aalto
 conf_DATA = ../init/sgw.cfg.template ../init/pgw.cfg.template ../init/spgw.cfg.template
 
 EXTRA_DIST = $(systemd_DATA) $(systemdnet_DATA) $(iproute_DATA) $(conf_DATA)
