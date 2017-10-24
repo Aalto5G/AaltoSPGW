@@ -35,7 +35,7 @@ The build process follows the normal autotools workflow
 ```
 $ libtoolize -i
 $ autoreconf -i
-$ ./configure
+$ ./configure --prefix=/usr # This is required for systemd unit files
 $ make
 $ sudo make install
 ```
